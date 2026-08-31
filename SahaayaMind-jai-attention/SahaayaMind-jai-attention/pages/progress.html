@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d6b62">
+  <meta name="description" content="SahaayaMind — your progress: latest, average and best scores with a simple trend indicator.">
+  <title>Progress · SahaayaMind</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='22' fill='%230d6b62'/%3E%3Ccircle cx='24' cy='24' r='13' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Ccircle cx='24' cy='24' r='5' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../css/attention.css">
+</head>
+<body class="sm-body">
+  <a class="sm-skip-link" href="#prog-app">Skip to progress</a>
+
+  <header class="sm-topbar">
+    <div class="sm-topbar-inner">
+      <div class="sm-brand">
+        <svg viewBox="0 0 48 48" width="38" height="38" aria-hidden="true">
+          <circle cx="24" cy="24" r="22" fill="#0d6b62"/>
+          <circle cx="24" cy="24" r="13" fill="none" stroke="#ffffff" stroke-width="3"/>
+          <circle cx="24" cy="24" r="5" fill="#ffffff"/>
+        </svg>
+        <span>SahaayaMind</span>
+      </div>
+      <span class="sm-chip">Progress</span>
+      <span class="sm-topbar-spacer"></span>
+      <a class="sm-btn sm-btn-ghost" href="dashboard.html">← Back to Dashboard</a>
+    </div>
+  </header>
+
+  <main class="sm-main" id="prog-app">
+    <noscript><p class="sm-feedback sm-feedback--warn">Please enable JavaScript to view progress.</p></noscript>
+
+    <h1 class="sm-h1">Your Progress</h1>
+    <p class="sm-lead">
+      A simple view of how you are doing over time. Play regularly to see your trend.
+    </p>
+
+    <!-- ============ Empty state ============ -->
+    <section id="prog-empty" class="sm-card sm-empty" hidden>
+      <div class="sm-empty-icon" aria-hidden="true">🎯</div>
+      <h2 class="sm-h1" style="font-size:1.6rem;">No sessions yet</h2>
+      <p class="sm-lead" style="margin-left:auto;margin-right:auto;">
+        Play the Attention Game once — your scores will appear here.
+      </p>
+      <div class="sm-actions sm-actions--center">
+        <a class="sm-btn sm-btn-primary" href="attention.html">Play Attention Game</a>
+      </div>
+    </section>
+
+    <!-- ============ Attention performance (rendered by js/progress.js) ============ -->
+    <section id="prog-attention">
+      <div class="sm-card">
+        <div class="sm-section-head">
+          <h2 class="sm-h2">Attention Performance</h2>
+          <span class="sm-trend sm-trend--first" id="prog-trend">—</span>
+        </div>
+        <div class="sm-stats" id="prog-stats"></div>
+      </div>
+
+      <div class="sm-card">
+        <h2 class="sm-h2">Score history</h2>
+        <p class="sm-muted">Your last sessions — most recent on the right.</p>
+        <div class="sm-chart" id="prog-chart" role="img"
+             aria-label="Bar chart of recent attention game scores"></div>
+      </div>
+
+      <div class="sm-card">
+        <h2 class="sm-h2">Recent sessions</h2>
+        <div class="sm-rows" id="prog-rows"></div>
+      </div>
+    </section>
+
+    <!-- ============ Memory summary (appears when memory data exists) ============ -->
+    <section id="prog-memory" hidden>
+      <div class="sm-card">
+        <div class="sm-section-head">
+          <h2 class="sm-h2">Memory Performance</h2>
+        </div>
+        <p class="sm-muted">From the Memory Game module.</p>
+        <div class="sm-stats" id="prog-memory-stats"></div>
+      </div>
+    </section>
+
+    <div class="sm-actions sm-actions--center">
+      <a class="sm-btn sm-btn-primary" href="attention.html">Play Attention Game</a>
+      <a class="sm-btn sm-btn-ghost" href="dashboard.html">Back to Dashboard</a>
+    </div>
+
+    <div class="sm-progress-meta">
+      <p class="sm-footnote" id="prog-note"></p>
+      <button type="button" class="sm-btn sm-btn-ghost sm-btn--danger" id="prog-clear">
+        Clear saved data
+      </button>
+    </div>
+
+    <p class="sm-footnote">
+      SahaayaMind is a cognitive wellness prototype. It is not a medical device
+      and does not diagnose any condition.
+    </p>
+  </main>
+
+  <script src="../js/session-store.js"></script>
+  <script src="../js/progress.js"></script>
+</body>
+</html>
