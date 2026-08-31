@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind - AI-Powered Cognitive Gaming & Memory Assistance Platform for Seniors and Dementia Patients. Smart India Hackathon 2026.">
+  <title>SahaayaMind — Cognitive Wellness & Memory Assistance</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="index.html" class="brand-wrapper" aria-label="SahaayaMind Home">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">AI-Powered Cognitive Wellness Platform</div>
+        </div>
+      </a>
+      
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span class="sih-badge">
+          <span aria-hidden="true">🇮🇳</span> SIH 2026 • Team Arbalest
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Landing & Login Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="app-container" style="max-width: var(--max-width-main);">
+      
+      <!-- Welcoming Hero Card -->
+      <section class="senior-card" style="text-align: center; padding: 2.75rem 2rem; margin-bottom: 2.5rem; background: linear-gradient(180deg, #FFFFFF 0%, #F0FDFA 100%); border-color: #CCFBF1;">
+        <span class="badge badge-teal" style="font-size: var(--text-sm); padding: 0.5rem 1.25rem; margin-bottom: 1rem;">
+          🌸 Daily Mind Wellness
+        </span>
+        <h1 style="color: var(--primary-navy); margin-bottom: 0.75rem;">Welcome to SahaayaMind</h1>
+        <p style="font-size: var(--text-lg); color: var(--text-secondary); max-width: 680px; margin: 0 auto 1.5rem auto;">
+          Gentle, scientifically designed cognitive activities to stimulate memory, attention, and mental clarity every single day.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <div class="voice-support-pill">
+            <span aria-hidden="true">✨</span> Simple & Senior-Friendly
+          </div>
+          <div class="voice-support-pill">
+            <span aria-hidden="true">🛡️</span> Safe & Non-Diagnostic
+          </div>
+          <div class="voice-support-pill">
+            <span aria-hidden="true">🗣️</span> Voice Supported
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Selection & Login Section -->
+      <section class="senior-card" style="padding: 2.5rem;">
+        <div class="section-header" style="border-bottom: 2px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.75rem;">
+          <div>
+            <h2 style="font-size: var(--text-2xl); color: var(--primary-navy);">Who is playing today?</h2>
+            <p style="font-size: var(--text-base); margin-top: 0.25rem;">Select your profile below with a single tap, or type your name.</p>
+          </div>
+          <span class="badge badge-blue" style="font-size: var(--text-xs);">1-Tap Entry</span>
+        </div>
+
+        <!-- Quick 1-Tap Senior Profiles -->
+        <div class="profile-select-grid" id="profile-select-container">
+          
+          <div class="profile-choice-card selected" tabindex="0" role="button" aria-label="Select Ramesh Sharma, Age 72" onclick="selectProfile('user_ramesh', this)">
+            <div class="profile-choice-avatar" style="background: #0D9488;">RS</div>
+            <div>
+              <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);">Ramesh Sharma</div>
+              <div style="font-size: var(--text-sm); color: var(--text-muted);">Age 72 • Daily Streak: 5 Days</div>
+            </div>
+            <span class="badge badge-teal">Selected</span>
+          </div>
+
+          <div class="profile-choice-card" tabindex="0" role="button" aria-label="Select Maya Barua, Age 68" onclick="selectProfile('user_maya', this)">
+            <div class="profile-choice-avatar" style="background: #2563EB;">MB</div>
+            <div>
+              <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);">Maya Barua</div>
+              <div style="font-size: var(--text-sm); color: var(--text-muted);">Age 68 • Daily Streak: 7 Days</div>
+            </div>
+            <span class="badge badge-blue">Tap to Select</span>
+          </div>
+
+          <div class="profile-choice-card" tabindex="0" role="button" aria-label="Select Bipul Das, Age 75" onclick="selectProfile('user_bipul', this)">
+            <div class="profile-choice-avatar" style="background: #6D28D9;">BD</div>
+            <div>
+              <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);">Bipul Das</div>
+              <div style="font-size: var(--text-sm); color: var(--text-muted);">Age 75 • Daily Streak: 3 Days</div>
+            </div>
+            <span class="badge badge-outline">Tap to Select</span>
+          </div>
+
+        </div>
+
+        <!-- Or Enter Custom Senior Name -->
+        <div style="background: var(--bg-subtle); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem; border: 1px solid var(--border-subtle);">
+          <h3 style="font-size: var(--text-lg); margin-bottom: 1rem; color: var(--primary-navy);">
+            Or Enter a New Senior Name
+          </h3>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+            <div class="senior-form-group" style="margin-bottom: 0;">
+              <label for="custom-name" class="senior-label">Senior Name</label>
+              <input type="text" id="custom-name" class="senior-input" placeholder="e.g. Anandita Devi" autocomplete="name">
+            </div>
+            <div class="senior-form-group" style="margin-bottom: 0;">
+              <label for="custom-age" class="senior-label">Age</label>
+              <input type="number" id="custom-age" class="senior-input" placeholder="e.g. 70" min="50" max="110">
+            </div>
+          </div>
+        </div>
+
+        <!-- Big Readable CTA Button -->
+        <div style="text-align: center;">
+          <button type="button" id="btn-login-submit" class="senior-btn senior-btn-primary senior-btn-block" style="font-size: var(--text-xl); padding: 1.15rem 2.5rem;" onclick="handleLoginSubmit()">
+            Start Daily Session →
+          </button>
+          <p style="margin-top: 1rem; font-size: var(--text-sm); color: var(--text-muted);">
+            No complicated passwords required. All your activity progress is automatically saved on this device.
+          </p>
+        </div>
+
+      </section>
+
+      <!-- Caregiver & Non-Diagnostic Reassurance Note -->
+      <section style="margin-top: 2.5rem; text-align: center; padding: 1.5rem; background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;">
+          <strong>Caregiver Advisory:</strong> SahaayaMind is designed as a supportive non-diagnostic cognitive exercise platform. For clinical medical advice, please consult your physician or specialist.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — AI-Powered Cognitive Wellness Platform for Seniors (NER)
+      </div>
+      <div class="footer-badges">
+        <span>Smart India Hackathon 2026</span>
+        <span>•</span>
+        <span>Team Arbalest (AI006)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/mockData.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let selectedProfileId = 'user_ramesh';
+
+    function selectProfile(profileId, element) {
+      selectedProfileId = profileId;
+      document.querySelectorAll('.profile-choice-card').forEach(card => {
+        card.classList.remove('selected');
+        const badge = card.querySelector('.badge');
+        if (badge) {
+          badge.className = 'badge badge-outline';
+          badge.textContent = 'Tap to Select';
+        }
+      });
+      element.classList.add('selected');
+      const badge = element.querySelector('.badge');
+      if (badge) {
+        badge.className = 'badge badge-teal';
+        badge.textContent = 'Selected';
+      }
+
+      // Clear custom fields if profile card is selected
+      document.getElementById('custom-name').value = '';
+      document.getElementById('custom-age').value = '';
+    }
+
+    function handleLoginSubmit() {
+      const customName = document.getElementById('custom-name').value;
+      const customAge = document.getElementById('custom-age').value;
+
+      if (customName && customName.trim().length > 0) {
+        window.SahaayaApp.loginCustomUser(customName, customAge);
+      } else {
+        window.SahaayaApp.loginAs(selectedProfileId);
+      }
+    }
+  </script>
+</body>
+</html>

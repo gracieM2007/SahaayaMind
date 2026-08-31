@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind Activity Results - Cognitive Performance Summary for Seniors">
+  <title>Activity Results — SahaayaMind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-wrapper" aria-label="SahaayaMind Dashboard">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">Cognitive Wellness & Memory Platform</div>
+        </div>
+      </a>
+
+      <nav aria-label="Quick Nav">
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="nav-link-btn">
+              <span aria-hidden="true">🏠</span> <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="progress.html" class="nav-link-btn">
+              <span aria-hidden="true">📊</span> <span>Progress</span>
+            </a>
+          </li>
+          <li>
+            <div class="nav-user-pill">
+              <div class="nav-user-avatar js-user-avatar">RS</div>
+              <span class="js-user-first-name">Ramesh</span>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Result Screen Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="app-container" style="max-width: var(--max-width-main);">
+
+      <!-- Navigation & Breadcrumb Bar -->
+      <div class="inner-nav-bar">
+        <a href="dashboard.html" class="btn-back" id="btn-back-dashboard">
+          <span aria-hidden="true">←</span> Back to Dashboard
+        </a>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a> / <span>Activities</span> / <span class="current">Results</span>
+        </div>
+      </div>
+
+      <!-- Celebratory Senior Hero Banner -->
+      <section class="result-hero" aria-label="Celebration Summary">
+        <div class="result-badge-celebrate" aria-hidden="true">🌟</div>
+        <div class="badge badge-green" style="font-size: var(--text-sm); margin-bottom: 0.75rem;">
+          Session Successfully Completed
+        </div>
+        <h1 style="color: var(--primary-navy); margin-bottom: 0.5rem;">
+          Well Done, <span class="js-user-first-name">Ramesh</span>!
+        </h1>
+        <p style="font-size: var(--text-lg); color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+          You completed your session for <strong id="res-game-name" style="color: var(--primary-navy);">Memory Recall & Match</strong>.
+        </p>
+        
+        <div class="result-score-highlight">
+          <span id="res-score">94</span><span style="font-size: var(--text-2xl); color: var(--text-muted);">/100</span>
+        </div>
+        <span class="badge badge-teal" style="font-size: var(--text-base); padding: 0.5rem 1.5rem;">
+          Cognitive Activity Score
+        </span>
+      </section>
+
+      <!-- Key Performance Metrics Grid -->
+      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+        
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Accuracy Rate</span>
+            <span aria-hidden="true">🎯</span>
+          </div>
+          <div class="stat-tile-value" id="res-accuracy" style="color: var(--accent-teal-dark);">95%</div>
+          <div class="stat-tile-caption">High precision in identifying target cards.</div>
+        </div>
+
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Time Spent</span>
+            <span aria-hidden="true">⏱️</span>
+          </div>
+          <div class="stat-tile-value" id="res-duration" style="color: var(--accent-blue);">3m 15s</div>
+          <div class="stat-tile-caption">Comfortable, relaxed cognitive pace.</div>
+        </div>
+
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Consistency Streak</span>
+            <span aria-hidden="true">🔥</span>
+          </div>
+          <div class="stat-tile-value" style="color: var(--warning-amber);">5 Days</div>
+          <div class="stat-tile-caption">Daily activity maintains neuroplasticity.</div>
+        </div>
+
+      </section>
+
+      <!-- AI Adaptive Feedback & Encouragement Box -->
+      <section class="feedback-ai-box" aria-label="AI Cognitive Feedback">
+        <div class="feedback-ai-icon" aria-hidden="true">🤖</div>
+        <div>
+          <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin-bottom: 0.35rem;">
+            Adaptive AI Cognitive Insight
+          </h2>
+          <p id="res-feedback" style="font-size: var(--text-base); color: var(--text-primary); margin-bottom: 0.6rem; line-height: 1.6;">
+            Exceptional recall today! You identified visual sequences 12% faster than last week with zero signs of frustration.
+          </p>
+          <div style="font-size: var(--text-sm); color: var(--text-muted);">
+            💡 <strong>Next Step:</strong> <span id="res-recommendation">Take a water break, then practice the Attention Game tomorrow morning.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cognitive Domain Breakdown -->
+      <section class="result-breakdown-card" aria-label="Cognitive Domain Breakdown">
+        <h2 style="font-size: var(--text-xl); color: var(--primary-navy); margin-bottom: 1.25rem;">
+          Cognitive Domain Breakdown
+        </h2>
+
+        <!-- Domain 1: Visual Memory -->
+        <div class="breakdown-row">
+          <div style="min-width: 160px;">
+            <div style="font-weight: 700; color: var(--primary-navy);">Visual Memory Recall</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">Pattern & object retention</div>
+          </div>
+          <div style="flex: 1; margin: 0 1.5rem;">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 94%;"></div>
+            </div>
+          </div>
+          <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);" id="res-mem-score">
+            94%
+          </div>
+        </div>
+
+        <!-- Domain 2: Attention & Focus -->
+        <div class="breakdown-row">
+          <div style="min-width: 160px;">
+            <div style="font-weight: 700; color: var(--primary-navy);">Attention & Focus</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">Selective visual filtering</div>
+          </div>
+          <div style="flex: 1; margin: 0 1.5rem;">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 90%; background: linear-gradient(90deg, #2563EB, #0D9488);"></div>
+            </div>
+          </div>
+          <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);" id="res-att-score">
+            90%
+          </div>
+        </div>
+
+        <!-- Domain 3: Response Speed -->
+        <div class="breakdown-row">
+          <div style="min-width: 160px;">
+            <div style="font-weight: 700; color: var(--primary-navy);">Processing Speed</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">Motor reaction & confidence</div>
+          </div>
+          <div style="flex: 1; margin: 0 1.5rem;">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 88%; background: linear-gradient(90deg, #15803D, #0D9488);"></div>
+            </div>
+          </div>
+          <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);" id="res-spd-score">
+            88%
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Primary Action Buttons (Fixed Flow: Result -> Progress Dashboard) -->
+      <section style="display: flex; flex-direction: column; gap: 1rem; align-items: center; text-align: center; margin-top: 2rem;">
+        
+        <!-- Primary Action: View Progress Dashboard -->
+        <a href="progress.html" class="senior-btn senior-btn-primary senior-btn-block" id="btn-view-progress" style="font-size: var(--text-xl); padding: 1.15rem 2.5rem; max-width: 520px;">
+          View Full Progress Dashboard →
+        </a>
+
+        <!-- Secondary Actions -->
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 520px;">
+          <a href="dashboard.html" class="senior-btn senior-btn-secondary" style="flex: 1; font-size: var(--text-base);">
+            Play Another Game
+          </a>
+          <a href="dashboard.html" class="senior-btn senior-btn-secondary" style="flex: 1; font-size: var(--text-base);">
+            ← Back to Home
+          </a>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — Session Results & Assessment Summary
+      </div>
+      <div class="footer-badges">
+        <span>Smart India Hackathon 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/mockData.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>
