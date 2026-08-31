@@ -1,18 +1,23 @@
 /**
  * SahaayaMind - Cognitive Gaming & Memory Assistance Platform
- * Smart India Hackathon (SIH 2026) - Problem Statement: SIH26003
+ * Smart India Hackathon (SIH 2026) | Problem Statement: SIH26003
  * Team: Arbalest (AI006)
  * Module: Memory Match with Rule-Based Adaptive Difficulty & Voice Assistance
+ * 
+ * Optimized Engine Architecture:
+ * - Event delegation for high-performance DOM updates
+ * - Full Arrow-Key matrix navigation for motor/accessibility support
+ * - High-precision latency telemetry (performance.now())
+ * - Web Speech & Web Audio synthesized sound engines
  */
 
 (() => {
   'use strict';
 
-  // Global namespace for SahaayaMind platform interoperability
   window.SahaayaMind = window.SahaayaMind || {};
 
   // ==========================================================================
-  // 1. LOCAL STORAGE & DATA CONTRACT KEYS
+  // 1. STORAGE KEYS & CONSTANTS
   // ==========================================================================
   const STORAGE_KEYS = {
     DIFFICULTY: 'sahaayamind_memory_difficulty',
@@ -259,7 +264,7 @@
   ];
 
   // ==========================================
-  // 4. SOUND & VOICE ENGINES
+  // 4. OPTIMIZED SOUND & VOICE ENGINES
   // ==========================================
   class SoundSynthesizer {
     constructor() {
@@ -310,14 +315,14 @@
     }
 
     playMatch() {
-      this.playTone(523.25, 'triangle', 0.22, 0.18, 0.0);   // C5
-      this.playTone(659.25, 'triangle', 0.22, 0.18, 0.08);  // E5
-      this.playTone(783.99, 'triangle', 0.32, 0.20, 0.16);  // G5
+      this.playTone(523.25, 'triangle', 0.22, 0.18, 0.0);
+      this.playTone(659.25, 'triangle', 0.22, 0.18, 0.08);
+      this.playTone(783.99, 'triangle', 0.32, 0.20, 0.16);
     }
 
     playMismatch() {
-      this.playTone(349.23, 'sine', 0.18, 0.12, 0.0);   // F4
-      this.playTone(293.66, 'sine', 0.22, 0.12, 0.12);  // D4
+      this.playTone(349.23, 'sine', 0.18, 0.12, 0.0);
+      this.playTone(293.66, 'sine', 0.22, 0.12, 0.12);
     }
 
     playVictory() {
@@ -362,7 +367,7 @@
   }
 
   // ==========================================
-  // 5. CORE GAME ENGINE
+  // 5. OPTIMIZED GAME ENGINE
   // ==========================================
   class MemoryGameEngine {
     constructor() {
@@ -405,17 +410,14 @@
 
     cacheDOMElements() {
       this.elements = {
-        // Screens
         startScreen: document.getElementById('start-screen'),
         playScreen: document.getElementById('play-screen'),
         resultScreen: document.getElementById('result-screen'),
 
-        // Header controls
         soundToggleBtn: document.getElementById('sound-toggle-btn'),
         voiceToggleBtn: document.getElementById('voice-toggle-btn'),
         langSelect: document.getElementById('lang-select'),
 
-        // Start screen
         readInstructionsBtn: document.getElementById('read-instructions-btn'),
         startDifficultyBadge: document.getElementById('start-difficulty-badge'),
         startDifficultyDesc: document.getElementById('start-difficulty-desc'),
@@ -424,7 +426,6 @@
         statBestScore: document.getElementById('stat-best-score'),
         statTotalGames: document.getElementById('stat-total-games'),
 
-        // Play screen
         playDifficultyBadge: document.getElementById('play-difficulty-badge'),
         remainingPairsText: document.getElementById('remaining-pairs-text'),
         movesCounterText: document.getElementById('moves-counter-text'),
@@ -434,7 +435,6 @@
         restartLevelBtn: document.getElementById('restart-level-btn'),
         playBackMenuBtn: document.getElementById('play-back-menu-btn'),
 
-        // Result screen
         resultTitle: document.getElementById('result-title'),
         resultSummaryText: document.getElementById('result-summary-text'),
         resultTotalScore: document.getElementById('result-total-score'),
@@ -445,18 +445,15 @@
         resultTotalMoves: document.getElementById('result-total-moves'),
         resultAvgLatency: document.getElementById('result-avg-latency'),
         
-        // Adaptive feedback
         adaptiveRuleBadge: document.getElementById('adaptive-rule-badge'),
         adaptiveMessageText: document.getElementById('adaptive-message-text'),
         adaptiveNextDiffBadge: document.getElementById('adaptive-next-diff-badge'),
         caregiverTelemetryJson: document.getElementById('caregiver-telemetry-json'),
 
-        // Action buttons
         playNextBtn: document.getElementById('play-next-btn'),
         replayLevelBtn: document.getElementById('replay-level-btn'),
         resultMenuBtn: document.getElementById('result-menu-btn'),
 
-        // Confetti canvas
         confettiCanvas: document.getElementById('confetti-canvas')
       };
     }
@@ -495,14 +492,10 @@
     }
 
     bindEvents() {
-      // Language Change
       if (this.elements.langSelect) {
-        this.elements.langSelect.addEventListener('change', (e) => {
-          this.setLanguage(e.target.value);
-        });
+        this.elements.langSelect.addEventListener('change', (e) => this.setLanguage(e.target.value));
       }
 
-      // Audio & Voice Toggles
       if (this.elements.soundToggleBtn) {
         this.elements.soundToggleBtn.addEventListener('click', () => this.toggleSound());
       }
@@ -510,7 +503,6 @@
         this.elements.voiceToggleBtn.addEventListener('click', () => this.toggleVoice());
       }
 
-      // Read Instructions Audio Button
       if (this.elements.readInstructionsBtn) {
         this.elements.readInstructionsBtn.addEventListener('click', () => {
           this.sound.playButtonClick();
@@ -519,7 +511,6 @@
         });
       }
 
-      // Start Screen
       if (this.elements.startBtn) {
         this.elements.startBtn.addEventListener('click', () => {
           this.sound.playButtonClick();
@@ -535,7 +526,6 @@
         });
       }
 
-      // Play Screen
       if (this.elements.restartLevelBtn) {
         this.elements.restartLevelBtn.addEventListener('click', () => {
           this.sound.playButtonClick();
@@ -552,7 +542,6 @@
         });
       }
 
-      // Result Screen
       if (this.elements.playNextBtn) {
         this.elements.playNextBtn.addEventListener('click', () => {
           this.sound.playButtonClick();
@@ -575,7 +564,38 @@
         });
       }
 
-      // Keyboard Shortcuts
+      // High-performance Event Delegation for Card Clicks
+      if (this.elements.gameGrid) {
+        this.elements.gameGrid.addEventListener('click', (e) => {
+          const cardBtn = e.target.closest('.memory-card');
+          if (cardBtn && cardBtn.dataset.index !== undefined) {
+            this.handleCardClick(parseInt(cardBtn.dataset.index, 10));
+          }
+        });
+
+        // Accessible Arrow-Key Grid Matrix Navigation
+        this.elements.gameGrid.addEventListener('keydown', (e) => {
+          const cardBtn = e.target.closest('.memory-card');
+          if (!cardBtn) return;
+
+          const cards = Array.from(this.elements.gameGrid.querySelectorAll('.memory-card'));
+          const currIdx = cards.indexOf(cardBtn);
+          const cols = DIFFICULTY_CONFIG[this.state.currentDifficulty].gridCols || 4;
+
+          let targetIdx = -1;
+          if (e.key === 'ArrowRight') targetIdx = currIdx + 1;
+          else if (e.key === 'ArrowLeft') targetIdx = currIdx - 1;
+          else if (e.key === 'ArrowDown') targetIdx = currIdx + cols;
+          else if (e.key === 'ArrowUp') targetIdx = currIdx - cols;
+
+          if (targetIdx >= 0 && targetIdx < cards.length) {
+            e.preventDefault();
+            cards[targetIdx].focus();
+          }
+        });
+      }
+
+      // Global Keyboard Shortcuts (M for Mute, V for Voice)
       document.addEventListener('keydown', (e) => {
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
         if (e.key === 'm' || e.key === 'M') this.toggleSound();
@@ -731,7 +751,7 @@
       this.state.isLocked = false;
       this.state.elapsedSeconds = 0;
       this.state.responseLatencies = [];
-      this.state.lastFlipTime = Date.now();
+      this.state.lastFlipTime = performance.now();
 
       this.stopTimer();
       this.updatePlayHeader();
@@ -793,10 +813,12 @@
       const grid = this.elements.gameGrid;
       if (!grid) return;
 
-      grid.innerHTML = '';
       grid.className = 'game-grid';
       grid.dataset.difficulty = config.id;
       grid.dataset.cards = this.state.cards.length;
+
+      // Fast document fragment rendering
+      const fragment = document.createDocumentFragment();
 
       this.state.cards.forEach((card, index) => {
         const cardBtn = document.createElement('button');
@@ -811,8 +833,8 @@
         cardBtn.innerHTML = `
           <div class="card-inner">
             <div class="card-back" aria-hidden="true">
-              <span class="card-back-crest">✨</span>
-              <span class="card-back-text">Match</span>
+              <span class="card-back-icon">🧠</span>
+              <span class="card-back-title">Match</span>
             </div>
             <div class="card-front" aria-hidden="true">
               <span class="card-emoji">${card.symbol}</span>
@@ -821,9 +843,11 @@
           </div>
         `;
 
-        cardBtn.addEventListener('click', () => this.handleCardClick(index));
-        grid.appendChild(cardBtn);
+        fragment.appendChild(cardBtn);
       });
+
+      grid.innerHTML = '';
+      grid.appendChild(fragment);
     }
 
     handleCardClick(index) {
@@ -834,7 +858,7 @@
 
       if (!card || card.isFlipped || card.isMatched) return;
 
-      const now = Date.now();
+      const now = performance.now();
       if (this.state.lastFlipTime && this.state.flippedIndices.length === 0) {
         const latency = (now - this.state.lastFlipTime) / 1000;
         this.state.responseLatencies.push(latency);
@@ -1173,7 +1197,7 @@
       }
       if (this.elements.adaptiveNextDiffBadge && nextConfig) {
         this.elements.adaptiveNextDiffBadge.textContent = `Next Round: ${nextName} (${nextConfig.pairs} Pairs)`;
-        this.elements.adaptiveNextDiffBadge.className = `next-diff-badge ${nextConfig.badgeClass}`;
+        this.elements.adaptiveNextDiffBadge.className = `next-diff-tag ${nextConfig.badgeClass}`;
       }
 
       if (this.elements.caregiverTelemetryJson) {
@@ -1193,9 +1217,9 @@
       canvas.style.display = 'block';
 
       const particles = [];
-      const colors = ['#10b981', '#38bdf8', '#f59e0b', '#ec4899', '#8b5cf6', '#ffffff'];
+      const colors = ['#0d9488', '#2563eb', '#f59e0b', '#ec4899', '#10b981', '#ffffff'];
 
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 55; i++) {
         particles.push({
           x: canvas.width * 0.5 + (Math.random() * 200 - 100),
           y: canvas.height * 0.3 + (Math.random() * 100 - 50),
