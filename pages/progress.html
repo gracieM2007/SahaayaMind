@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind Progress Dashboard - Long-term Cognitive Wellness & Activity History for Seniors">
+  <title>Progress Dashboard — SahaayaMind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-wrapper" aria-label="SahaayaMind Dashboard">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">Cognitive Wellness & Memory Platform</div>
+        </div>
+      </a>
+
+      <nav aria-label="Quick Nav">
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="nav-link-btn">
+              <span aria-hidden="true">🏠</span> <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="progress.html" class="nav-link-btn active" aria-current="page">
+              <span aria-hidden="true">📊</span> <span>Progress</span>
+            </a>
+          </li>
+          <li>
+            <div class="nav-user-pill">
+              <div class="nav-user-avatar js-user-avatar">RS</div>
+              <span class="js-user-first-name">Ramesh</span>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Progress Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="app-container">
+
+      <!-- Navigation & Breadcrumb Bar -->
+      <div class="inner-nav-bar">
+        <a href="dashboard.html" class="btn-back" id="btn-back-dashboard">
+          <span aria-hidden="true">←</span> Back to Dashboard
+        </a>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a> / <span class="current">Progress Dashboard</span>
+        </div>
+      </div>
+
+      <!-- Page Header -->
+      <div style="margin-bottom: 2rem;">
+        <span class="badge badge-teal" style="margin-bottom: 0.5rem;">Longitudinal Wellness Trends</span>
+        <h1 style="font-size: var(--text-3xl); color: var(--primary-navy); margin-top: 0.25rem;">
+          Cognitive Progress & History
+        </h1>
+        <p style="font-size: var(--text-base); color: var(--text-secondary);">
+          Reviewing performance for <strong class="js-user-name" style="color: var(--primary-navy);">Ramesh Sharma</strong>. Consistent mental exercises help preserve cognitive vitality.
+        </p>
+      </div>
+
+      <!-- Key Performance Overview Cards -->
+      <div class="progress-grid-3" style="margin-bottom: 2.5rem;">
+        
+        <!-- Score Card -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Overall Cognitive Index</span>
+            <span aria-hidden="true">🌟</span>
+          </div>
+          <div class="stat-tile-value js-user-score">86/100</div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" style="width: 86%;"></div>
+          </div>
+          <div class="stat-tile-caption">
+            Status: <strong style="color: var(--success-green);">Strong & Stable</strong>
+          </div>
+        </div>
+
+        <!-- Weekly Trend -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Weekly Improvement</span>
+            <span aria-hidden="true">📈</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 0.75rem;">
+            <div class="stat-tile-value js-user-progress-rate" style="color: var(--success-green);">+5%</div>
+            <span class="improvement-indicator">▲ Steady Rise</span>
+          </div>
+          <div class="stat-tile-caption">
+            Consistent improvement in sequence recall times.
+          </div>
+        </div>
+
+        <!-- Total Sessions -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Total Completed Sessions</span>
+            <span aria-hidden="true">🏆</span>
+          </div>
+          <div class="stat-tile-value js-user-sessions">14 Sessions</div>
+          <div class="stat-tile-caption">
+            Average 4.2 sessions completed per week.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 7-Day Activity Calendar & Streak Card -->
+      <section class="senior-card" style="margin-bottom: 2.5rem;">
+        <div class="section-header" style="margin-bottom: 1rem;">
+          <div class="section-title">
+            <div class="section-icon" aria-hidden="true">📅</div>
+            <h2>Weekly Activity Streak</h2>
+          </div>
+          <span class="badge badge-green">5 Days Active This Week</span>
+        </div>
+
+        <p style="font-size: var(--text-base); color: var(--text-secondary);">
+          Regular daily engagement creates positive mental habits. Green checks indicate completed daily sessions.
+        </p>
+
+        <div class="streak-days-row">
+          <div class="streak-day-item completed">
+            <div class="streak-day-name">Mon</div>
+            <div class="streak-day-icon" aria-label="Completed">✅</div>
+            <span style="font-size: 0.8rem; font-weight: 600;">92%</span>
+          </div>
+          <div class="streak-day-item completed">
+            <div class="streak-day-name">Tue</div>
+            <div class="streak-day-icon" aria-label="Completed">✅</div>
+            <span style="font-size: 0.8rem; font-weight: 600;">88%</span>
+          </div>
+          <div class="streak-day-item completed">
+            <div class="streak-day-name">Wed</div>
+            <div class="streak-day-icon" aria-label="Completed">✅</div>
+            <span style="font-size: 0.8rem; font-weight: 600;">85%</span>
+          </div>
+          <div class="streak-day-item completed">
+            <div class="streak-day-name">Thu</div>
+            <div class="streak-day-icon" aria-label="Completed">✅</div>
+            <span style="font-size: 0.8rem; font-weight: 600;">90%</span>
+          </div>
+          <div class="streak-day-item completed today">
+            <div class="streak-day-name">Fri (Today)</div>
+            <div class="streak-day-icon" aria-label="Completed">✅</div>
+            <span style="font-size: 0.8rem; font-weight: 600;">95%</span>
+          </div>
+          <div class="streak-day-item">
+            <div class="streak-day-name">Sat</div>
+            <div class="streak-day-icon" aria-label="Upcoming">⏳</div>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Upcoming</span>
+          </div>
+          <div class="streak-day-item">
+            <div class="streak-day-name">Sun</div>
+            <div class="streak-day-icon" aria-label="Upcoming">⏳</div>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Upcoming</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cognitive Domain Mastery Breakdown -->
+      <section class="senior-card" style="margin-bottom: 2.5rem;">
+        <div class="section-header" style="margin-bottom: 1.5rem;">
+          <div class="section-title">
+            <div class="section-icon" aria-hidden="true">🧠</div>
+            <h2>Cognitive Domain Breakdown</h2>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 0.4rem;">
+              <span style="color: var(--primary-navy);">🎴 Visual & Sequence Memory</span>
+              <span style="color: var(--accent-teal-dark);">88% (Proficient)</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 88%;"></div>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.35rem;">
+              High accuracy in matching fruit & object pairs with low trial count.
+            </p>
+          </div>
+
+          <div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 0.4rem;">
+              <span style="color: var(--primary-navy);">🎯 Selective Attention & Concentration</span>
+              <span style="color: var(--accent-blue);">84% (Steady)</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 84%; background: linear-gradient(90deg, #2563EB, #0D9488);"></div>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.35rem;">
+              Consistent target selection with minimal distractor errors.
+            </p>
+          </div>
+
+          <div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 0.4rem;">
+              <span style="color: var(--primary-navy);">⚡ Processing & Motor Speed</span>
+              <span style="color: var(--success-green);">86% (Confident)</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 86%; background: linear-gradient(90deg, #15803D, #0D9488);"></div>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.35rem;">
+              Steady reaction time without hesitation or cognitive fatigue.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Caregiver & Clinical Note -->
+      <section class="feedback-ai-box" style="margin-bottom: 2.5rem; background: #F8FAFC; border-color: #CBD5E1;">
+        <div class="feedback-ai-icon" style="background: var(--primary-navy);" aria-hidden="true">📋</div>
+        <div>
+          <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin-bottom: 0.35rem;">
+            Caregiver & Family Summary
+          </h2>
+          <p style="font-size: var(--text-base); color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6;">
+            <strong>Senior Note:</strong> <span class="js-user-name">Ramesh Sharma</span> exhibits strong engagement in morning routines. Card recall accuracy increased 6% over the last 14 sessions. Recommended to continue 1 session per day at Level 2.
+          </p>
+          <div style="font-size: var(--text-sm); color: var(--text-muted);">
+            Exportable report ready for caregiver review.
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Activity History Table -->
+      <section class="senior-card" style="margin-bottom: 2.5rem; padding: 1.5rem; overflow-x: auto;">
+        <div class="section-header" style="margin-bottom: 1.25rem;">
+          <div class="section-title">
+            <div class="section-icon" aria-hidden="true">📜</div>
+            <h2>Recent Activity Sessions</h2>
+          </div>
+          <span class="badge badge-teal">Last 5 Sessions</span>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;" aria-label="Activity Session History">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border-prominent); background: var(--bg-subtle);">
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Activity Name & Date</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Type</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Score</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Accuracy</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Time</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="progress-history-tbody">
+            <!-- Rendered dynamically by js/app.js -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Action Navigation Footer -->
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="dashboard.html" class="senior-btn senior-btn-accent" style="font-size: var(--text-lg); padding: 1rem 2.5rem;">
+          ▶️ Start Next Activity
+        </a>
+        <a href="dashboard.html" class="senior-btn senior-btn-secondary" style="font-size: var(--text-lg); padding: 1rem 2rem;">
+          ← Back to Dashboard
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — Progress & Cognitive Analytics Dashboard
+      </div>
+      <div class="footer-badges">
+        <span>Smart India Hackathon 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/mockData.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

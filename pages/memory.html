@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind Memory Game - Cognitive Recall Exercise for Seniors">
+  <title>Memory Game — SahaayaMind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-wrapper" aria-label="SahaayaMind Dashboard">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">Cognitive Wellness & Memory Platform</div>
+        </div>
+      </a>
+
+      <nav aria-label="Quick Nav">
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="nav-link-btn">
+              <span aria-hidden="true">🏠</span> <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="progress.html" class="nav-link-btn">
+              <span aria-hidden="true">📊</span> <span>Progress</span>
+            </a>
+          </li>
+          <li>
+            <div class="nav-user-pill">
+              <div class="nav-user-avatar js-user-avatar">RS</div>
+              <span class="js-user-first-name">Ramesh</span>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Game Page Main Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="app-container">
+
+      <!-- Navigation & Breadcrumb Bar -->
+      <div class="inner-nav-bar">
+        <a href="dashboard.html" class="btn-back" id="btn-back-dashboard">
+          <span aria-hidden="true">←</span> Back to Dashboard
+        </a>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a> / <span class="current">Memory Game</span>
+        </div>
+      </div>
+
+      <!-- Game Shell Container -->
+      <section class="game-shell" aria-labelledby="memory-game-title">
+        
+        <!-- Game Header -->
+        <div class="game-shell-header">
+          <div>
+            <span class="badge badge-teal" style="margin-bottom: 0.5rem;">Cognitive Focus: Visual Recall</span>
+            <h1 id="memory-game-title" style="font-size: var(--text-2xl); color: var(--primary-navy); margin-top: 0.25rem;">
+              Memory Match & Sequence Recall
+            </h1>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div class="game-info-badge">
+              <span aria-hidden="true">⏱️</span> Time: <span id="game-timer" style="margin-left: 0.35rem; color: var(--accent-teal-dark);">00:45</span>
+            </div>
+            <div class="game-info-badge">
+              <span aria-hidden="true">🎯</span> Score: <span id="game-score-live" style="margin-left: 0.35rem; color: var(--primary-navy);">94</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Senior Spoken & Written Instruction Box -->
+        <div class="game-instructions-box">
+          <div class="game-instructions-icon" aria-hidden="true">💡</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: var(--text-lg); color: #0F766E; margin-bottom: 0.25rem;">
+              Instructions for Seniors:
+            </div>
+            <p class="game-instructions-text" id="instructions-text">
+              Tap on any two cards to flip them over. Find all matching pairs of everyday items (fruit, flowers, animals) at your own relaxed pace.
+            </p>
+          </div>
+          <button type="button" class="access-btn" style="background: #0D9488; align-self: center;" onclick="speakText(document.getElementById('instructions-text').innerText)">
+            🔊 Hear Instructions
+          </button>
+        </div>
+
+        <!-- ====================================================================
+             FAIZAN'S MEMORY GAME CONTAINER
+             Faizan can inject his Memory Game markup, canvas, or game script here.
+             ==================================================================== -->
+        <div id="memory-game-container">
+          
+          <!-- Senior-Friendly Starter Demo Matching Grid (Ready to be extended by Faizan) -->
+          <div class="game-canvas-container" id="demo-memory-board" style="border-style: solid; border-color: var(--border-subtle); background: var(--bg-surface);">
+            
+            <div style="margin-bottom: 1rem; text-align: center;">
+              <span class="badge badge-teal">Live Demo Grid</span>
+              <p style="font-size: var(--text-sm); margin-top: 0.5rem; color: var(--text-secondary);">
+                Tap two matching cards below, or complete the session to view your analytics.
+              </p>
+            </div>
+
+            <!-- 4x2 Senior Matching Cards Demo -->
+            <div class="game-demo-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 440px;">
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🍎')" aria-label="Card 1">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🌻')" aria-label="Card 2">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🐘')" aria-label="Card 3">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🍎')" aria-label="Card 4">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🌻')" aria-label="Card 5">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🦚')" aria-label="Card 6">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🐘')" aria-label="Card 7">❓</button>
+              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🦚')" aria-label="Card 8">❓</button>
+            </div>
+
+            <div id="match-status-msg" style="min-height: 28px; font-weight: 700; color: var(--accent-teal-dark); font-size: var(--text-base); margin-top: 0.5rem;">
+              Tap any card to begin!
+            </div>
+
+          </div>
+
+        </div>
+        <!-- ====================================================================
+             END OF FAIZAN'S CONTAINER
+             ==================================================================== -->
+
+        <!-- Game Controls & Finish Session Flow -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border-subtle); flex-wrap: wrap; gap: 1rem;">
+          <a href="dashboard.html" class="senior-btn senior-btn-secondary">
+            ← Quit & Back to Dashboard
+          </a>
+
+          <!-- Primary Game Completion Flow Trigger (Takes senior to result.html) -->
+          <button type="button" id="btn-finish-memory" class="senior-btn senior-btn-accent" style="font-size: var(--text-xl); padding: 1rem 2.5rem;" onclick="finishMemoryGameSession()">
+            Complete Game & View Results →
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — Memory Module (Faizan's Game Container)
+      </div>
+      <div class="footer-badges">
+        <span>Smart India Hackathon 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/mockData.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/app.js"></script>
+
+  <!-- Interactive Starter Script for Memory Demo -->
+  <script>
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let matchesFound = 0;
+    let totalPairs = 4;
+
+    function flipDemoCard(card, symbol) {
+      if (lockBoard || card === firstCard || card.classList.contains('matched')) return;
+
+      card.textContent = symbol;
+      card.classList.add('revealed');
+
+      if (!firstCard) {
+        firstCard = { element: card, symbol: symbol };
+        document.getElementById('match-status-msg').textContent = "Now tap a second card to find its match...";
+        return;
+      }
+
+      secondCard = { element: card, symbol: symbol };
+      lockBoard = true;
+
+      // Check match
+      if (firstCard.symbol === secondCard.symbol) {
+        firstCard.element.classList.add('matched');
+        secondCard.element.classList.add('matched');
+        matchesFound++;
+        document.getElementById('match-status-msg').textContent = `🎉 Great job! Found match: ${symbol}`;
+        
+        resetDemoTurn();
+
+        if (matchesFound === totalPairs) {
+          document.getElementById('match-status-msg').textContent = "🌟 Fantastic! You completed all pairs!";
+          setTimeout(() => {
+            finishMemoryGameSession();
+          }, 1200);
+        }
+      } else {
+        document.getElementById('match-status-msg').textContent = "Not quite a match. Try again!";
+        setTimeout(() => {
+          firstCard.element.textContent = '❓';
+          secondCard.element.textContent = '❓';
+          firstCard.element.classList.remove('revealed');
+          secondCard.element.classList.remove('revealed');
+          resetDemoTurn();
+        }, 1100);
+      }
+    }
+
+    function resetDemoTurn() {
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+    }
+
+    // Called when game is finished or user taps Complete
+    function finishMemoryGameSession() {
+      window.SahaayaApp.completeGameSession(
+        'memory',
+        95,
+        '96%',
+        '2m 45s',
+        'Remarkable visual memory! You matched all pairs with minimal errors and high confidence.'
+      );
+    }
+  </script>
+
+  <!-- Faizan's Custom Memory Game Script (Can be linked here) -->
+  <!-- <script src="../js/memory-game-custom.js"></script> -->
+</body>
+</html>

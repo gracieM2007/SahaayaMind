@@ -1,0 +1,566 @@
+/* ==========================================================================
+   SahaayaMind - Unified Design System & Styling
+   Cognitive Wellness & Memory Assistance for Seniors
+   Smart India Hackathon 2026 (SIH26003)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Google Fonts: Outfit (Headings & Display) & Plus Jakarta Sans (Body)
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Core Healthcare & Calm Palette */
+  --primary-navy: #0F2B48;        /* Deep trustworthy navy */
+  --primary-dark: #0A1C30;
+  --primary-light: #1E3A5F;
+  --accent-teal: #0D9488;         /* Calming wellness teal */
+  --accent-teal-light: #CCFBF1;
+  --accent-teal-dark: #0F766E;
+  --accent-blue: #2563EB;         /* Medical clarity blue */
+  --accent-blue-light: #DBEAFE;
+  
+  /* Status / Feedback Colors */
+  --success-green: #15803D;       /* High-contrast calming green */
+  --success-bg: #DCFCE7;
+  --warning-amber: #B45309;       /* Senior-readable amber */
+  --warning-bg: #FEF3C7;
+  --info-purple: #6D28D9;
+  --info-bg: #EDE9FE;
+
+  /* Neutrals & Backgrounds */
+  --bg-page: #F8FAFC;             /* Soothing soft off-white/slate */
+  --bg-surface: #FFFFFF;          /* Pure white card surface */
+  --bg-subtle: #F1F5F9;           /* Soft section highlight */
+  --border-subtle: #E2E8F0;       /* Crisp accessible borders */
+  --border-prominent: #CBD5E1;
+
+  /* Typography Colors - High Contrast WCAG AAA Compliant */
+  --text-primary: #0F172A;        /* Highest contrast dark slate */
+  --text-secondary: #334155;      /* Crisp readable secondary */
+  --text-muted: #64748B;          /* Supporting notes only */
+  --text-inverse: #FFFFFF;        /* Pure white for dark buttons */
+
+  /* Typography Scale (Senior Friendly Default: 18px base) */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  
+  --text-xs: 0.95rem;   /* ~15px */
+  --text-sm: 1.05rem;   /* ~17px */
+  --text-base: 1.15rem; /* ~18.5px - Easy for seniors */
+  --text-lg: 1.35rem;   /* ~21.5px */
+  --text-xl: 1.6rem;    /* ~25.5px */
+  --text-2xl: 2.0rem;   /* ~32px */
+  --text-3xl: 2.5rem;   /* ~40px */
+  --text-4xl: 3.1rem;   /* ~50px */
+
+  /* Touch Targets & Spacing */
+  --touch-target-min: 52px;
+  --btn-height: 56px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+
+  /* Accessible Elevation (Soft, non-distracting) */
+  --shadow-sm: 0 2px 4px rgba(15, 43, 72, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 43, 72, 0.08);
+  --shadow-lg: 0 10px 25px -4px rgba(15, 43, 72, 0.12);
+  --shadow-glow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+
+  /* Layout Containers */
+  --max-width-wide: 1200px;
+  --max-width-main: 1040px;
+  --max-width-narrow: 760px;
+  
+  --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility Modes: Scaled Font Sizes & High Contrast
+   -------------------------------------------------------------------------- */
+body.font-large {
+  --text-xs: 1.05rem;
+  --text-sm: 1.2rem;
+  --text-base: 1.35rem;
+  --text-lg: 1.55rem;
+  --text-xl: 1.85rem;
+  --text-2xl: 2.3rem;
+  --text-3xl: 2.85rem;
+  --text-4xl: 3.5rem;
+  --touch-target-min: 58px;
+  --btn-height: 62px;
+}
+
+body.font-xlarge {
+  --text-xs: 1.2rem;
+  --text-sm: 1.35rem;
+  --text-base: 1.55rem;
+  --text-lg: 1.8rem;
+  --text-xl: 2.15rem;
+  --text-2xl: 2.7rem;
+  --text-3xl: 3.3rem;
+  --text-4xl: 4.0rem;
+  --touch-target-min: 64px;
+  --btn-height: 70px;
+}
+
+body.high-contrast-mode {
+  --bg-page: #000000;
+  --bg-surface: #121212;
+  --bg-subtle: #1E1E1E;
+  --border-subtle: #FFFF00;
+  --border-prominent: #FFFFFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFFF00;
+  --text-muted: #E2E8F0;
+  --primary-navy: #004080;
+  --accent-teal: #00FFCC;
+  --accent-blue: #66B2FF;
+  --shadow-md: 0 0 0 2px #FFFF00;
+  --shadow-lg: 0 0 0 3px #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   Global Reset & Base Elements
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+h1 { font-size: var(--text-3xl); letter-spacing: -0.02em; }
+h2 { font-size: var(--text-2xl); letter-spacing: -0.01em; }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+
+p {
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--primary-navy);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+a:hover, a:focus-visible {
+  color: var(--accent-teal-dark);
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Layout Containers
+   -------------------------------------------------------------------------- */
+.app-container {
+  width: 100%;
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 0 3.5rem 0;
+}
+
+.section-block {
+  margin-bottom: 2.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--text-xl);
+  color: var(--primary-navy);
+}
+
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--accent-teal-light);
+  color: var(--accent-teal-dark);
+  font-size: 1.3rem;
+}
+
+/* --------------------------------------------------------------------------
+   Top Accessibility Bar
+   -------------------------------------------------------------------------- */
+.accessibility-bar {
+  background: var(--primary-navy);
+  color: var(--text-inverse);
+  padding: 0.5rem 1.5rem;
+  font-size: var(--text-xs);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-inner {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.access-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.access-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.access-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--transition-smooth);
+}
+
+.access-btn:hover, .access-btn:focus-visible {
+  background: #FFFFFF;
+  color: var(--primary-navy);
+}
+
+.access-btn.active {
+  background: var(--accent-teal);
+  color: #FFFFFF;
+  border-color: var(--accent-teal);
+}
+
+/* --------------------------------------------------------------------------
+   Main Navigation Header
+   -------------------------------------------------------------------------- */
+.main-header {
+  background: var(--bg-surface);
+  border-bottom: 2px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  text-decoration: none;
+}
+
+.brand-logo-badge {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-navy), var(--accent-teal));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 1.6rem;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--primary-navy);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.brand-name span {
+  color: var(--accent-teal);
+}
+
+.brand-tagline {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.nav-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  transition: var(--transition-smooth);
+  min-height: 46px;
+}
+
+.nav-link-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--primary-navy);
+}
+
+.nav-link-btn.active {
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.nav-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg-subtle);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--primary-navy);
+}
+
+.nav-user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-teal);
+  color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Back to Dashboard Bar (Inner Pages)
+   -------------------------------------------------------------------------- */
+.inner-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-subtle);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-prominent);
+  color: var(--primary-navy);
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-sm);
+  min-height: var(--touch-target-min);
+}
+
+.btn-back:hover {
+  background: var(--primary-navy);
+  color: #FFFFFF;
+  border-color: var(--primary-navy);
+  transform: translateX(-3px);
+}
+
+.breadcrumbs {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.breadcrumbs a {
+  color: var(--text-secondary);
+}
+
+.breadcrumbs span.current {
+  color: var(--primary-navy);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+.main-footer {
+  background: var(--bg-surface);
+  border-top: 2px solid var(--border-subtle);
+  padding: 2rem 0;
+  margin-top: auto;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.footer-container {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.footer-badges {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sih-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-subtle);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  color: var(--primary-navy);
+  font-size: var(--text-xs);
+  border: 1px solid var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Elderly Voice Assistance Indicator & Float Button
+   -------------------------------------------------------------------------- */
+.voice-support-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-teal-light);
+  color: var(--accent-teal-dark);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  border: 1px solid rgba(13, 148, 136, 0.2);
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0.75rem 1rem;
+  }
+  
+  .brand-tagline {
+    display: none;
+  }
+  
+  .accessibility-inner {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .nav-links {
+    gap: 0.35rem;
+  }
+  
+  .nav-link-btn span {
+    display: none;
+  }
+  
+  .nav-link-btn {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
