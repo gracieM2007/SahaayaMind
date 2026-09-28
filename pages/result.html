@@ -7,8 +7,10 @@
   <title>Activity Results — SahaayaMind</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/polish.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Senior Accessibility Bar -->
   <aside class="accessibility-bar" aria-label="Accessibility options">
@@ -41,7 +43,7 @@
         </div>
       </a>
 
-      <nav aria-label="Quick Nav">
+      <nav class="main-nav" aria-label="Quick Nav">
         <ul class="nav-links">
           <li>
             <a href="dashboard.html" class="nav-link-btn">
@@ -54,7 +56,8 @@
             </a>
           </li>
           <li>
-            <div class="nav-user-pill">
+            <li><a href="dashboard.html#ai-coach" class="nav-link-btn"><span aria-hidden="true">✨</span> <span>AI Coach</span></a></li>
+          <li><div class="nav-user-pill">
               <div class="nav-user-avatar js-user-avatar">RS</div>
               <span class="js-user-first-name">Ramesh</span>
             </div>
@@ -136,7 +139,7 @@
         <div class="feedback-ai-icon" aria-hidden="true">🤖</div>
         <div>
           <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin-bottom: 0.35rem;">
-            Adaptive AI Cognitive Insight
+            ✨ Adaptive AI Cognitive Insight <span class="ai-badge" style="margin-left:.5rem">MAIN AI FEATURE</span>
           </h2>
           <p id="res-feedback" style="font-size: var(--text-base); color: var(--text-primary); margin-bottom: 0.6rem; line-height: 1.6;">
             Exceptional recall today! You identified visual sequences 12% faster than last week with zero signs of frustration.
@@ -242,5 +245,7 @@
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
   <script src="../js/app.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="../js/ui.js"></script>
 </body>
 </html>

@@ -7,8 +7,10 @@
   <title>SahaayaMind — Cognitive Wellness & Memory Assistance</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/polish.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Senior Accessibility Bar -->
   <aside class="accessibility-bar" aria-label="Accessibility options">
@@ -42,7 +44,7 @@
       </a>
       
       <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="sih-badge">
+        <nav class="main-nav" aria-label="Main Navigation" style="display:flex;align-items:center;gap:.6rem"><a href="#how-it-works" class="senior-btn senior-btn-secondary senior-btn-sm">How it works</a><a href="pages/dashboard.html" class="senior-btn senior-btn-secondary senior-btn-sm">Dashboard</a></nav><span class="sih-badge">
           <span aria-hidden="true">🇮🇳</span> SIH 2026 • Team Arbalest
         </span>
       </div>
@@ -75,6 +77,17 @@
         </div>
       </section>
 
+      
+      <!-- AI Coach spotlight: main AI feature, easy to find from homepage -->
+      <section class="ai-spotlight" aria-label="AI Coach recommendation">
+        <span class="ai-badge">✨ MAIN AI FEATURE • Adaptive Coach</span>
+        <h2 style="margin:.6rem 0 .4rem">Not sure where to start? Let AI guide you.</h2>
+        <p style="max-width:640px">SahaayaMind adapts difficulty, tracks memory, attention and speed, then recommends your next 10-minute session. Finish any game to unlock your personal AI insight.</p>
+        <div class="ai-actions">
+          <a href="pages/dashboard.html#ai-coach" class="senior-btn senior-btn-accent">✨ See today's AI plan →</a>
+          <a href="pages/progress.html#ai-insights" class="senior-btn senior-btn-secondary">View sample AI insights</a>
+        </div>
+      </section>
       <!-- Profile Selection & Login Section -->
       <section class="senior-card" style="padding: 2.5rem;">
         <div class="section-header" style="border-bottom: 2px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.75rem;">
@@ -136,7 +149,7 @@
 
         <!-- Big Readable CTA Button -->
         <div style="text-align: center;">
-          <button type="button" id="btn-login-submit" class="senior-btn senior-btn-primary senior-btn-block" style="font-size: var(--text-xl); padding: 1.15rem 2.5rem;" onclick="handleLoginSubmit()">
+          <button type="button" id="btn-login-submit" data-loading="true" class="senior-btn senior-btn-primary senior-btn-block" style="font-size: var(--text-xl); padding: 1.15rem 2.5rem;" onclick="handleLoginSubmit()">
             Start Daily Session →
           </button>
           <p style="margin-top: 1rem; font-size: var(--text-sm); color: var(--text-muted);">
@@ -146,6 +159,13 @@
 
       </section>
 
+      
+      <!-- Trust + features -->
+      <section class="feature-grid" aria-label="Why SahaayaMind">
+        <div class="feature-card"><div class="feature-ico">🧠</div><h3>Senior-first design</h3><p>Large text, voice guidance, high contrast, 52px+ touch targets.</p></div>
+        <div class="feature-card"><div class="feature-ico">✨</div><h3>Adaptive AI difficulty</h3><p>Exercises adjust to each senior's pace. Never too hard, never boring.</p></div>
+        <div class="feature-card"><div class="feature-ico">📊</div><h3>Caregiver-ready reports</h3><p>Progress history, streaks and plain-language summaries.</p></div>
+      </section>
       <!-- Caregiver & Non-Diagnostic Reassurance Note -->
       <section style="margin-top: 2.5rem; text-align: center; padding: 1.5rem; background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
         <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;">
@@ -174,6 +194,7 @@
   <script src="js/mockData.js"></script>
   <script src="js/accessibility.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/ui.js"></script>
   <script>
     let selectedProfileId = 'user_ramesh';
 
