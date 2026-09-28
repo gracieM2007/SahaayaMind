@@ -7,8 +7,10 @@
   <title>Attention Game — SahaayaMind</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/polish.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Senior Accessibility Bar -->
   <aside class="accessibility-bar" aria-label="Accessibility options">
@@ -41,7 +43,7 @@
         </div>
       </a>
 
-      <nav aria-label="Quick Nav">
+      <nav class="main-nav" aria-label="Quick Nav">
         <ul class="nav-links">
           <li>
             <a href="dashboard.html" class="nav-link-btn">
@@ -167,6 +169,7 @@
              END OF JAI'S CONTAINER
              ==================================================================== -->
 
+        <div class="ai-spotlight" style="padding:1.25rem;margin-top:1.5rem"><span class="ai-badge">✨ AI TIP</span><p style="margin:.5rem 0 0">Focus on one tile at a time. Your AI coach tracks focus streaks and distractor errors to personalize next session.</p></div>
         <!-- Game Controls & Finish Session Flow -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border-subtle); flex-wrap: wrap; gap: 1rem;">
           <a href="dashboard.html" class="senior-btn senior-btn-secondary">
@@ -174,7 +177,7 @@
           </a>
 
           <!-- Primary Game Completion Flow Trigger (Takes senior to result.html) -->
-          <button type="button" id="btn-finish-attention" class="senior-btn senior-btn-primary" style="font-size: var(--text-xl); padding: 1rem 2.5rem;" onclick="finishAttentionGameSession()">
+          <button type="button" id="btn-finish-attention" data-loading="true" class="senior-btn senior-btn-primary" style="font-size: var(--text-xl); padding: 1rem 2.5rem;" onclick="finishAttentionGameSession()">
             Complete Game & View Results →
           </button>
         </div>
@@ -201,6 +204,7 @@
   <script src="../js/accessibility.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/ui.js"></script>
 
   <!-- Interactive Starter Script for Attention Demo -->
   <script>

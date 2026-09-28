@@ -7,8 +7,10 @@
   <title>Progress Dashboard — SahaayaMind</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/polish.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Senior Accessibility Bar -->
   <aside class="accessibility-bar" aria-label="Accessibility options">
@@ -41,7 +43,7 @@
         </div>
       </a>
 
-      <nav aria-label="Quick Nav">
+      <nav class="main-nav" aria-label="Quick Nav">
         <ul class="nav-links">
           <li>
             <a href="dashboard.html" class="nav-link-btn">
@@ -253,11 +255,11 @@
       </section>
 
       <!-- Caregiver & Clinical Note -->
-      <section class="feedback-ai-box" style="margin-bottom: 2.5rem; background: #F8FAFC; border-color: #CBD5E1;">
+      <section class="feedback-ai-box" id="ai-insights" style="margin-bottom: 2.5rem; background: #F8FAFC; border-color: #CBD5E1;">
         <div class="feedback-ai-icon" style="background: var(--primary-navy);" aria-hidden="true">📋</div>
         <div>
           <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin-bottom: 0.35rem;">
-            Caregiver & Family Summary
+            ✨ AI Insights • Caregiver & Family Summary
           </h2>
           <p id="caregiver-summary-text" style="font-size: var(--text-base); color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6;">
             <strong>Senior Note:</strong> <span class="js-user-name">Ramesh Sharma</span> exhibits strong engagement in morning routines. Card recall accuracy increased 6% over the last 14 sessions. Recommended to continue 1 session per day at Level 2.
@@ -281,7 +283,7 @@
           <span class="badge badge-teal">Last 5 Sessions</span>
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;" aria-label="Activity Session History">
+        <div class="table-scroll"><table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;" aria-label="Activity Session History">
           <thead>
             <tr style="border-bottom: 2px solid var(--border-prominent); background: var(--bg-subtle);">
               <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Activity Name & Date</th>
@@ -295,7 +297,7 @@
           <tbody id="progress-history-tbody">
             <!-- Rendered dynamically by js/app.js -->
           </tbody>
-        </table>
+        </table></div>
       </section>
 
       <!-- Action Navigation Footer -->
@@ -335,5 +337,6 @@
   <script src="../js/accessibility.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/ui.js"></script>
 </body>
 </html>

@@ -7,8 +7,10 @@
   <title>Dashboard — SahaayaMind</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/polish.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- Senior Accessibility Bar -->
   <aside class="accessibility-bar" aria-label="Accessibility options">
@@ -42,7 +44,7 @@
       </a>
 
       <!-- Navigation Links -->
-      <nav aria-label="Main Navigation">
+      <nav class="main-nav" aria-label="Main Navigation">
         <ul class="nav-links">
           <li>
             <a href="dashboard.html" class="nav-link-btn active" aria-current="page">
@@ -142,6 +144,17 @@
         </div>
       </section>
 
+      
+      <!-- AI COACH: main AI feature, pinned to top for easy discovery -->
+      <section class="ai-spotlight" id="ai-coach" aria-label="Today's AI recommendation">
+        <span class="ai-badge">✨ AI COACH • Today's plan</span>
+        <h2 style="margin:.6rem 0 .4rem">Recommended for you today: Memory Game</h2>
+        <p style="max-width:660px">Based on your last sessions, your recall is strong (+5% this week). A short 3–5 min Memory Match will keep your streak at 5 days. Gentle Level 2 pace.</p>
+        <div class="ai-actions">
+          <a href="memory.html" class="senior-btn senior-btn-accent" data-loading="true">▶ Start AI-recommended session →</a>
+          <a href="progress.html#ai-insights" class="senior-btn senior-btn-secondary">Why this? View AI insights</a>
+        </div>
+      </section>
       <!-- 2. Section: Cognitive Activities -->
       <section class="section-block" aria-labelledby="activities-heading">
         <div class="section-header">
@@ -409,5 +422,6 @@
   <script src="../js/accessibility.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/ui.js"></script>
 </body>
 </html>
