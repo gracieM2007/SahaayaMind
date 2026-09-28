@@ -54,6 +54,16 @@
             </a>
           </li>
           <li>
+            <a href="ai-insights.html" class="nav-link-btn">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
             <div class="nav-user-pill">
               <div class="nav-user-avatar js-user-avatar">RS</div>
               <span class="js-user-first-name">Ramesh</span>
@@ -187,6 +197,7 @@
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
 
   <!-- Interactive Starter Script for Memory Demo -->
@@ -196,9 +207,19 @@
     let lockBoard = false;
     let matchesFound = 0;
     let totalPairs = 4;
+    let moveCount = 0;
+    let missCount = 0;
+    let gameStartTime = null;
+    let decisionLatencies = [];
+    let lastDecisionTime = null;
 
     function flipDemoCard(card, symbol) {
       if (lockBoard || card === firstCard || card.classList.contains('matched')) return;
+
+      if (!gameStartTime) {
+        gameStartTime = Date.now();
+        lastDecisionTime = performance.now();
+      }
 
       card.textContent = symbol;
       card.classList.add('revealed');
@@ -209,8 +230,16 @@
         return;
       }
 
+      // Record decision latency
+      if (lastDecisionTime) {
+        const delta = Math.round(performance.now() - lastDecisionTime);
+        decisionLatencies.push(delta);
+        lastDecisionTime = performance.now();
+      }
+
       secondCard = { element: card, symbol: symbol };
       lockBoard = true;
+      moveCount++;
 
       // Check match
       if (firstCard.symbol === secondCard.symbol) {
@@ -228,6 +257,7 @@
           }, 1200);
         }
       } else {
+        missCount++;
         document.getElementById('match-status-msg').textContent = "Not quite a match. Try again!";
         setTimeout(() => {
           firstCard.element.textContent = '❓';
@@ -247,17 +277,35 @@
 
     // Called when game is finished or user taps Complete
     function finishMemoryGameSession() {
+      const elapsedSec = gameStartTime ? Math.max(30, Math.round((Date.now() - gameStartTime) / 1000)) : 165;
+      const calculatedAccuracy = moveCount > 0 
+        ? Math.round((matchesFound / moveCount) * 100) 
+        : 96;
+      const mins = Math.floor(elapsedSec / 60);
+      const secs = elapsedSec % 60;
+      const durationStr = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+
       window.SahaayaApp.completeGameSession(
         'memory',
-        95,
-        '96%',
-        '2m 45s',
-        'Remarkable visual memory! You matched all pairs with minimal errors and high confidence.'
+        Math.min(99, Math.max(75, Math.round((calculatedAccuracy * 0.7) + 26))),
+        `${calculatedAccuracy}%`,
+        durationStr,
+        null,
+        {
+          moves: moveCount || 6,
+          misses: missCount || 1,
+          matches: matchesFound || 4,
+          latencies: decisionLatencies.length ? decisionLatencies : [1950, 2100, 2200, 2050]
+        }
       );
     }
   </script>
 
-  <!-- Faizan's Custom Memory Game Script (Can be linked here) -->
-  <!-- <script src="../js/memory-game-custom.js"></script> -->
+  <!-- Floating AI Companion Launcher -->
+  <a href="chat.html" class="floating-ai-btn" aria-label="Chat with Sahaaya AI Companion" title="Open AI Cognitive Companion">
+    <span class="floating-icon" aria-hidden="true">💬</span>
+    <span>Chat with AI</span>
+    <span class="floating-badge-live" aria-hidden="true"></span>
+  </a>
 </body>
 </html>

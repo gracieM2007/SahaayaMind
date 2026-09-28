@@ -54,6 +54,16 @@
             </a>
           </li>
           <li>
+            <a href="ai-insights.html" class="nav-link-btn">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
             <div class="nav-user-pill">
               <div class="nav-user-avatar js-user-avatar">RS</div>
               <span class="js-user-first-name">Ramesh</span>
@@ -249,11 +259,14 @@
           <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin-bottom: 0.35rem;">
             Caregiver & Family Summary
           </h2>
-          <p style="font-size: var(--text-base); color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6;">
+          <p id="caregiver-summary-text" style="font-size: var(--text-base); color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6;">
             <strong>Senior Note:</strong> <span class="js-user-name">Ramesh Sharma</span> exhibits strong engagement in morning routines. Card recall accuracy increased 6% over the last 14 sessions. Recommended to continue 1 session per day at Level 2.
           </p>
-          <div style="font-size: var(--text-sm); color: var(--text-muted);">
-            Exportable report ready for caregiver review.
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <span style="font-size: var(--text-sm); color: var(--text-muted);">Exportable report ready for caregiver review.</span>
+            <a href="ai-insights.html" class="senior-btn senior-btn-primary" style="min-height: 40px; padding: 0.35rem 1.1rem; font-size: var(--text-sm);">
+              🩺 View Doctor Advisory & Clinical Protocols →
+            </a>
           </div>
         </div>
       </section>
@@ -310,9 +323,17 @@
     </div>
   </footer>
 
+  <!-- Floating AI Companion Launcher -->
+  <a href="chat.html" class="floating-ai-btn" aria-label="Chat with Sahaaya AI Companion" title="Open AI Cognitive Companion">
+    <span class="floating-icon" aria-hidden="true">💬</span>
+    <span>Chat with AI</span>
+    <span class="floating-badge-live" aria-hidden="true"></span>
+  </a>
+
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
 </body>
 </html>

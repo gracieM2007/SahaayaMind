@@ -54,6 +54,16 @@
             </a>
           </li>
           <li>
+            <a href="ai-insights.html" class="nav-link-btn">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
             <div class="nav-user-pill">
               <div class="nav-user-avatar js-user-avatar">RS</div>
               <span class="js-user-first-name">Ramesh</span>
@@ -134,15 +144,23 @@
       <!-- AI Adaptive Feedback & Encouragement Box -->
       <section class="feedback-ai-box" aria-label="AI Cognitive Feedback">
         <div class="feedback-ai-icon" aria-hidden="true">🤖</div>
-        <div>
-          <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin-bottom: 0.35rem;">
-            Adaptive AI Cognitive Insight
-          </h2>
+        <div style="flex: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.35rem;">
+            <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin: 0;">
+              Adaptive AI Cognitive Insight
+            </h2>
+            <span class="badge badge-teal" id="res-confidence-badge" style="font-size: var(--text-xs); font-weight: 700;">
+              ✔ AI Verified (<span id="res-confidence-val">91%</span> Confidence)
+            </span>
+          </div>
           <p id="res-feedback" style="font-size: var(--text-base); color: var(--text-primary); margin-bottom: 0.6rem; line-height: 1.6;">
             Exceptional recall today! You identified visual sequences 12% faster than last week with zero signs of frustration.
           </p>
-          <div style="font-size: var(--text-sm); color: var(--text-muted);">
+          <div style="font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 0.5rem;">
             💡 <strong>Next Step:</strong> <span id="res-recommendation">Take a water break, then practice the Attention Game tomorrow morning.</span>
+          </div>
+          <div id="res-difficulty-container" style="font-size: var(--text-xs); background: rgba(13, 148, 136, 0.08); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); color: var(--primary-navy);">
+            🎯 <strong>Adaptive Calibration:</strong> <span id="res-difficulty-reason">Continuing comfortably on Level 2 (Gentle Pace).</span>
           </div>
         </div>
       </section>
@@ -211,6 +229,16 @@
           View Full Progress Dashboard →
         </a>
 
+        <!-- Doctor Advisory CTA -->
+        <a href="ai-insights.html" class="senior-btn senior-btn-accent senior-btn-block" id="btn-view-doctor-advisory" style="font-size: var(--text-lg); padding: 1rem 2.5rem; max-width: 520px;">
+          🩺 View AI Doctor Advisory & Caregiver Protocols →
+        </a>
+
+        <!-- AI Companion Chat CTA -->
+        <a href="chat.html?q=How+was+my+cognitive+performance+in+this+game%3F" class="senior-btn senior-btn-secondary senior-btn-block" id="btn-chat-result" style="font-size: var(--text-lg); padding: 1rem 2.5rem; max-width: 520px; border: 2px solid var(--accent-teal); color: var(--accent-teal-dark);">
+          💬 Ask AI Companion About This Score →
+        </a>
+
         <!-- Secondary Actions -->
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 520px;">
           <a href="dashboard.html" class="senior-btn senior-btn-secondary" style="flex: 1; font-size: var(--text-base);">
@@ -238,9 +266,17 @@
     </div>
   </footer>
 
+  <!-- Floating AI Companion Launcher -->
+  <a href="chat.html" class="floating-ai-btn" aria-label="Chat with Sahaaya AI Companion" title="Open AI Cognitive Companion">
+    <span class="floating-icon" aria-hidden="true">💬</span>
+    <span>Chat with AI</span>
+    <span class="floating-badge-live" aria-hidden="true"></span>
+  </a>
+
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
 </body>
 </html>

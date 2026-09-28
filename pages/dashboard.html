@@ -55,6 +55,16 @@
             </a>
           </li>
           <li>
+            <a href="ai-insights.html" class="nav-link-btn">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
             <div class="nav-user-pill" title="Current Active Senior">
               <div class="nav-user-avatar js-user-avatar">RS</div>
               <span class="js-user-first-name">Ramesh</span>
@@ -313,6 +323,31 @@
             </button>
           </div>
 
+          <!-- Action 4: AI Doctor Advisory & Clinical Guidance -->
+          <div class="action-card" style="border: 2px solid var(--accent-teal);">
+            <div class="action-card-icon" style="background: var(--accent-teal-light); color: var(--accent-teal-dark);">🩺</div>
+            <div>
+              <h3 style="font-size: var(--text-xl); color: var(--primary-navy); margin-bottom: 0.35rem;">Doctor Advisory</h3>
+              <p style="font-size: var(--text-sm); margin-bottom: 1.25rem;">Full game analyses, clinical impression, and caregiver do's & don'ts protocol.</p>
+            </div>
+            <a href="ai-insights.html" class="senior-btn senior-btn-primary" style="width: 100%; margin-top: auto;">
+              View Clinical Advisory →
+            </a>
+          </div>
+
+          <!-- Action 5: Interactive AI Companion Chat -->
+          <div class="action-card" style="border: 2px solid var(--accent-teal); background: #F0FDFA;">
+            <div class="action-card-icon" style="background: var(--accent-teal); color: #FFFFFF;">💬</div>
+            <div>
+              <div class="badge badge-teal" style="margin-bottom: 0.5rem; font-size: 0.85rem;">Voice & Text</div>
+              <h3 style="font-size: var(--text-xl); color: var(--primary-navy); margin-bottom: 0.35rem;">Chat with AI</h3>
+              <p style="font-size: var(--text-sm); margin-bottom: 1.25rem;">Ask questions about your score, play gentle riddles, or get health tips.</p>
+            </div>
+            <a href="chat.html" class="senior-btn senior-btn-accent" style="width: 100%; margin-top: auto;">
+              Start AI Chat 💬
+            </a>
+          </div>
+
         </div>
       </section>
 
@@ -362,9 +397,17 @@
     </div>
   </footer>
 
+  <!-- Floating AI Companion Launcher -->
+  <a href="chat.html" class="floating-ai-btn" aria-label="Chat with Sahaaya AI Companion" title="Open AI Cognitive Companion">
+    <span class="floating-icon" aria-hidden="true">💬</span>
+    <span>Chat with AI</span>
+    <span class="floating-badge-live" aria-hidden="true"></span>
+  </a>
+
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
 </body>
 </html>

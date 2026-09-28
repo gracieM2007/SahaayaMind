@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind AI Companion - Interactive Senior Cognitive & Doctor Advisory Chat">
+  <title>AI Companion Chat — SahaayaMind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-wrapper" aria-label="SahaayaMind Dashboard">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">Cognitive Wellness & Memory Platform</div>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="nav-link-btn">
+              <span aria-hidden="true">🏠</span> <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="progress.html" class="nav-link-btn">
+              <span aria-hidden="true">📊</span> <span>My Progress</span>
+            </a>
+          </li>
+          <li>
+            <a href="ai-insights.html" class="nav-link-btn">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn active" aria-current="page" style="color: var(--accent-teal); font-weight: 700;">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
+            <div class="nav-user-pill" title="Current Active Senior">
+              <div class="nav-user-avatar js-user-avatar">RS</div>
+              <span class="js-user-first-name">Ramesh</span>
+            </div>
+          </li>
+          <li>
+            <a href="../index.html" class="nav-link-btn" title="Switch User or Logout" style="color: var(--warning-amber);">
+              <span aria-hidden="true">🚪</span> <span>Switch</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Chat Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="chat-page-container">
+
+      <!-- Breadcrumbs & Navigation -->
+      <div class="inner-nav-bar" style="margin-bottom: 1rem;">
+        <a href="dashboard.html" class="btn-back">
+          <span aria-hidden="true">←</span> Back to Dashboard
+        </a>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a> / <span class="current">AI Companion Chat</span>
+        </div>
+      </div>
+
+      <!-- Interactive AI Companion Chat Card -->
+      <div class="chat-card" role="region" aria-label="Interactive AI Chat Assistant">
+        
+        <!-- Chat Header -->
+        <div class="chat-card-header">
+          <div class="chat-header-identity">
+            <div class="chat-avatar-ai" aria-hidden="true">
+              🌸
+              <span class="status-dot" title="AI Companion is Active & Ready"></span>
+            </div>
+            <div>
+              <div class="chat-header-title">Sahaaya Cognitive Companion</div>
+              <div class="chat-header-subtitle">Empathetic Geriatric AI & Clinical Wellness Guide</div>
+            </div>
+          </div>
+
+          <div class="chat-header-actions">
+            <!-- Auto-Read Aloud Toggle Checkbox -->
+            <label style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: var(--text-sm); font-weight: 600; color: var(--primary-navy); cursor: pointer; background: #FFFFFF; padding: 0.4rem 0.85rem; border-radius: var(--radius-pill); border: 1.5px solid var(--border-subtle);">
+              <input type="checkbox" id="auto-speak-toggle" style="width: 18px; height: 18px; accent-color: var(--accent-teal); cursor: pointer;">
+              <span>🔊 Auto-read replies</span>
+            </label>
+
+            <!-- Clear Chat Button -->
+            <button type="button" id="btn-clear-chat" class="access-btn" title="Clear Conversation" style="border-radius: var(--radius-pill); padding: 0.4rem 0.9rem; font-size: var(--text-sm);">
+              🗑️ Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Chat Stream -->
+        <div class="chat-stream" id="chat-stream" role="log" aria-live="polite">
+          <!-- Dynamic chat bubbles will be rendered here -->
+        </div>
+
+        <!-- Quick Prompt Suggestions Bar -->
+        <div class="chat-prompts-bar" id="chat-prompts-bar" aria-label="Suggested quick questions">
+          <!-- Suggested chips will be inserted here -->
+        </div>
+
+        <!-- Chat Input Bar -->
+        <form class="chat-input-bar" id="chat-form" onsubmit="event.preventDefault(); handleUserSendMessage();">
+          <!-- Voice Dictation / Mic Button -->
+          <button type="button" class="btn-mic-input" id="btn-mic" title="Speak with Voice (Web Speech API)" aria-label="Speak using microphone">
+            🎙️
+          </button>
+
+          <!-- Text Field -->
+          <input 
+            type="text" 
+            class="chat-input-field" 
+            id="chat-input" 
+            placeholder="Type your question or click the microphone to speak..." 
+            autocomplete="off"
+            aria-label="Message to Sahaaya AI"
+          >
+
+          <!-- Send Button -->
+          <button type="submit" class="btn-chat-send" id="btn-send" aria-label="Send message">
+            <span>Send</span> <span aria-hidden="true">➤</span>
+          </button>
+        </form>
+
+      </div>
+
+      <!-- Senior Accessibility & Clinical Tips -->
+      <div style="margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: var(--text-sm); color: var(--text-secondary);">
+        <div>
+          💡 <strong>Senior Tip:</strong> Tap 🎙️ to talk or tap <strong>🔊 Listen</strong> on any message to hear it spoken in a warm voice.
+        </div>
+        <div>
+          <a href="ai-insights.html" style="color: var(--accent-teal-dark); font-weight: 700; text-decoration: underline;">
+            🩺 View Full Doctor Advisory & Caregiver Protocols →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — AI-Powered Cognitive Wellness Platform for Seniors
+      </div>
+      <div class="footer-badges">
+        <span>Smart India Hackathon 2026</span>
+        <span>•</span>
+        <span>SIH26003</span>
+        <span>•</span>
+        <span>Team Arbalest</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/mockData.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
+  <script src="../js/app.js"></script>
+
+  <!-- Interactive Chat Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      const CHAT_STORAGE_KEY = 'sahaaya_chat_history';
+      const AUTO_SPEAK_KEY = 'sahaaya_chat_autospeak';
+
+      let chatHistory = [];
+      let isRecording = false;
+      let speechRecognitionInstance = null;
+
+      const chatStream = document.getElementById('chat-stream');
+      const chatInput = document.getElementById('chat-input');
+      const promptsBar = document.getElementById('chat-prompts-bar');
+      const micBtn = document.getElementById('btn-mic');
+      const autoSpeakCheckbox = document.getElementById('auto-speak-toggle');
+      const clearBtn = document.getElementById('btn-clear-chat');
+
+      // Initialize speech recognition if available
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        speechRecognitionInstance = new SpeechRecognition();
+        speechRecognitionInstance.continuous = false;
+        speechRecognitionInstance.interimResults = false;
+        speechRecognitionInstance.lang = 'en-IN'; // Gentle Indian English accent support
+
+        speechRecognitionInstance.onstart = function () {
+          isRecording = true;
+          micBtn.classList.add('recording');
+          micBtn.setAttribute('title', 'Listening... speak now');
+          chatInput.placeholder = 'Listening to your voice... please speak clearly';
+        };
+
+        speechRecognitionInstance.onresult = function (event) {
+          const transcript = event.results[0][0].transcript;
+          if (transcript && transcript.trim() !== '') {
+            chatInput.value = transcript;
+            handleUserSendMessage();
+          }
+        };
+
+        speechRecognitionInstance.onerror = function (event) {
+          console.warn('Speech recognition notice:', event.error);
+          stopMic();
+          if (event.error === 'not-allowed') {
+            alert('Microphone permission was denied. Please allow microphone access or type your question.');
+          }
+        };
+
+        speechRecognitionInstance.onend = function () {
+          stopMic();
+        };
+      } else {
+        if (micBtn) {
+          micBtn.setAttribute('title', 'Microphone not supported on this browser. Please type your message.');
+          micBtn.style.opacity = '0.6';
+        }
+      }
+
+      function toggleMic() {
+        if (!speechRecognitionInstance) {
+          alert('Speech recognition is not supported in this browser. You can type your message in the text box.');
+          return;
+        }
+
+        if (isRecording) {
+          speechRecognitionInstance.stop();
+          stopMic();
+        } else {
+          try {
+            speechRecognitionInstance.start();
+          } catch (e) {
+            console.error('Error starting speech recognition:', e);
+            stopMic();
+          }
+        }
+      }
+
+      function stopMic() {
+        isRecording = false;
+        if (micBtn) {
+          micBtn.classList.remove('recording');
+          micBtn.setAttribute('title', 'Speak with Voice (Web Speech API)');
+        }
+        if (chatInput) {
+          chatInput.placeholder = 'Type your question or click the microphone to speak...';
+        }
+      }
+
+      if (micBtn) {
+        micBtn.addEventListener('click', toggleMic);
+      }
+
+      // Auto-speak preference
+      if (autoSpeakCheckbox) {
+        const savedAutoSpeak = localStorage.getItem(AUTO_SPEAK_KEY) === 'true';
+        autoSpeakCheckbox.checked = savedAutoSpeak;
+        autoSpeakCheckbox.addEventListener('change', function () {
+          localStorage.setItem(AUTO_SPEAK_KEY, String(autoSpeakCheckbox.checked));
+        });
+      }
+
+      // Clear chat
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+          if (confirm('Do you want to clear your conversation history and start fresh?')) {
+            localStorage.removeItem(CHAT_STORAGE_KEY);
+            chatHistory = [];
+            loadInitialGreeting();
+          }
+        });
+      }
+
+      // Form Markdown Parser for Senior Reading
+      function renderMarkdown(text) {
+        if (!text) return '';
+        let escaped = text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+        // Riddle Spoiler tags: ||answer||
+        escaped = escaped.replace(/\|\|(.*?)\|\|/g, '<span class="spoiler-reveal" onclick="this.classList.toggle(\'revealed\')" title="Tap to reveal answer">$1</span>');
+
+        // Headers: ###, ####
+        escaped = escaped.replace(/### (.*?)\n/g, '<h3>$1</h3>');
+        escaped = escaped.replace(/#### (.*?)\n/g, '<h4>$1</h4>');
+
+        // Bold: **text**
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Italics: *text*
+        escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+        // Unordered lists: - item
+        escaped = escaped.replace(/(?:^|\n)- (.*?)(?=(?:\n- )|(?:\n\n)|$)/gs, function (match) {
+          const items = match.trim().split('\n- ').map(item => `<li>${item.replace(/^- /, '')}</li>`).join('');
+          return `<ul>${items}</ul>`;
+        });
+
+        // Numbered lists: 1. item
+        escaped = escaped.replace(/(?:^|\n)\d+\. (.*?)(?=(?:\n\d+\. )|(?:\n\n)|$)/gs, function (match) {
+          const items = match.trim().split(/\n\d+\. /).map(item => `<li>${item.replace(/^\d+\. /, '')}</li>`).join('');
+          return `<ol>${items}</ol>`;
+        });
+
+        // Line breaks
+        escaped = escaped.replace(/\n\n/g, '</p><p>');
+        escaped = `<p>${escaped}</p>`;
+        escaped = escaped.replace(/<p><\/p>/g, '');
+        escaped = escaped.replace(/<p>(<h[34]>.*?<\/h[34]>)<\/p>/g, '$1');
+        escaped = escaped.replace(/<p>(<ul>.*?<\/ul>)<\/p>/g, '$1');
+        escaped = escaped.replace(/<p>(<ol>.*?<\/ol>)<\/p>/g, '$1');
+
+        return escaped;
+      }
+
+      // Get Active User
+      function getActiveUser() {
+        try {
+          const u = localStorage.getItem('sahaaya_active_user');
+          if (u) return JSON.parse(u);
+        } catch (e) {}
+        return (window.MOCK_DATA && window.MOCK_DATA.activeUser) ? window.MOCK_DATA.activeUser : { name: 'Ramesh Sharma', age: 72 };
+      }
+
+      // Get Game Sessions
+      function getGameSessions() {
+        try {
+          const s = localStorage.getItem('sahaaya_game_sessions');
+          if (s) return JSON.parse(s);
+        } catch (e) {}
+        return (window.MOCK_DATA && window.MOCK_DATA.history) ? window.MOCK_DATA.history : [];
+      }
+
+      // Append Message to UI
+      function appendMessageUI(msg) {
+        const row = document.createElement('div');
+        row.className = `chat-row ${msg.role === 'ai' ? 'ai-row' : 'user-row'}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.setAttribute('aria-hidden', 'true');
+        avatar.innerHTML = msg.role === 'ai' ? '🌸' : (getActiveUser().name ? getActiveUser().name.split(' ').map(n=>n[0]).join('') : '👤');
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.innerHTML = renderMarkdown(msg.text);
+
+        // Footer with timestamp and voice button
+        const footer = document.createElement('div');
+        footer.className = 'chat-msg-footer';
+
+        const time = document.createElement('span');
+        time.className = 'chat-msg-time';
+        time.textContent = msg.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        footer.appendChild(time);
+
+        if (msg.role === 'ai') {
+          const listenBtn = document.createElement('button');
+          listenBtn.type = 'button';
+          listenBtn.className = 'btn-msg-listen';
+          listenBtn.innerHTML = '<span>🔊</span> <span>Listen</span>';
+          listenBtn.onclick = function () {
+            listenBtn.classList.add('speaking');
+            const toSpeak = msg.speechText || msg.text.replace(/[*#_~`|]/g, '');
+            if (typeof window.speakText === 'function') {
+              window.speakText(toSpeak, function () {
+                listenBtn.classList.remove('speaking');
+              });
+            }
+          };
+          footer.appendChild(listenBtn);
+        }
+
+        bubble.appendChild(footer);
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+
+        chatStream.appendChild(row);
+        chatStream.scrollTop = chatStream.scrollHeight;
+      }
+
+      // Render Suggested Chips
+      function renderPromptChips(chips) {
+        promptsBar.innerHTML = '';
+        const list = Array.isArray(chips) && chips.length > 0 ? chips : [
+          'How was my memory today? 🧠',
+          'Doctor advice: What should caregivers avoid? ⚠️',
+          'Give me a gentle brain riddle 💡',
+          'Best foods for brain health 🥗',
+          'Tips for better sleep 🌙'
+        ];
+
+        list.forEach(promptText => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'prompt-chip-btn';
+          btn.textContent = promptText;
+          btn.onclick = function () {
+            chatInput.value = promptText.replace(/[🧠⚠️💡🥗🌙🚨🌸🎯]/g, '').trim();
+            handleUserSendMessage();
+          };
+          promptsBar.appendChild(btn);
+        });
+      }
+
+      // Initial Greeting
+      function loadInitialGreeting() {
+        const user = getActiveUser();
+        const firstName = user.name ? user.name.split(' ')[0] : 'Ramesh';
+
+        const welcomeMsg = {
+          role: 'ai',
+          text: `### 🌸 Namaste ${firstName} ji! I am Your Sahaaya Companion\n\n` +
+            `I am your dedicated AI cognitive wellness assistant. How may I support you today?\n\n` +
+            `- **Game Performance:** Ask *"How was my memory today?"* to review your latest scores.\n` +
+            `- **Doctor's Advice:** Ask *"What should caregivers avoid?"* for geriatrician protocols.\n` +
+            `- **Gentle Exercise:** Ask *"Give me a riddle"* for an uplifting brain workout!\n` +
+            `- **Diet & Rest:** Ask about the neuro-protective MIND diet or healthy sleep hygiene.`,
+          speechText: `Namaste ${firstName} ji! I am your Sahaaya Cognitive Companion. You can ask me about your game scores, doctor recommendations, brain nutrition, or play a gentle riddle. How can I help you today?`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        chatHistory = [welcomeMsg];
+        saveChatHistory();
+        renderEntireChat();
+        renderPromptChips([
+          'How was my memory today? 🧠',
+          'Doctor advice: What should caregivers avoid? ⚠️',
+          'Give me a gentle brain riddle 💡',
+          'Best foods for brain health 🥗'
+        ]);
+      }
+
+      // Save History to LocalStorage
+      function saveChatHistory() {
+        try {
+          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
+        } catch (e) {
+          console.warn('LocalStorage save failed:', e);
+        }
+      }
+
+      // Render Entire Chat
+      function renderEntireChat() {
+        chatStream.innerHTML = '';
+        chatHistory.forEach(appendMessageUI);
+        chatStream.scrollTop = chatStream.scrollHeight;
+      }
+
+      // Show Typing Indicator
+      function showTypingIndicator() {
+        const row = document.createElement('div');
+        row.className = 'chat-row ai-row';
+        row.id = 'typing-indicator-row';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.innerHTML = '🌸';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.innerHTML = '<div class="chat-typing-dots"><span></span><span></span><span></span></div>';
+
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+        chatStream.appendChild(row);
+        chatStream.scrollTop = chatStream.scrollHeight;
+      }
+
+      function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator-row');
+        if (indicator) indicator.remove();
+      }
+
+      // User Sends Message Handler
+      window.handleUserSendMessage = function () {
+        const query = chatInput.value.trim();
+        if (!query) return;
+
+        chatInput.value = '';
+        chatInput.focus();
+
+        const userMsg = {
+          role: 'user',
+          text: query,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        chatHistory.push(userMsg);
+        appendMessageUI(userMsg);
+        saveChatHistory();
+
+        showTypingIndicator();
+
+        // Simulate calm human processing delay
+        setTimeout(() => {
+          removeTypingIndicator();
+
+          const activeUser = getActiveUser();
+          const gameSessions = getGameSessions();
+
+          let response = null;
+          if (window.SahaayaAI && typeof window.SahaayaAI.chat === 'function') {
+            response = window.SahaayaAI.chat(query, chatHistory, activeUser, gameSessions);
+          } else {
+            response = {
+              replyText: `Thank you for sharing, ${activeUser.name || 'friend'} ji. Consistent gentle practice keeps the mind active and calm.`,
+              speechText: `Thank you for sharing, friend. Consistent gentle practice keeps the mind active and calm.`,
+              suggestions: ['How was my memory today? 🧠', 'Best foods for brain health 🥗']
+            };
+          }
+
+          const aiMsg = {
+            role: 'ai',
+            text: response.replyText,
+            speechText: response.speechText,
+            timestamp: response.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+
+          chatHistory.push(aiMsg);
+          appendMessageUI(aiMsg);
+          saveChatHistory();
+
+          if (response.suggestions) {
+            renderPromptChips(response.suggestions);
+          }
+
+          // Auto-read aloud if toggled on
+          if (autoSpeakCheckbox && autoSpeakCheckbox.checked && typeof window.speakText === 'function') {
+            window.speakText(response.speechText || response.replyText.replace(/[*#_~`|]/g, ''));
+          }
+        }, 500);
+      };
+
+      // Initial Load
+      document.addEventListener('DOMContentLoaded', function () {
+        try {
+          const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+          if (saved) {
+            chatHistory = JSON.parse(saved);
+          }
+        } catch (e) {}
+
+        if (!Array.isArray(chatHistory) || chatHistory.length === 0) {
+          loadInitialGreeting();
+        } else {
+          renderEntireChat();
+          renderPromptChips();
+        }
+
+        // Check URL Query parameter (e.g. ?q=How+was+my+score)
+        const params = new URLSearchParams(window.location.search);
+        const incomingQuery = params.get('q');
+        if (incomingQuery && incomingQuery.trim() !== '') {
+          chatInput.value = incomingQuery;
+          setTimeout(() => {
+            handleUserSendMessage();
+          }, 400);
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
