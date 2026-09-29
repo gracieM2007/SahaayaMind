@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind AI Health & Doctor Advisory - Comprehensive Cognitive Game Results, Clinical Insights, and Evidence-Based Patient Guidance">
+  <title>AI Health & Doctor Advisory — SahaayaMind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* Dedicated Clinical Advisory Enhancements */
+    .clinical-hero-card {
+      background: linear-gradient(135deg, #0F2B48 0%, #1E3A5F 100%);
+      color: #FFFFFF !important;
+      border-radius: var(--radius-xl);
+      padding: 2.25rem 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .clinical-hero-card h1,
+    .clinical-hero-card h2,
+    .clinical-hero-card h3 {
+      color: #FFFFFF !important;
+      letter-spacing: -0.01em;
+    }
+
+    .clinical-hero-card p {
+      color: #E2E8F0 !important;
+    }
+
+    .clinical-hero-card strong,
+    .clinical-hero-card span {
+      color: inherit;
+    }
+
+    .clinical-hero-card .report-meta-text {
+      color: #CBD5E1 !important;
+    }
+
+    .clinical-hero-card::after {
+      content: "🩺";
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .doctor-badge-seal {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(13, 148, 136, 0.25);
+      border: 1px solid rgba(94, 234, 212, 0.5);
+      color: #5EEAD4;
+      padding: 0.35rem 1rem;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .clinical-two-column {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .do-card {
+      background: #F0FDF4;
+      border: 2px solid #86EFAC;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+    }
+
+    .dont-card {
+      background: #FEF2F2;
+      border: 2px solid #FECACA;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+    }
+
+    .protocol-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+    }
+
+    .protocol-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .protocol-icon-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .do-icon {
+      background: #22C55E;
+      color: #FFFFFF;
+    }
+
+    .dont-icon {
+      background: #EF4444;
+      color: #FFFFFF;
+    }
+
+    .protocol-title {
+      font-size: var(--text-base);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .protocol-detail {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .red-flag-banner {
+      background: #FFFBEB;
+      border: 2px solid #FCD34D;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .regimen-card {
+      background: #F8FAFC;
+      border: 2px solid var(--border-prominent);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .regimen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .regimen-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+
+    .regimen-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .regimen-value {
+      font-size: var(--text-base);
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin-top: 0.25rem;
+    }
+
+    @media print {
+      .accessibility-bar, .main-header, .inner-nav-bar, .main-footer, .action-buttons-toolbar {
+        display: none !important;
+      }
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      .clinical-hero-card {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        border: 2px solid #000000 !important;
+        box-shadow: none !important;
+      }
+      .senior-card, .do-card, .dont-card, .red-flag-banner {
+        box-shadow: none !important;
+        border: 1px solid #666666 !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+        <div class="lang-selector-wrap" style="display:inline-flex; align-items:center; margin-left:8px;">
+          <label for="global-lang-select" style="font-size:0.85rem; font-weight:600; margin-right:4px;">🌐 Language:</label>
+          <select id="global-lang-select" class="access-select" aria-label="Select Application Language">
+            <option value="en">English</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="as">অসমীয়া (Assamese)</option>
+            <option value="brx">बड़ो (Bodo)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-wrapper" aria-label="SahaayaMind Dashboard">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">Cognitive Wellness & Memory Platform</div>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="nav-link-btn">
+              <span aria-hidden="true">🏠</span> <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="progress.html" class="nav-link-btn">
+              <span aria-hidden="true">📊</span> <span>My Progress</span>
+            </a>
+          </li>
+          <li>
+            <a href="ai-insights.html" class="nav-link-btn active" aria-current="page" style="color: var(--accent-teal-dark); font-weight: 700;">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
+            <div class="nav-user-pill" title="Current Active Senior">
+              <div class="nav-user-avatar js-user-avatar">RS</div>
+              <span class="js-user-first-name">Ramesh</span>
+            </div>
+          </li>
+          <li>
+            <a href="../index.html" class="nav-link-btn" title="Switch User or Logout" style="color: var(--warning-amber);">
+              <span aria-hidden="true">🚪</span> <span>Switch</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="app-container" style="max-width: var(--max-width-main);">
+
+      <!-- Breadcrumbs & Action Toolbar -->
+      <div class="inner-nav-bar" style="margin-bottom: 1.5rem;">
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a> / <a href="progress.html">Progress</a> / <span class="current">AI Doctor Advisory</span>
+        </div>
+        <div class="action-buttons-toolbar" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="chat.html?q=Explain+my+clinical+doctor+advisory+report" class="senior-btn senior-btn-primary" style="min-height: 42px; padding: 0.4rem 1.1rem; font-size: var(--text-sm);">
+            💬 Discuss with AI Companion
+          </a>
+          <button type="button" onclick="window.print()" class="senior-btn senior-btn-secondary" style="min-height: 42px; padding: 0.4rem 1.1rem; font-size: var(--text-sm);">
+            🖨️ Print Summary
+          </button>
+          <button type="button" onclick="speakDoctorReport()" class="senior-btn senior-btn-secondary" style="min-height: 42px; padding: 0.4rem 1.1rem; font-size: var(--text-sm);">
+            🗣️ Listen
+          </button>
+          <a href="dashboard.html" class="senior-btn senior-btn-accent" style="min-height: 42px; padding: 0.4rem 1.1rem; font-size: var(--text-sm);">
+            ▶️ Start Exercise
+          </a>
+        </div>
+      </div>
+
+      <!-- Clinical Intake Hero Card -->
+      <section class="clinical-hero-card" aria-label="Clinical Advisory Header">
+        <div class="doctor-badge-seal">
+          <span>🩺</span> Geriatric Neuro-Wellness & Doctor Advisory System
+        </div>
+        <h1 style="font-size: var(--text-2xl); margin-bottom: 0.5rem; font-weight: 800; color: #FFFFFF !important;">
+          Comprehensive Clinical Cognitive Assessment
+        </h1>
+        <p style="font-size: var(--text-base); color: #E2E8F0 !important; max-width: 720px; line-height: 1.6; margin-bottom: 1.5rem;">
+          Patient: <strong id="doc-patient-name" style="color: #5EEAD4;">Ramesh Sharma</strong> · Age: <strong id="doc-patient-age" style="color: #FFFFFF;">72</strong> Years · Location: <span id="doc-patient-loc" style="color: #FFFFFF;">Home Care (Guwahati)</span> · Assessment Date: <span id="doc-report-date" style="color: #FFFFFF;">Today</span>
+        </p>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <span class="badge" id="doc-status-badge" style="background: rgba(255, 255, 255, 0.15); color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.25); font-size: var(--text-sm); padding: 0.5rem 1.25rem;">
+            Cognitive State: Stable
+          </span>
+          <span class="badge" id="doc-confidence-badge" style="background: rgba(94, 234, 212, 0.2); color: #5EEAD4; border: 1px solid rgba(94, 234, 212, 0.4); font-size: var(--text-sm); padding: 0.5rem 1.25rem;">
+            AI Longitudinal Confidence: 92%
+          </span>
+          <span style="font-size: var(--text-xs); color: #CBD5E1;">
+            Report ID: <code id="doc-report-id" style="color: #93C5FD; background: rgba(255, 255, 255, 0.1); padding: 0.15rem 0.45rem; border-radius: 4px;">SM-AI-8291</code>
+          </span>
+        </div>
+      </section>
+
+      <!-- Executive Cognitive Vitals Grid (4 Core Indicators) -->
+      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;" aria-label="Cognitive Vitals">
+        
+        <!-- Overall Cognitive Index -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Cognitive Health Index</span>
+            <span aria-hidden="true">⭐</span>
+          </div>
+          <div class="stat-tile-value" id="doc-overall-index" style="color: var(--primary-navy);">88/100</div>
+          <div class="progress-bar-container" style="margin: 0.6rem 0 0.4rem 0;">
+            <div class="progress-bar-fill" id="doc-overall-bar" style="width: 88%;"></div>
+          </div>
+          <div class="stat-tile-caption" id="doc-overall-caption">Consistent performance across memory & focus trials.</div>
+        </div>
+
+        <!-- Visual Working Memory -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Visual Recall Retention</span>
+            <span aria-hidden="true">🎴</span>
+          </div>
+          <div class="stat-tile-value" id="doc-mem-score" style="color: var(--accent-teal-dark);">91%</div>
+          <div class="progress-bar-container" style="margin: 0.6rem 0 0.4rem 0;">
+            <div class="progress-bar-fill" id="doc-mem-bar" style="width: 91%;"></div>
+          </div>
+          <div class="stat-tile-caption" id="doc-mem-caption">Preserved pattern recognition with minimal error rate.</div>
+        </div>
+
+        <!-- Selective Attention -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Selective Attention</span>
+            <span aria-hidden="true">🎯</span>
+          </div>
+          <div class="stat-tile-value" id="doc-att-score" style="color: var(--accent-blue);">88%</div>
+          <div class="progress-bar-container" style="margin: 0.6rem 0 0.4rem 0;">
+            <div class="progress-bar-fill" id="doc-att-bar" style="width: 88%; background: linear-gradient(90deg, #2563EB, #0D9488);"></div>
+          </div>
+          <div class="stat-tile-caption" id="doc-att-caption">High distractor suppression under single-tasking.</div>
+        </div>
+
+        <!-- Response Speed & Stability -->
+        <div class="stat-tile">
+          <div class="stat-tile-header">
+            <span>Psychomotor Stability</span>
+            <span aria-hidden="true">⚡</span>
+          </div>
+          <div class="stat-tile-value" id="doc-spd-score" style="color: var(--success-green);">86%</div>
+          <div class="progress-bar-container" style="margin: 0.6rem 0 0.4rem 0;">
+            <div class="progress-bar-fill" id="doc-spd-bar" style="width: 86%; background: linear-gradient(90deg, #15803D, #0D9488);"></div>
+          </div>
+          <div class="stat-tile-caption" id="doc-spd-caption">Variance: ±2.4 pts (Optimal Geriatric Range).</div>
+        </div>
+
+      </section>
+
+      <!-- Doctor's Clinical Impression Box -->
+      <section class="feedback-ai-box" style="margin-bottom: 2.5rem; background: #F8FAFC; border: 2px solid #CBD5E1; padding: 2rem;" aria-label="Clinical Impression">
+        <div class="feedback-ai-icon" style="background: var(--primary-navy); width: 56px; height: 56px; font-size: 1.75rem;" aria-hidden="true">
+          👨‍⚕️
+        </div>
+        <div style="flex: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <h2 style="font-size: var(--text-xl); color: var(--primary-navy); margin: 0; font-weight: 800;">
+              Geriatrician Clinical Impression & Observation
+            </h2>
+            <span class="badge badge-teal" style="font-size: var(--text-xs);">
+              Evidence-Based Neuro-Geriatric Assessment
+            </span>
+          </div>
+          <p id="doc-clinical-impression" style="font-size: var(--text-base); color: var(--text-primary); line-height: 1.7; margin-bottom: 0.75rem;">
+            Ramesh Sharma (72 yrs) demonstrates a longitudinal cognitive index of 88/100 across 15 recorded sessions. Visual working memory retention is measured at 91%, with selective attention filtering at 88% and psychomotor decision latency scoring 86%. Performance shows a standard deviation of ±2.4 pts, reflecting high neurological consistency without concerning episodic dips. Recommended to maintain ongoing non-stressful cognitive exercise.
+          </p>
+          <div style="font-size: var(--text-xs); color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+            <span>🔬 <strong>Assessment Methodology:</strong> Longitudinal Bayesian Scoring</span>
+            <span>🧠 <strong>Neuro-Cognitive Domains:</strong> Visual Recall, Selective Attention, Psychomotor Timing</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- THE CORE DOCTOR PROTOCOL: WHAT TO DO vs WHAT NOT TO DO -->
+      <section aria-labelledby="clinical-protocol-heading">
+        <div class="section-header" style="margin-bottom: 1.5rem;">
+          <div class="section-title" id="clinical-protocol-heading">
+            <div class="section-icon" aria-hidden="true" style="background: var(--accent-teal-light); color: var(--accent-teal-dark);">📋</div>
+            <h2>Clinical Patient Care Protocol: Do's & Don'ts</h2>
+          </div>
+          <span class="badge badge-outline">Caregiver & Family Action Guide</span>
+        </div>
+
+        <div class="clinical-two-column">
+
+          <!-- COLUMN 1: WHAT TO DO (Evidence-Based Interventions) -->
+          <div class="do-card">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #86EFAC;">
+              <span style="font-size: 1.75rem;" aria-hidden="true">🟢</span>
+              <div>
+                <h3 style="font-size: var(--text-lg); color: #166534; margin: 0; font-weight: 800;">
+                  WHAT TO DO (Recommended Protocols)
+                </h3>
+                <span style="font-size: var(--text-xs); color: #15803D;">Prescribed Daily Interventions & Lifestyle Support</span>
+              </div>
+            </div>
+
+            <div id="doc-what-to-do-container">
+              <!-- Rendered dynamically by script -->
+            </div>
+          </div>
+
+          <!-- COLUMN 2: WHAT NOT TO DO (Contraindications & Pitfalls) -->
+          <div class="dont-card">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #FECACA;">
+              <span style="font-size: 1.75rem;" aria-hidden="true">🔴</span>
+              <div>
+                <h3 style="font-size: var(--text-lg); color: #991B1B; margin: 0; font-weight: 800;">
+                  WHAT NOT TO DO (Contraindications)
+                </h3>
+                <span style="font-size: var(--text-xs); color: #B91C1C;">Harmful Pitfalls & Psychological Triggers to Avoid</span>
+              </div>
+            </div>
+
+            <div id="doc-what-not-to-do-container">
+              <!-- Rendered dynamically by script -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Clinical Red Flags & Escalation Warnings -->
+      <section class="red-flag-banner" aria-label="Red Flags and Warnings">
+        <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem;">
+          <span style="font-size: 2rem;" aria-hidden="true">⚠️</span>
+          <div>
+            <h2 style="font-size: var(--text-xl); color: #92400E; margin: 0 0 0.25rem 0; font-weight: 800;">
+              Clinical Red Flags: When to Seek Immediate In-Person Neurological Review
+            </h2>
+            <p style="font-size: var(--text-sm); color: #78350F; margin: 0; line-height: 1.5;">
+              If any of the following acute symptoms manifest, do not rely on digital games. Contact the patient's primary physician or local hospital immediately:
+            </p>
+          </div>
+        </div>
+
+        <div id="doc-red-flags-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+          <!-- Rendered dynamically by script -->
+        </div>
+      </section>
+
+      <!-- Prescribed Daily Cognitive Regimen Card -->
+      <section class="regimen-card" aria-label="Prescribed Regimen">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.75rem;" aria-hidden="true">⏱️</span>
+            <div>
+              <h2 style="font-size: var(--text-lg); color: var(--primary-navy); margin: 0; font-weight: 800;">
+                Personalized Cognitive Exercise Regimen
+              </h2>
+              <span style="font-size: var(--text-xs); color: var(--text-muted);">Calibrated for optimal neuroplastic recovery without cognitive overload</span>
+            </div>
+          </div>
+          <span class="badge badge-teal" id="doc-regimen-level-badge">Recommended: Level 2 (Gentle Pace)</span>
+        </div>
+
+        <div class="regimen-grid">
+          <div class="regimen-item">
+            <div class="regimen-label">Exercise Frequency</div>
+            <div class="regimen-value" id="doc-regimen-freq">1 Session Daily</div>
+            <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.25rem;">5-6 days per week</div>
+          </div>
+
+          <div class="regimen-item">
+            <div class="regimen-label">Optimal Circadian Time</div>
+            <div class="regimen-value" id="doc-regimen-time">09:00 - 11:30 AM</div>
+            <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.25rem;">Peak morning alertness</div>
+          </div>
+
+          <div class="regimen-item">
+            <div class="regimen-label">Session Duration Limit</div>
+            <div class="regimen-value" id="doc-regimen-duration">3 - 5 Minutes</div>
+            <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.25rem;">Stop if fatigue is detected</div>
+          </div>
+
+          <div class="regimen-item">
+            <div class="regimen-label">Pre-Session Hydration</div>
+            <div class="regimen-value">1 Glass of Water</div>
+            <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 0.25rem;">10 min prior to exercise</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Longitudinal Activity History Table -->
+      <section class="senior-card" style="margin-bottom: 2.5rem; overflow-x: auto;" aria-label="Session History">
+        <div class="section-header" style="margin-bottom: 1.25rem;">
+          <div class="section-title">
+            <div class="section-icon" aria-hidden="true">📜</div>
+            <h2>Recorded Clinical Session History</h2>
+          </div>
+          <span class="badge badge-teal" id="doc-session-count-badge">Total Sessions</span>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 650px;" aria-label="Session Audit Log">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border-prominent); background: var(--bg-subtle);">
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Activity & Date</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Cognitive Domain</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Score</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Accuracy</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Pacing</th>
+              <th style="padding: 1rem; font-size: var(--text-sm); color: var(--primary-navy); font-weight: 700;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="doc-history-tbody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Formal Medical Disclaimer & Verification Seal -->
+      <section style="margin-bottom: 2.5rem; text-align: center; padding: 2rem; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-subtle);">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;" aria-hidden="true">🛡️</div>
+        <h3 style="font-size: var(--text-base); color: var(--primary-navy); margin-bottom: 0.5rem; font-weight: 700;">
+          Formal Clinical & Regulatory Disclaimer
+        </h3>
+        <p style="font-size: var(--text-sm); color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.6;">
+          This AI Cognitive Health & Doctor Advisory Report is designed exclusively for non-diagnostic supportive neuro-wellness monitoring and cognitive stimulation. It does not provide medical diagnosis for Alzheimer's disease, Mild Cognitive Impairment (MCI), or dementia. For definitive medical diagnosis, individualized pharmacotherapy, or clinical treatment plans, please consult a licensed neurologist or geriatric physician.
+        </p>
+        <div style="margin-top: 1rem; font-size: var(--text-xs); color: var(--text-secondary); font-weight: 600;">
+          Smart India Hackathon 2026 · Problem Statement SIH26003 · Team Arbalest (AI006)
+        </div>
+      </section>
+
+      <!-- Bottom Navigation Footer Buttons -->
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+        <a href="dashboard.html" class="senior-btn senior-btn-accent" style="font-size: var(--text-lg); padding: 1rem 2.5rem;">
+          ← Return to Dashboard
+        </a>
+        <a href="progress.html" class="senior-btn senior-btn-secondary" style="font-size: var(--text-lg); padding: 1rem 2rem;">
+          📊 View Progress Analytics
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — AI-Powered Cognitive Wellness Platform for Seniors
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center; font-size: var(--text-sm);">
+        <a href="dashboard.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Dashboard</a>
+        <span style="color: var(--text-muted);">•</span>
+        <a href="progress.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Progress</a>
+        <span style="color: var(--text-muted);">•</span>
+        <a href="chat.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">AI Companion</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/mockData.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/geminiService.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/memoryLogistics.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
+  <script src="../js/app.js"></script>
+
+  <!-- Dedicated AI Doctor Advisory Hydration Script -->
+  <script>
+    let currentAdvisoryReport = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      hydrateDoctorAdvisoryPage();
+    });
+
+    function hydrateDoctorAdvisoryPage() {
+      const user = window.SahaayaApp ? window.SahaayaApp.getActiveUser() : null;
+      let history = [];
+      try {
+        history = JSON.parse(localStorage.getItem('sahaaya_history') || '[]');
+      } catch (e) {
+        history = SAHAAYA_DEFAULT_HISTORY || [];
+      }
+
+      if (!history || history.length === 0) {
+        history = typeof SAHAAYA_DEFAULT_HISTORY !== 'undefined' ? SAHAAYA_DEFAULT_HISTORY : [];
+      }
+
+      // Generate doctor advisory report from SahaayaAI
+      if (window.SahaayaAI && typeof window.SahaayaAI.getDoctorAdvisory === 'function') {
+        currentAdvisoryReport = window.SahaayaAI.getDoctorAdvisory(history, user);
+      }
+
+      if (!currentAdvisoryReport) return;
+
+      const p = currentAdvisoryReport.patient;
+      const m = currentAdvisoryReport.metrics;
+      const reg = currentAdvisoryReport.prescribedRegimen;
+
+      // 1. Patient Header
+      const nameEl = document.getElementById('doc-patient-name');
+      if (nameEl) nameEl.textContent = p.name;
+
+      const ageEl = document.getElementById('doc-patient-age');
+      if (ageEl) ageEl.textContent = p.age;
+
+      const locEl = document.getElementById('doc-patient-loc');
+      if (locEl) locEl.textContent = p.location;
+
+      const dateEl = document.getElementById('doc-report-date');
+      if (dateEl) dateEl.textContent = p.reportDate;
+
+      const repIdEl = document.getElementById('doc-report-id');
+      if (repIdEl) repIdEl.textContent = p.reportId;
+
+      const statusBadge = document.getElementById('doc-status-badge');
+      if (statusBadge) {
+        statusBadge.textContent = 'Status: ' + m.cognitiveStatusLabel;
+      }
+
+      const confBadge = document.getElementById('doc-confidence-badge');
+      if (confBadge) {
+        confBadge.textContent = `✔ AI Verified (${m.confidencePct}% Confidence)`;
+      }
+
+      // 2. Metrics Vitals
+      const indexEl = document.getElementById('doc-overall-index');
+      if (indexEl) indexEl.textContent = `${m.overallIndex}/100`;
+
+      const indexBar = document.getElementById('doc-overall-bar');
+      if (indexBar) indexBar.style.width = `${m.overallIndex}%`;
+
+      const memEl = document.getElementById('doc-mem-score');
+      if (memEl) memEl.textContent = `${m.memoryScore}%`;
+
+      const memBar = document.getElementById('doc-mem-bar');
+      if (memBar) memBar.style.width = `${m.memoryScore}%`;
+
+      const memCap = document.getElementById('doc-mem-caption');
+      if (memCap) memCap.textContent = m.memoryInterpretation;
+
+      const attEl = document.getElementById('doc-att-score');
+      if (attEl) attEl.textContent = `${m.attentionScore}%`;
+
+      const attBar = document.getElementById('doc-att-bar');
+      if (attBar) attBar.style.width = `${m.attentionScore}%`;
+
+      const attCap = document.getElementById('doc-att-caption');
+      if (attCap) attCap.textContent = m.attentionInterpretation;
+
+      const spdEl = document.getElementById('doc-spd-score');
+      if (spdEl) spdEl.textContent = `${m.speedScore}%`;
+
+      const spdBar = document.getElementById('doc-spd-bar');
+      if (spdBar) spdBar.style.width = `${m.speedScore}%`;
+
+      const spdCap = document.getElementById('doc-spd-caption');
+      if (spdCap) spdCap.textContent = `Stability: ${m.consistencyScore}% (Variance: ${m.varianceStr})`;
+
+      // 3. Clinical Impression
+      const impEl = document.getElementById('doc-clinical-impression');
+      if (impEl) impEl.textContent = currentAdvisoryReport.clinicalImpression;
+
+      // 4. Render WHAT TO DO
+      const doContainer = document.getElementById('doc-what-to-do-container');
+      if (doContainer && currentAdvisoryReport.whatToDo) {
+        doContainer.innerHTML = '';
+        currentAdvisoryReport.whatToDo.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'protocol-item';
+          div.innerHTML = `
+            <div class="protocol-icon-circle do-icon" aria-hidden="true">✔</div>
+            <div>
+              <div class="protocol-title" style="color: #166534;">${item.title}</div>
+              <div class="protocol-detail">${item.detail}</div>
+              <span style="font-size: 0.8rem; font-weight: 700; color: #15803D; margin-top: 0.35rem; display: inline-block;">
+                • Category: ${item.category} (${item.impact} Impact)
+              </span>
+            </div>
+          `;
+          doContainer.appendChild(div);
+        });
+      }
+
+      // 5. Render WHAT NOT TO DO
+      const dontContainer = document.getElementById('doc-what-not-to-do-container');
+      if (dontContainer && currentAdvisoryReport.whatNotToDo) {
+        dontContainer.innerHTML = '';
+        currentAdvisoryReport.whatNotToDo.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'protocol-item';
+          div.innerHTML = `
+            <div class="protocol-icon-circle dont-icon" aria-hidden="true">✕</div>
+            <div>
+              <div class="protocol-title" style="color: #991B1B;">${item.title}</div>
+              <div class="protocol-detail">${item.detail}</div>
+              <span style="font-size: 0.8rem; font-weight: 700; color: #DC2626; margin-top: 0.35rem; display: inline-block;">
+                • Caution Level: ${item.severity} (${item.category})
+              </span>
+            </div>
+          `;
+          dontContainer.appendChild(div);
+        });
+      }
+
+      // 6. Render Clinical Red Flags
+      const rfContainer = document.getElementById('doc-red-flags-container');
+      if (rfContainer && currentAdvisoryReport.redFlags) {
+        rfContainer.innerHTML = '';
+        currentAdvisoryReport.redFlags.forEach(rf => {
+          const div = document.createElement('div');
+          div.style.background = '#FFFFFF';
+          div.style.border = '1px solid #FCD34D';
+          div.style.borderRadius = 'var(--radius-md)';
+          div.style.padding = '1rem 1.25rem';
+          div.innerHTML = `
+            <div style="font-weight: 700; color: #92400E; font-size: var(--text-sm); margin-bottom: 0.25rem;">
+              🚨 ${rf.symptom}
+            </div>
+            <div style="font-size: var(--text-xs); color: #B45309; margin-bottom: 0.4rem; font-style: italic;">
+              Onset: ${rf.timeframe}
+            </div>
+            <div style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.5;">
+              <strong>Clinical Action:</strong> ${rf.clinicalAction}
+            </div>
+          `;
+          rfContainer.appendChild(div);
+        });
+      }
+
+      // 7. Render Regimen
+      const regLevel = document.getElementById('doc-regimen-level-badge');
+      if (regLevel) regLevel.textContent = `Recommended: ${reg.recommendedDifficulty}`;
+
+      const regFreq = document.getElementById('doc-regimen-freq');
+      if (regFreq) regFreq.textContent = reg.frequency;
+
+      const regTime = document.getElementById('doc-regimen-time');
+      if (regTime) regTime.textContent = reg.optimalWindow;
+
+      const regDur = document.getElementById('doc-regimen-duration');
+      if (regDur) regDur.textContent = reg.durationLimit;
+
+      // 8. Render Session History Table
+      const sessBadge = document.getElementById('doc-session-count-badge');
+      if (sessBadge) sessBadge.textContent = `${history.length} Sessions Logged`;
+
+      const tbody = document.getElementById('doc-history-tbody');
+      if (tbody) {
+        tbody.innerHTML = '';
+        history.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--border-subtle)';
+          tr.innerHTML = `
+            <td style="padding: 1rem; font-weight: 600; color: var(--primary-navy);">
+              <div style="font-size: var(--text-base); font-weight: 700;">${item.gameName}</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">${item.date || 'Recent'} • ${item.time || ''}</div>
+            </td>
+            <td style="padding: 1rem;">
+              <span class="badge ${item.gameType === 'memory' ? 'badge-teal' : 'badge-blue'}">
+                ${item.gameType === 'memory' ? 'Visual Recall' : 'Selective Focus'}
+              </span>
+            </td>
+            <td style="padding: 1rem; font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);">
+              ${item.score}/100
+            </td>
+            <td style="padding: 1rem; font-weight: 600; color: var(--text-secondary);">
+              ${item.accuracy}
+            </td>
+            <td style="padding: 1rem; font-weight: 600; color: var(--text-secondary);">
+              ${item.speedRating || item.duration || 'Nominal'}
+            </td>
+            <td style="padding: 1rem;">
+              <span class="badge badge-green">✔ Verified</span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    // Web Speech API: Read Doctor Advisory Aloud for Seniors & Caregivers
+    function speakDoctorReport() {
+      if (!currentAdvisoryReport || !window.speakText) return;
+      const p = currentAdvisoryReport.patient;
+      const textToRead = `SahaayaMind Clinical Cognitive Advisory for ${p.name}. Overall cognitive index is ${currentAdvisoryReport.metrics.overallIndex} out of 100, indicating ${currentAdvisoryReport.metrics.cognitiveStatusLabel}. The doctor advises morning cognitive exercises between 9 and 11:30 AM, with adequate water hydration. Do not aggressively quiz or rush the senior during recall. Enjoy gentle, unhurried daily practice.`;
+      window.speakText(textToRead);
+    }
+  </script>
+
+  <!-- Floating AI Companion Launcher -->
+  <a href="chat.html" class="floating-ai-btn" aria-label="Chat with Sahaaya AI Companion" title="Open AI Cognitive Companion">
+    <span class="floating-icon" aria-hidden="true">💬</span>
+    <span>Chat with AI</span>
+    <span class="floating-badge-live" aria-hidden="true"></span>
+  </a>
+</body>
+</html>

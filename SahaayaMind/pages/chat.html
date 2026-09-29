@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SahaayaMind AI Companion - Interactive Senior Cognitive & Doctor Advisory Chat">
+  <title>AI Companion Chat — SahaayaMind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <!-- Senior Accessibility Bar -->
+  <aside class="accessibility-bar" aria-label="Accessibility options">
+    <div class="accessibility-inner">
+      <div class="access-label">
+        <span aria-hidden="true">👁️</span> Senior Accessibility:
+      </div>
+      <div class="access-controls">
+        <!-- Language selector in accessibility bar -->
+        <div class="access-lang-wrapper" style="display: inline-flex; align-items: center; gap: 0.35rem; margin-right: 0.4rem;">
+          <label for="top-lang-select" style="font-size: var(--text-xs); font-weight: 700; color: #E2E8F0;">🌐</label>
+          <select id="top-lang-select" class="js-language-select access-select" aria-label="Select Platform Language">
+            <option value="en">🇬🇧 English</option>
+            <option value="hi">🇮🇳 हिन्दी (Hindi)</option>
+            <option value="mr">🇮🇳 मराठी (Marathi)</option>
+            <option value="as">🇮🇳 অসমীয়া (Assamese)</option>
+            <option value="brx">🇮🇳 बर’ (Bodo)</option>
+          </select>
+        </div>
+        <button type="button" class="access-btn active" data-font-size="normal" aria-pressed="true" data-i18n="normalFont">Normal A</button>
+        <button type="button" class="access-btn" data-font-size="large" aria-pressed="false" data-i18n="largeFont">Large A+</button>
+        <button type="button" class="access-btn" data-font-size="xlarge" aria-pressed="false" data-i18n="xlargeFont">Extra Large A++</button>
+        <button type="button" class="access-btn" id="contrast-toggle-btn" aria-pressed="false" data-i18n="highContrast">
+          <span aria-hidden="true">🌓</span> High Contrast
+        </button>
+        <button type="button" class="access-btn" id="page-voice-btn" data-i18n="readAloud">
+          <span aria-hidden="true">🔈</span> Read Aloud
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-wrapper" aria-label="SahaayaMind Dashboard">
+        <div class="brand-logo-badge" aria-hidden="true">🧠</div>
+        <div class="brand-info">
+          <div class="brand-name">Sahaaya<span>Mind</span></div>
+          <div class="brand-tagline">Cognitive Wellness & Memory Platform</div>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="nav-link-btn">
+              <span aria-hidden="true">🏠</span> <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="progress.html" class="nav-link-btn">
+              <span aria-hidden="true">📊</span> <span>My Progress</span>
+            </a>
+          </li>
+          <li>
+            <a href="ai-insights.html" class="nav-link-btn">
+              <span aria-hidden="true">🩺</span> <span>AI Doctor Advisory</span>
+            </a>
+          </li>
+          <li>
+            <a href="chat.html" class="nav-link-btn active" aria-current="page" style="color: var(--accent-teal); font-weight: 700;">
+              <span aria-hidden="true">💬</span> <span>AI Companion</span>
+            </a>
+          </li>
+          <li>
+            <div class="nav-user-pill" title="Current Active Senior">
+              <div class="nav-user-avatar js-user-avatar">RS</div>
+              <span class="js-user-first-name">Ramesh</span>
+            </div>
+          </li>
+          <li>
+            <a href="../index.html" class="nav-link-btn" title="Switch User or Logout" style="color: var(--warning-amber);">
+              <span aria-hidden="true">🚪</span> <span>Switch</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Chat Content -->
+  <main class="main-content" role="main" id="main-content">
+    <div class="chat-page-container">
+
+      <!-- Breadcrumbs & Navigation -->
+      <div class="inner-nav-bar" style="margin-bottom: 1rem;">
+        <a href="dashboard.html" class="btn-back">
+          <span aria-hidden="true">←</span> Back to Dashboard
+        </a>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a> / <span class="current">AI Companion Chat</span>
+        </div>
+      </div>
+
+      <!-- Interactive AI Companion Chat Card -->
+      <div class="chat-card" role="region" aria-label="Interactive AI Chat Assistant">
+        
+        <!-- Chat Header -->
+        <div class="chat-card-header" style="flex-wrap: wrap; gap: 0.85rem;">
+          <div class="chat-header-identity">
+            <div class="chat-avatar-ai" id="chat-ai-avatar" aria-hidden="true">
+              🌸
+              <span class="status-dot" title="AI Companion is Active & Ready"></span>
+            </div>
+            <div>
+              <div class="chat-header-title" data-i18n="chatHeaderTitle">Sahaaya Cognitive Companion</div>
+              <div class="chat-header-subtitle" data-i18n="chatHeaderSubtitle">Empathetic Geriatric AI & Clinical Wellness Guide</div>
+            </div>
+          </div>
+
+          <!-- Language Selector Pills (Hindi, Marathi, English, Assamese, Bodo) -->
+          <div class="chat-lang-group" role="radiogroup" aria-label="Select Chat Language">
+            <button type="button" class="chat-lang-btn active" data-lang="en" onclick="setChatLanguage('en')" title="English">
+              <span>🇬🇧</span> <span>English</span>
+            </button>
+            <button type="button" class="chat-lang-btn" data-lang="hi" onclick="setChatLanguage('hi')" title="हिन्दी (Hindi)">
+              <span>🇮🇳</span> <span>हिन्दी</span>
+            </button>
+            <button type="button" class="chat-lang-btn" data-lang="mr" onclick="setChatLanguage('mr')" title="मराठी (Marathi)">
+              <span>🇮🇳</span> <span>मराठी</span>
+            </button>
+            <button type="button" class="chat-lang-btn" data-lang="as" onclick="setChatLanguage('as')" title="অসমীয়া (Assamese)">
+              <span>🇮🇳</span> <span>অসমীয়া</span>
+            </button>
+            <button type="button" class="chat-lang-btn" data-lang="brx" onclick="setChatLanguage('brx')" title="बर’ (Bodo)">
+              <span>🇮🇳</span> <span>बर’</span>
+            </button>
+          </div>
+
+          <div class="chat-header-actions" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <!-- Gemini Settings & Status Trigger -->
+            <button type="button" id="btn-gemini-settings" class="gemini-status-badge builtin" onclick="openGeminiModal()" title="Configure Google Gemini AI Key & Settings">
+              <span>✨</span> <span id="gemini-badge-label">Gemini Settings</span>
+            </button>
+
+            <!-- Auto-Read Aloud Toggle Checkbox -->
+            <label style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: var(--text-sm); font-weight: 600; color: var(--primary-navy); cursor: pointer; background: #FFFFFF; padding: 0.4rem 0.85rem; border-radius: var(--radius-pill); border: 1.5px solid var(--border-subtle);">
+              <input type="checkbox" id="auto-speak-toggle" style="width: 18px; height: 18px; accent-color: var(--accent-teal); cursor: pointer;">
+              <span data-i18n="autoReadReplies">🔊 Auto-read replies</span>
+            </label>
+
+            <!-- Clear Chat Button -->
+            <button type="button" id="btn-clear-chat" class="access-btn" title="Clear Conversation" style="border-radius: var(--radius-pill); padding: 0.4rem 0.9rem; font-size: var(--text-sm);" data-i18n="clearChat">
+              🗑️ Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Chat Stream -->
+        <div class="chat-stream" id="chat-stream" role="log" aria-live="polite">
+          <!-- Dynamic chat bubbles will be rendered here -->
+        </div>
+
+        <!-- Quick Prompt Suggestions Bar -->
+        <div class="chat-prompts-bar" id="chat-prompts-bar" aria-label="Suggested quick questions">
+          <!-- Suggested chips will be inserted here -->
+        </div>
+
+        <!-- Chat Input Bar -->
+        <form class="chat-input-bar" id="chat-form" onsubmit="event.preventDefault(); handleUserSendMessage();">
+          <!-- Voice Dictation / Mic Button -->
+          <button type="button" class="btn-mic-input" id="btn-mic" title="Speak with Voice (Web Speech API)" aria-label="Speak using microphone">
+            🎙️
+          </button>
+
+          <!-- Text Field -->
+          <input 
+            type="text" 
+            class="chat-input-field" 
+            id="chat-input" 
+            placeholder="Type your question or click the microphone to speak..." 
+            autocomplete="off"
+            aria-label="Message to Sahaaya AI"
+          >
+
+          <!-- Send Button -->
+          <button type="submit" class="btn-chat-send" id="btn-send" aria-label="Send message">
+            <span>Send</span> <span aria-hidden="true">➤</span>
+          </button>
+        </form>
+
+      </div>
+
+      <!-- Senior Accessibility & Clinical Tips -->
+      <div style="margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: var(--text-sm); color: var(--text-secondary);">
+        <div>
+          💡 <strong>Senior Tip:</strong> Tap 🎙️ to talk or tap <strong>🔊 Listen</strong> on any message to hear it spoken in a warm voice.
+        </div>
+        <div>
+          <a href="ai-insights.html" style="color: var(--accent-teal-dark); font-weight: 700; text-decoration: underline;">
+            🩺 View Full Doctor Advisory & Caregiver Protocols →
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Gemini Settings Modal -->
+    <div class="gemini-modal-overlay" id="gemini-modal" role="dialog" aria-modal="true" aria-labelledby="gemini-modal-title">
+      <div class="gemini-modal-dialog">
+        <div class="gemini-modal-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 800; color: var(--accent-teal); font-size: 0.9rem; text-transform: uppercase;">
+              <span>✨</span> Official Google Gemini AI
+            </div>
+            <h3 id="gemini-modal-title" style="margin: 0.25rem 0 0 0; font-size: 1.4rem; color: var(--primary-navy);">
+              Gemini AI Integration Settings
+            </h3>
+          </div>
+          <button type="button" class="gemini-modal-close" onclick="closeGeminiModal()" aria-label="Close Gemini Settings">✕</button>
+        </div>
+
+        <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
+          Connect Google Gemini AI to provide real-time, culturally nuanced, clinically verified cognitive wellness conversations in <strong>Hindi, Marathi, English, Assamese, and Bodo</strong> with natural speech.
+        </div>
+
+        <!-- Status Banner -->
+        <div id="gemini-test-result" style="display: none; padding: 0.85rem 1rem; border-radius: 12px; margin-bottom: 1.25rem; font-size: 0.95rem; font-weight: 600;"></div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label for="gemini-api-key-input" style="display: block; font-weight: 700; margin-bottom: 0.4rem; color: var(--primary-navy);">
+            Google Gemini API Key:
+          </label>
+          <div style="position: relative;">
+            <input 
+              type="password" 
+              id="gemini-api-key-input" 
+              placeholder="AIzaSy..." 
+              style="width: 100%; padding: 0.85rem 3rem 0.85rem 1rem; border: 2px solid var(--border-subtle); border-radius: 12px; font-size: 1rem; font-family: monospace;"
+            >
+            <button 
+              type="button" 
+              onclick="toggleKeyVisibility()" 
+              style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #64748B;"
+              title="Show / Hide API Key"
+            >
+              👁️
+            </button>
+          </div>
+          <div style="margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-muted);">
+            Keys are saved securely in your browser's local storage and never shared. Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color: var(--accent-teal); font-weight: 700;">Google AI Studio ↗</a>.
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label for="gemini-model-select" style="display: block; font-weight: 700; margin-bottom: 0.4rem; color: var(--primary-navy);">
+            Selected Gemini Model:
+          </label>
+          <select id="gemini-model-select" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--border-subtle); border-radius: 12px; font-size: 0.95rem; font-weight: 600;">
+            <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (Recommended: Ultra-fast, highly accurate multilingual responses)</option>
+            <option value="gemini-3.7-flash">🧠 Gemini 3.7 Flash (Advanced reasoning & complex questions)</option>
+          </select>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button type="button" class="senior-btn senior-btn-primary senior-btn-sm" style="flex: 1;" onclick="saveGeminiSettings()">
+            💾 Save & Connect
+          </button>
+          <button type="button" class="senior-btn senior-btn-secondary senior-btn-sm" style="flex: 1;" onclick="testGeminiSettings()">
+            ⚡ Test Connection
+          </button>
+          <button type="button" class="senior-btn senior-btn-secondary senior-btn-sm" onclick="resetToBuiltInEngine()" style="color: var(--text-muted);">
+            Use Built-in Engine
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer" role="contentinfo">
+    <div class="footer-container">
+      <div>
+        <strong>SahaayaMind</strong> — AI-Powered Cognitive Wellness Platform for Seniors
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center; font-size: var(--text-sm);">
+        <a href="dashboard.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Dashboard</a>
+        <span style="color: var(--text-muted);">•</span>
+        <a href="progress.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Progress</a>
+        <span style="color: var(--text-muted);">•</span>
+        <a href="memory.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Memory Game</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/mockData.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/geminiService.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/memoryLogistics.js"></script>
+  <script src="../js/sahaayaAI.js"></script>
+  <script src="../js/app.js"></script>
+
+  <!-- Interactive Multilingual & Gemini Chat Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      const CHAT_STORAGE_KEY = 'sahaaya_chat_history';
+      const AUTO_SPEAK_KEY = 'sahaaya_chat_autospeak';
+
+      let chatHistory = [];
+      let isRecording = false;
+      let speechRecognitionInstance = null;
+
+      const chatStream = document.getElementById('chat-stream');
+      const chatInput = document.getElementById('chat-input');
+      const promptsBar = document.getElementById('chat-prompts-bar');
+      const micBtn = document.getElementById('btn-mic');
+      const autoSpeakCheckbox = document.getElementById('auto-speak-toggle');
+      const clearBtn = document.getElementById('btn-clear-chat');
+      const aiAvatar = document.getElementById('chat-ai-avatar');
+
+      // Speech Recognition setup with multilingual capability
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        speechRecognitionInstance = new SpeechRecognition();
+        speechRecognitionInstance.continuous = false;
+        speechRecognitionInstance.interimResults = false;
+        updateSpeechRecognitionLang();
+
+        speechRecognitionInstance.onstart = function () {
+          isRecording = true;
+          micBtn.classList.add('recording');
+          micBtn.setAttribute('title', 'Listening... speak now');
+          const placeholderText = window.SahaayaI18N ? window.SahaayaI18N.t('listeningMic') : 'Listening to your voice... please speak clearly';
+          chatInput.placeholder = placeholderText;
+        };
+
+        speechRecognitionInstance.onresult = function (event) {
+          const transcript = event.results[0][0].transcript;
+          if (transcript && transcript.trim() !== '') {
+            chatInput.value = transcript;
+            window.handleUserSendMessage();
+          }
+        };
+
+        speechRecognitionInstance.onerror = function (event) {
+          console.warn('Speech recognition notice:', event.error);
+          stopMic();
+          if (event.error === 'not-allowed') {
+            alert('Microphone permission was denied. Please allow microphone access or type your question.');
+          }
+        };
+
+        speechRecognitionInstance.onend = function () {
+          stopMic();
+        };
+      } else {
+        if (micBtn) {
+          micBtn.setAttribute('title', 'Microphone not supported on this browser. Please type your message.');
+          micBtn.style.opacity = '0.6';
+        }
+      }
+
+      function updateSpeechRecognitionLang() {
+        if (!speechRecognitionInstance) return;
+        const activeLang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+        const langCodes = {
+          en: 'en-IN',
+          hi: 'hi-IN',
+          mr: 'mr-IN',
+          as: 'as-IN',
+          brx: 'hi-IN'
+        };
+        speechRecognitionInstance.lang = langCodes[activeLang] || 'en-IN';
+      }
+
+      function toggleMic() {
+        if (!speechRecognitionInstance) {
+          alert('Speech recognition is not supported in this browser. You can type your message in the text box.');
+          return;
+        }
+
+        if (isRecording) {
+          speechRecognitionInstance.stop();
+          stopMic();
+        } else {
+          try {
+            updateSpeechRecognitionLang();
+            speechRecognitionInstance.start();
+          } catch (e) {
+            console.error('Error starting speech recognition:', e);
+            stopMic();
+          }
+        }
+      }
+
+      function stopMic() {
+        isRecording = false;
+        if (micBtn) {
+          micBtn.classList.remove('recording');
+          micBtn.setAttribute('title', 'Speak with Voice (Web Speech API)');
+        }
+        if (chatInput) {
+          const defaultPlaceholder = window.SahaayaI18N ? window.SahaayaI18N.t('typeMessagePlaceholder') : 'Type your question or click the microphone to speak...';
+          chatInput.placeholder = defaultPlaceholder;
+        }
+      }
+
+      if (micBtn) {
+        micBtn.addEventListener('click', toggleMic);
+      }
+
+      // Auto-speak preference
+      if (autoSpeakCheckbox) {
+        const savedAutoSpeak = localStorage.getItem(AUTO_SPEAK_KEY) === 'true';
+        autoSpeakCheckbox.checked = savedAutoSpeak;
+        autoSpeakCheckbox.addEventListener('change', function () {
+          localStorage.setItem(AUTO_SPEAK_KEY, String(autoSpeakCheckbox.checked));
+        });
+      }
+
+      // Clear chat
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+          if (confirm('Do you want to clear your conversation history and start fresh?')) {
+            localStorage.removeItem(CHAT_STORAGE_KEY);
+            chatHistory = [];
+            loadInitialGreeting();
+          }
+        });
+      }
+
+      // Markdown Parser for Senior Reading
+      function renderMarkdown(text) {
+        if (!text) return '';
+        let escaped = text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+        // Riddle Spoiler tags: ||answer||
+        escaped = escaped.replace(/\|\|(.*?)\|\|/g, '<span class="spoiler-reveal" onclick="this.classList.toggle(\'revealed\')" title="Tap to reveal answer">$1</span>');
+
+        // Headers: ###, ####
+        escaped = escaped.replace(/### (.*?)\n/g, '<h3>$1</h3>');
+        escaped = escaped.replace(/#### (.*?)\n/g, '<h4>$1</h4>');
+
+        // Bold: **text**
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Italics: *text*
+        escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+        // Unordered lists: - item
+        escaped = escaped.replace(/(?:^|\n)- (.*?)(?=(?:\n- )|(?:\n\n)|$)/gs, function (match) {
+          const items = match.trim().split('\n- ').map(item => `<li>${item.replace(/^- /, '')}</li>`).join('');
+          return `<ul>${items}</ul>`;
+        });
+
+        // Numbered lists: 1. item
+        escaped = escaped.replace(/(?:^|\n)\d+\. (.*?)(?=(?:\n\d+\. )|(?:\n\n)|$)/gs, function (match) {
+          const items = match.trim().split(/\n\d+\. /).map(item => `<li>${item.replace(/^\d+\. /, '')}</li>`).join('');
+          return `<ol>${items}</ol>`;
+        });
+
+        // Line breaks
+        escaped = escaped.replace(/\n\n/g, '</p><p>');
+        escaped = `<p>${escaped}</p>`;
+        escaped = escaped.replace(/<p><\/p>/g, '');
+        escaped = escaped.replace(/<p>(<h[34]>.*?<\/h[34]>)<\/p>/g, '$1');
+        escaped = escaped.replace(/<p>(<ul>.*?<\/ul>)<\/p>/g, '$1');
+        escaped = escaped.replace(/<p>(<ol>.*?<\/ol>)<\/p>/g, '$1');
+
+        return escaped;
+      }
+
+      function getActiveUser() {
+        try {
+          const u = localStorage.getItem('sahaaya_active_user');
+          if (u) return JSON.parse(u);
+        } catch (e) {}
+        return (window.MOCK_DATA && window.MOCK_DATA.activeUser) ? window.MOCK_DATA.activeUser : { name: 'Ramesh Sharma', age: 72 };
+      }
+
+      function getGameSessions() {
+        try {
+          const s = localStorage.getItem('sahaaya_history');
+          if (s) return JSON.parse(s);
+        } catch (e) {}
+        return (window.MOCK_DATA && window.MOCK_DATA.history) ? window.MOCK_DATA.history : [];
+      }
+
+      // Append Message to UI
+      function appendMessageUI(msg) {
+        const row = document.createElement('div');
+        row.className = `chat-row ${msg.role === 'ai' ? 'ai-row' : 'user-row'}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.setAttribute('aria-hidden', 'true');
+        avatar.innerHTML = msg.role === 'ai' ? '🌸' : (getActiveUser().name ? getActiveUser().name.split(' ').map(n=>n[0]).join('') : '👤');
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.innerHTML = renderMarkdown(msg.text);
+
+        // Footer with timestamp and voice button
+        const footer = document.createElement('div');
+        footer.className = 'chat-msg-footer';
+
+        const time = document.createElement('span');
+        time.className = 'chat-msg-time';
+        time.textContent = msg.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        footer.appendChild(time);
+
+        // Add source indicator badge if from Gemini
+        if (msg.role === 'ai' && msg.source === 'gemini') {
+          const sourceBadge = document.createElement('span');
+          sourceBadge.style.cssText = 'font-size: 0.78rem; font-weight: 700; color: #4F46E5; background: #EEF2FF; padding: 0.2rem 0.5rem; border-radius: 6px; margin-left: 0.5rem;';
+          sourceBadge.textContent = '✨ Gemini 2.5';
+          footer.appendChild(sourceBadge);
+        }
+
+        if (msg.role === 'ai') {
+          const listenBtn = document.createElement('button');
+          listenBtn.type = 'button';
+          listenBtn.className = 'btn-msg-listen';
+          listenBtn.innerHTML = '<span>🔊</span> <span>Listen</span>';
+          listenBtn.onclick = function () {
+            if (listenBtn.classList.contains('speaking')) {
+              if (typeof window.stopSpeaking === 'function') {
+                window.stopSpeaking();
+              }
+              listenBtn.classList.remove('speaking');
+              listenBtn.innerHTML = '<span>🔊</span> <span>Listen</span>';
+              if (aiAvatar) aiAvatar.classList.remove('speaking');
+              return;
+            }
+
+            // Stop any other currently playing speech
+            if (typeof window.stopSpeaking === 'function') {
+              window.stopSpeaking();
+            }
+
+            listenBtn.classList.add('speaking');
+            listenBtn.innerHTML = '<span>⏹️</span> <span>Stop</span>';
+            if (aiAvatar) aiAvatar.classList.add('speaking');
+
+            const toSpeak = msg.speechText || msg.text.replace(/[*#_~`|]/g, '');
+            const activeLang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+
+            if (typeof window.speakText === 'function') {
+              window.speakText(toSpeak, function () {
+                listenBtn.classList.remove('speaking');
+                listenBtn.innerHTML = '<span>🔊</span> <span>Listen</span>';
+                if (aiAvatar) aiAvatar.classList.remove('speaking');
+              }, activeLang);
+            }
+          };
+          footer.appendChild(listenBtn);
+        }
+
+        bubble.appendChild(footer);
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+
+        chatStream.appendChild(row);
+        chatStream.scrollTop = chatStream.scrollHeight;
+      }
+
+      // Render Suggested Chips
+      function renderPromptChips(chips) {
+        promptsBar.innerHTML = '';
+        const activeLang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+        const list = (Array.isArray(chips) && chips.length > 0) 
+          ? chips 
+          : (window.GeminiService ? window.GeminiService.generateSuggestedChips(activeLang) : [
+              'How was my memory today? 🧠',
+              'Doctor advice: What should caregivers avoid? ⚠️',
+              'Give me a gentle brain riddle 💡',
+              'Best foods for brain health 🥗'
+            ]);
+
+        list.forEach(promptText => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'prompt-chip-btn';
+          btn.textContent = promptText;
+          btn.onclick = function () {
+            chatInput.value = promptText.replace(/[🧠⚠️💡🥗🌙🚨🌸🎯]/g, '').trim();
+            window.handleUserSendMessage();
+          };
+          promptsBar.appendChild(btn);
+        });
+      }
+
+      // Initial Greeting per Language
+      function loadInitialGreeting() {
+        const user = getActiveUser();
+        const firstName = user.name ? user.name.split(' ')[0] : 'Ramesh';
+        const activeLang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+
+        let text = '';
+        let speechText = '';
+
+        if (activeLang === 'hi') {
+          text = `### 🌸 नमस्ते ${firstName} जी! मैं आपका सहाय साथी हूँ\n\n` +
+            `मैं आपका समर्पित एआई मानसिक स्वास्थ्य साथी हूँ। मैं आज आपकी क्या सहायता कर सकता हूँ?\n\n` +
+            `- **खेल के परिणाम:** *"आज मेरी याददाश्त कैसी रही?"* पूछकर अपना स्कोर देखें।\n` +
+            `- **डॉक्टर सलाह:** *"देखभाल करने वालों को क्या नहीं करना चाहिए?"* पूछें।\n` +
+            `- **दिमागी कसरत:** *"मुझे एक पहेली पूछें"* कहकर रोचक कसरत करें!\n` +
+            `- **आहार व नींद:** दिमाग को चुस्त रखने वाले भोजन और नींद के उपाय जानें।`;
+          speechText = `नमस्ते ${firstName} जी! मैं आपका सहाय साथी हूँ। आप मुझसे खेल के परिणाम, डॉक्टर की सलाह या पहेली के बारे में पूछ सकते हैं।`;
+        } else if (activeLang === 'mr') {
+          text = `### 🌸 नमस्कार ${firstName} जी! मी तुमचा सहाया सोबती आहे\n\n` +
+            `मी ज्येष्ठ नागरिकांसाठी समर्पित एआय मानसिक आरोग्य मार्गदर्शक आहे. मी आपल्याला खालील गोष्टींमध्ये मदत करू शकतो:\n\n` +
+            `- **खेळाचे निकाल:** *"आज माझी स्मरणशक्ती कशी होती?"* विचारून गुण तपासा.\n` +
+            `- **डॉक्टरांचा सल्ला:** *"काळजीवाहूंनी काय टाळावे?"* वैद्यकीय नियम जाणून घ्या.\n` +
+            `- **मेंदूचे कोडे:** *"मला एक कोडे सांगा"* म्हणून मेंदूला ताजेतवाने करा!\n` +
+            `- **आहार व झोप:** मेंदूच्या आरोग्यासाठी उत्तम आहाराबद्दल माहिती मिळवा.`;
+          speechText = `नमस्कार ${firstName} जी! मी तुमचा सहाया सोबती आहे. आपण मला खेळाचा निकाल, डॉक्टरचा सल्ला किंवा मेंदूचे कोडे याबद्दल विचारू शकता.`;
+        } else if (activeLang === 'as') {
+          text = `### 🌸 নমস্কাৰ ${firstName} ডাঙৰীয়া! মই আপোনাৰ সহায় সংগী\n\n` +
+            `জেষ্ঠ্য নাগৰিকৰ মানসিক সুস্থতাৰ বাবে মই আপোনাৰ এআই সহায়ক। মই আপোনাক সহায় কৰিব পাৰোঁ:\n\n` +
+            `- **খেলৰ ফলাফল:** *"আজি মোৰ স্মৃতিশক্তি কেনে আছিল?"* সুধি নম্বৰ জানক।\n` +
+            `- **চিকিৎসকৰ পৰামৰ্শ:** যত্ন লওঁতাসকলৰ বাবে জৰুৰী নিয়মসমূহ জানক।\n` +
+            `- **মগজুৰ সাঁথৰ:** আমোদজনক সাঁথৰ ভাঙি মনটো সতেজ কৰক!\n` +
+            `- **উপযোগী খাদ্য:** স্মৃতিশক্তি সতেজ ৰখা আহাৰৰ বিষয়ে সোধক।`;
+          speechText = `নমস্কাৰ ${firstName} ডাঙৰীয়া! মই আপোনাৰ সহায় সংগী। খেলৰ ফলাফল বা সাঁথৰৰ বিষয়ে আপুনি মোক সুধিব পাৰে।`;
+        } else if (activeLang === 'brx') {
+          text = `### 🌸 खुलुमबाय ${firstName} जी! आं नोंथांनि सहाया लोगो\n\n` +
+            `बैसो गोनां मानसिफोरनि थाखाय आं नोंथांनि AI सावस्रि हेफाजाबगिरि। आं नोंथांनो बेफोरबादि हेफाजाब होनो हागोन:\n\n` +
+            `- **गेलेनायनि दिन्थिफुल:** *"दिनै आंनि गोसोखांनाय शक्ति माबोरैमोन?"* सोंना नम्बर नाय।\n` +
+            `- **डाक्टरनि बोसोन:** नायगिरिफोरनि थाखाय मोजां बोसोन मिथि।\n` +
+            `- **फाग्ला बाथ्रा (सॉथोर):** गोसोखौ गोजोन लाखिनो सॉथोर सान!\n` +
+            `- **मेधिनि आदार:** गोसोखांनाय शक्तिखौ मोजां लाखिनो आदारनि बाथ्रा सों।`;
+          speechText = `खुलुमबाय ${firstName} जी! आं नोंथांनि सहाया लोगो। नोंथाङा गेलेनायनि दिन्थिफुल एबा सॉथोर सोंनो हागोन।`;
+        } else {
+          text = `### 🌸 Namaste ${firstName} ji! I am Your Sahaaya Companion\n\n` +
+            `I am your dedicated AI cognitive wellness assistant. How may I support you today?\n\n` +
+            `- **Game Performance:** Ask *"How was my memory today?"* to review your latest scores.\n` +
+            `- **Doctor's Advice:** Ask *"What should caregivers avoid?"* for geriatrician protocols.\n` +
+            `- **Gentle Exercise:** Ask *"Give me a riddle"* for an uplifting brain workout!\n` +
+            `- **Diet & Rest:** Ask about the neuro-protective MIND diet or healthy sleep hygiene.`;
+          speechText = `Namaste ${firstName} ji! I am your Sahaaya Cognitive Companion. You can ask me about your game scores, doctor recommendations, brain nutrition, or play a gentle riddle. How can I help you today?`;
+        }
+
+        const welcomeMsg = {
+          role: 'ai',
+          text: text,
+          speechText: speechText,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        chatHistory = [welcomeMsg];
+        saveChatHistory();
+        renderEntireChat();
+        renderPromptChips();
+      }
+
+      function saveChatHistory() {
+        try {
+          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
+        } catch (e) {
+          console.warn('LocalStorage save failed:', e);
+        }
+      }
+
+      function renderEntireChat() {
+        chatStream.innerHTML = '';
+        chatHistory.forEach(appendMessageUI);
+        chatStream.scrollTop = chatStream.scrollHeight;
+      }
+
+      function showTypingIndicator() {
+        const row = document.createElement('div');
+        row.className = 'chat-row ai-row';
+        row.id = 'typing-indicator-row';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.innerHTML = '🌸';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.innerHTML = '<div class="chat-typing-dots"><span></span><span></span><span></span></div>';
+
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+        chatStream.appendChild(row);
+        chatStream.scrollTop = chatStream.scrollHeight;
+      }
+
+      function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator-row');
+        if (indicator) indicator.remove();
+      }
+
+      // User Sends Message Handler (Async with Gemini + Multi-language fallback)
+      window.handleUserSendMessage = async function () {
+        const query = chatInput.value.trim();
+        if (!query) return;
+
+        chatInput.value = '';
+        chatInput.focus();
+
+        const userMsg = {
+          role: 'user',
+          text: query,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        chatHistory.push(userMsg);
+        appendMessageUI(userMsg);
+        saveChatHistory();
+
+        showTypingIndicator();
+
+        const activeUser = getActiveUser();
+        const gameSessions = getGameSessions();
+        const activeLang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+
+        try {
+          let response = null;
+
+          // Call async multi-lingual engine with original Google Gemini AI
+          if (window.SahaayaAI && typeof window.SahaayaAI.chatAsync === 'function') {
+            response = await window.SahaayaAI.chatAsync(query, chatHistory, activeUser, gameSessions, activeLang);
+          } else if (window.SahaayaAI && typeof window.SahaayaAI.chat === 'function') {
+            response = window.SahaayaAI.chat(query, chatHistory, activeUser, gameSessions, activeLang);
+          }
+
+          removeTypingIndicator();
+
+          if (!response) {
+            response = {
+              replyText: `Thank you for sharing, ${activeUser.name || 'friend'} ji. Consistent gentle practice keeps the mind active and calm.`,
+              speechText: `Thank you for sharing. Consistent practice keeps the mind active and calm.`,
+              suggestions: window.GeminiService ? window.GeminiService.generateSuggestedChips(activeLang) : []
+            };
+          }
+
+          const aiMsg = {
+            role: 'ai',
+            text: response.replyText,
+            speechText: response.speechText,
+            source: response.source || 'sahaaya',
+            timestamp: response.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+
+          chatHistory.push(aiMsg);
+          appendMessageUI(aiMsg);
+          saveChatHistory();
+
+          if (response.suggestions && response.suggestions.length > 0) {
+            renderPromptChips(response.suggestions);
+          }
+
+          // Auto-read aloud in chosen language if toggled on
+          if (autoSpeakCheckbox && autoSpeakCheckbox.checked && typeof window.speakText === 'function') {
+            const toRead = response.speechText || response.replyText.replace(/[*#_~`|]/g, '');
+            window.speakText(toRead, null, activeLang);
+          }
+
+        } catch (err) {
+          console.error('[Chat Error]:', err);
+          removeTypingIndicator();
+        }
+      };
+
+      // Language Switcher Handler for Chat Card Header
+      window.setChatLanguage = function (langCode) {
+        if (window.SahaayaI18N) {
+          window.SahaayaI18N.setLanguage(langCode, false);
+        }
+
+        // Update active class on pills
+        document.querySelectorAll('.chat-lang-btn').forEach(btn => {
+          if (btn.getAttribute('data-lang') === langCode) {
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+          } else {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+          }
+        });
+
+        // Sync header select
+        const topSelect = document.getElementById('top-lang-select');
+        if (topSelect) topSelect.value = langCode;
+
+        // Update placeholder
+        if (chatInput && window.SahaayaI18N) {
+          chatInput.placeholder = window.SahaayaI18N.t('typeMessagePlaceholder');
+        }
+
+        // Update speech recognition language
+        updateSpeechRecognitionLang();
+
+        // Update suggested chips in the new language
+        renderPromptChips();
+
+        // Announce language switch
+        if (typeof window.speakText === 'function') {
+          const announcement = window.SahaayaI18N ? window.SahaayaI18N.t('langSwitchedVoice') : 'Language changed';
+          window.speakText(announcement, null, langCode);
+        }
+
+        // If history has only 1 message (greeting), regenerate it in the new language
+        if (chatHistory.length <= 1) {
+          loadInitialGreeting();
+        }
+      };
+
+      // Gemini Modal UI Controls
+      window.openGeminiModal = function () {
+        const modal = document.getElementById('gemini-modal');
+        const input = document.getElementById('gemini-api-key-input');
+        const select = document.getElementById('gemini-model-select');
+        const resBox = document.getElementById('gemini-test-result');
+
+        if (resBox) resBox.style.display = 'none';
+
+        if (window.GeminiService) {
+          if (input) input.value = window.GeminiService.getApiKey() || '';
+          if (select) select.value = window.GeminiService.getModel() || 'gemini-2.5-flash';
+        }
+
+        if (modal) modal.classList.add('open');
+      };
+
+      window.closeGeminiModal = function () {
+        const modal = document.getElementById('gemini-modal');
+        if (modal) modal.classList.remove('open');
+      };
+
+      window.toggleKeyVisibility = function () {
+        const input = document.getElementById('gemini-api-key-input');
+        if (input) {
+          input.type = input.type === 'password' ? 'text' : 'password';
+        }
+      };
+
+      window.saveGeminiSettings = function () {
+        const input = document.getElementById('gemini-api-key-input');
+        const select = document.getElementById('gemini-model-select');
+        const val = input ? input.value.trim() : '';
+        const model = select ? select.value : 'gemini-2.5-flash';
+
+        if (window.GeminiService) {
+          window.GeminiService.setApiKey(val);
+          window.GeminiService.setModel(model);
+        }
+
+        updateGeminiBadgeUI();
+        closeGeminiModal();
+
+        alert(val ? `✅ Google Gemini API key saved! Live ${model} is now active.` : 'Switched back to built-in Sahaaya Cognitive AI.');
+      };
+
+      window.testGeminiSettings = async function () {
+        const input = document.getElementById('gemini-api-key-input');
+        const resBox = document.getElementById('gemini-test-result');
+        const val = input ? input.value.trim() : '';
+
+        if (!val) {
+          if (resBox) {
+            resBox.style.display = 'block';
+            resBox.style.background = '#FEF2F2';
+            resBox.style.color = '#B91C1C';
+            resBox.style.border = '1.5px solid #FCA5A5';
+            resBox.textContent = '⚠️ Please enter an API key first.';
+          }
+          return;
+        }
+
+        if (resBox) {
+          resBox.style.display = 'block';
+          resBox.style.background = '#EFF6FF';
+          resBox.style.color = '#1D4ED8';
+          resBox.style.border = '1.5px solid #93C5FD';
+          resBox.textContent = '⏳ Testing connection with Google Generative Language API...';
+        }
+
+        if (window.GeminiService) {
+          const res = await window.GeminiService.testConnection(val);
+          if (resBox) {
+            if (res.success) {
+              resBox.style.background = '#F0FDF4';
+              resBox.style.color = '#15803D';
+              resBox.style.border = '1.5px solid #86EFAC';
+              resBox.textContent = `✅ Connection Successful: "${res.message}"`;
+            } else {
+              resBox.style.background = '#FEF2F2';
+              resBox.style.color = '#B91C1C';
+              resBox.style.border = '1.5px solid #FCA5A5';
+              resBox.textContent = `❌ Connection Error: ${res.message}`;
+            }
+          }
+        }
+      };
+
+      window.resetToBuiltInEngine = function () {
+        if (window.GeminiService) {
+          window.GeminiService.setApiKey('');
+        }
+        const input = document.getElementById('gemini-api-key-input');
+        if (input) input.value = '';
+        updateGeminiBadgeUI();
+        closeGeminiModal();
+        alert('Reset to built-in Sahaaya Cognitive AI knowledge engine.');
+      };
+
+      function updateGeminiBadgeUI() {
+        const badge = document.getElementById('btn-gemini-settings');
+        const label = document.getElementById('gemini-badge-label');
+        if (!badge || !label) return;
+
+        const isLive = window.GeminiService && window.GeminiService.isConfigured();
+        if (isLive) {
+          badge.className = 'gemini-status-badge live';
+          label.textContent = '⚡ Gemini 2.5 Live';
+          badge.title = 'Google Gemini 2.5 Flash is active & generating live responses';
+        } else {
+          badge.className = 'gemini-status-badge builtin';
+          label.textContent = '✨ Gemini Settings';
+          badge.title = 'Using Built-in Cognitive AI. Tap to enter Gemini API key.';
+        }
+      }
+
+      // Initial Load
+      document.addEventListener('DOMContentLoaded', function () {
+        updateGeminiBadgeUI();
+
+        // Listen for global language changes
+        window.addEventListener('sahaaya:language-changed', (e) => {
+          const newLang = e.detail?.language || 'en';
+          document.querySelectorAll('.chat-lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-lang') === newLang);
+          });
+          updateSpeechRecognitionLang();
+          renderPromptChips();
+          if (chatInput && window.SahaayaI18N) {
+            chatInput.placeholder = window.SahaayaI18N.t('typeMessagePlaceholder');
+          }
+        });
+
+        // Initialize active language button in chat header
+        const currentLang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+        document.querySelectorAll('.chat-lang-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
+        });
+
+        try {
+          const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+          if (saved) {
+            chatHistory = JSON.parse(saved);
+          }
+        } catch (e) {}
+
+        if (!Array.isArray(chatHistory) || chatHistory.length === 0) {
+          loadInitialGreeting();
+        } else {
+          renderEntireChat();
+          renderPromptChips();
+        }
+
+        // Check URL Query parameter (e.g. ?q=How+was+my+score)
+        const params = new URLSearchParams(window.location.search);
+        const incomingQuery = params.get('q');
+        if (incomingQuery && incomingQuery.trim() !== '') {
+          chatInput.value = incomingQuery;
+          setTimeout(() => {
+            window.handleUserSendMessage();
+          }, 400);
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
