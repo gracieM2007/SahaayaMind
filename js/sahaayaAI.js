@@ -1048,19 +1048,47 @@
 
     /**
      * Interactive Conversational Cognitive AI Assistant for Seniors & Caregivers.
-     * Integrates live game session telemetry, clinical guidelines, and empathetic dialogue.
+     * Integrates live Google Gemini AI, game session telemetry, clinical guidelines,
+     * and authentic multilingual dialogue (Hindi, Marathi, English, Assamese, Bodo).
      *
      * @param {string} userMessage         - The user's input question or statement
      * @param {Array}  conversationHistory - List of prior messages [{ role, text }]
      * @param {Object} activeUser          - Senior profile
      * @param {Array}  sessionHistory      - Array of completed game sessions
+     * @param {string} langCode            - Language code ('en'|'hi'|'mr'|'as'|'brx')
      * @returns {Object} Rich conversational response { replyText, speechText, suggestions, category, timestamp }
      */
-    chat: function (userMessage, conversationHistory, activeUser, sessionHistory) {
+    chat: function (userMessage, conversationHistory, activeUser, sessionHistory, langCode) {
+      if (typeof conversationHistory === 'string') {
+        langCode = conversationHistory;
+        conversationHistory = [];
+      }
       const q = String(userMessage || '').trim().toLowerCase();
       const user = activeUser || { name: 'Ramesh Sharma', age: 72, cognitiveLevel: 'Gentle Pace (Level 2)' };
       const firstName = user.name ? user.name.split(' ')[0] : 'Ramesh';
       const history = Array.isArray(sessionHistory) && sessionHistory.length > 0 ? sessionHistory : [];
+
+      // Determine active language
+      let lang = langCode;
+      if (!lang && typeof window !== 'undefined' && window.SahaayaI18N) {
+        lang = window.SahaayaI18N.getLanguage();
+      }
+      if (!lang) lang = 'en';
+
+      // Detect language from Devanagari / Eastern Nagari script if user typed native text
+      if (/[\u0900-\u097F]/.test(q)) {
+        // Devanagari script: could be Hindi or Marathi or Bodo
+        if (q.includes('आहे') || q.includes('कसे') || q.includes('नमस्कार') || q.includes('माझे') || q.includes('काय') || q.includes('नाही')) {
+          lang = 'mr';
+        } else if (q.includes('बर’') || q.includes('दों') || q.includes('नोंथां') || q.includes('खुलुमबाय') || q.includes('आंनि') || q.includes('माबोरै')) {
+          lang = 'brx';
+        } else if (lang !== 'mr' && lang !== 'brx') {
+          lang = 'hi';
+        }
+      } else if (/[\u0980-\u09FF]/.test(q)) {
+        // Assamese / Bengali script
+        lang = 'as';
+      }
 
       // Retrieve latest result if available
       let latest = null;
@@ -1075,7 +1103,7 @@
       }
       if (!latest) {
         latest = {
-          gameName: 'Memory Recall & Match',
+          gameName: (lang === 'hi') ? 'स्मृति स्मरण खेल' : ((lang === 'mr') ? 'स्मरणशक्ती खेळ' : ((lang === 'as') ? 'স্মৃতি খেল' : ((lang === 'brx') ? 'गोसोखांनाय गेलेनाय' : 'Memory Recall & Match'))),
           score: 94,
           accuracy: '96%',
           duration: '2m 45s',
@@ -1089,208 +1117,462 @@
       let replyText = '';
       let speechText = '';
       let category = 'general';
-      let suggestions = [
-        'How was my memory today? 🧠',
-        'Doctor advice: What should caregivers avoid? ⚠️',
-        'Give me a gentle brain riddle 💡',
-        'Best foods for brain health 🥗'
-      ];
+      let suggestions = [];
 
-      // INTENT 1: Latest Game Performance & Scores
-      if (q.includes('score') || q.includes('how did i do') || q.includes('how was') || q.includes('performance') || q.includes('game') || q.includes('result') || q.includes('accuracy') || q.includes('today')) {
-        category = 'performance';
-        replyText = `### 🌟 Your Latest Cognitive Session Summary\n\n` +
-          `Namaste **${firstName} ji**! In your latest session of **${latest.gameName || 'Memory Challenge'}**, you performed wonderfully:\n\n` +
-          `- **Activity Score:** **${latest.score || 94}/100**\n` +
-          `- **Accuracy Rate:** **${latest.accuracy || '95%'}** precision\n` +
-          `- **Session Duration:** **${latest.duration || '3m 15s'}** at a comfortable pace\n` +
-          `- **Visual Memory Score:** **${latest.memoryScore || 92}%**\n` +
-          `- **Selective Attention:** **${latest.attentionScore || 88}%**\n` +
-          `- **Pacing Stability:** **${latest.speedScore || 90}%** (Calm & Deliberate)\n\n` +
-          `💡 **Doctor's Note:** You maintained steady focus with zero signs of rushing. Your reaction timing is well within the healthy geriatric baseline (1.8s - 3.2s). Tomorrow, practice the Attention game at this same relaxed rhythm!`;
-
-        speechText = `Namaste ${firstName} ji. In your latest session of ${latest.gameName}, you scored ${latest.score} out of 100 with ${latest.accuracy} accuracy. Your visual memory was exceptionally sharp today. Keep up this wonderful morning routine!`;
-        suggestions = [
-          'What should I eat for brain health? 🥗',
-          'Give me a gentle brain riddle 💡',
-          'Caregiver advice: What should I avoid? ⚠️',
-          'Tips for better sleep 🌙'
-        ];
-      }
-
-      // INTENT 2: Doctor "What to Do" vs "What NOT to Do" (Caregiver Protocols)
-      else if (q.includes('what to do') || q.includes('not to do') || q.includes('caregiver') || q.includes('avoid') || q.includes('how to treat') || q.includes('tips') || q.includes('protocol')) {
-        category = 'caregiver_protocol';
-        replyText = `### 🩺 Geriatrician Protocol: Caregiver Guidance for ${user.name}\n\n` +
-          `Here is our medical-grade protocol for supporting seniors with dignity and neuro-wellness:\n\n` +
-          `#### 🟢 WHAT TO DO (Essential Daily Interventions):\n` +
-          `1. **Morning Circadian Window:** Practice cognitive games between **9:00 AM – 11:30 AM** when alertness peaks naturally.\n` +
-          `2. **Hydration First:** Provide **1 glass of water** 10 minutes prior to mental activities; mild dehydration can mimic cognitive decline.\n` +
-          `3. **Reminiscence Scaffolding:** Connect game themes to nostalgic family stories, travel, or favorite recipes.\n` +
-          `4. **Gentle Movement:** Pair 15 minutes of flat walking or seated stretching before games to boost cerebral blood flow.\n\n` +
-          `#### 🔴 WHAT NOT TO DO (Harmful Pitfalls to Avoid):\n` +
-          `1. **DO NOT Quiz Aggressively:** Never interrogate ("Do you remember what you ate?") — stress triggers an adrenaline surge that blocks memory retrieval.\n` +
-          `2. **DO NOT Argue Over Memory Lapses:** Use empathetic validation and gentle redirection instead of confrontational correction.\n` +
-          `3. **DO NOT Schedule Tasks During Sundowning:** Avoid introducing challenging tasks after **4:30 PM** when fatigue peaks.\n` +
-          `4. **DO NOT Rush Words or Decisions:** Allow up to 2.5x more processing time without interrupting or finishing their sentences.`;
-
-        speechText = `Here is key advice for caregivers: Schedule games in the morning between 9 and 11:30 AM with water hydration. Never quiz the senior aggressively or argue over forgotten memories. Always allow relaxed, patient decision times.`;
-        suggestions = [
-          'What are the clinical red flags? 🚨',
+      // Helper for default localized suggestions
+      function getDefaultSuggestions(l) {
+        if (typeof window !== 'undefined' && window.GeminiService && typeof window.GeminiService.generateSuggestedChips === 'function') {
+          return window.GeminiService.generateSuggestedChips(l);
+        }
+        return [
           'How was my memory today? 🧠',
-          'Best foods for brain health 🥗',
-          'Tips for better sleep 🌙'
-        ];
-      }
-
-      // INTENT 3: Nutrition & Brain Diet
-      else if (q.includes('eat') || q.includes('food') || q.includes('diet') || q.includes('nutrition') || q.includes('water') || q.includes('drink')) {
-        category = 'nutrition';
-        replyText = `### 🥗 Neuro-Protective MIND Diet & Hydration Guide\n\n` +
-          `Evidence from geriatric nutrition shows the **MIND Diet** (Mediterranean-DASH Diet Intervention for Neurodegenerative Delay) can preserve cognitive stamina by up to 53%:\n\n` +
-          `- **Daily Hydration:** Aim for **1.5 to 2.0 Litres** of water throughout the day. Drink 1 glass before brain exercises.\n` +
-          `- **Berries & Antioxidants:** Blueberries, strawberries, amla, or pomegranate 2–3 times a week protect neural pathways.\n` +
-          `- **Nuts & Seeds:** 4–5 soaked almonds and 2 walnuts every morning provide essential omega-3 fatty acids.\n` +
-          `- **Green Leafy Vegetables:** Spinach, methi, and broccoli provide folate, lutein, and vitamin E.\n` +
-          `- **What to Limit:** Reduce refined sugars and heavily salted fried foods, which cause vascular micro-inflammation.`;
-
-        speechText = `For brain wellness, drink 1 glass of water before morning exercises. Enjoy soaked almonds, walnuts, berries, and green leafy vegetables daily. Hydration keeps memory processing fast and clear.`;
-        suggestions = [
-          'How was my memory today? 🧠',
-          'Tips for better sleep & focus 🌙',
-          'Give me a gentle brain riddle 💡',
-          'Caregiver advice: What should I avoid? ⚠️'
-        ];
-      }
-
-      // INTENT 4: Sleep & Fatigue
-      else if (q.includes('sleep') || q.includes('tired') || q.includes('fatigue') || q.includes('nap') || q.includes('insomnia') || q.includes('headache')) {
-        category = 'sleep';
-        replyText = `### 🌙 Sleep Hygiene & Rest for Memory Consolidation\n\n` +
-          `During **Slow-Wave Sleep (SWS)**, the brain activates the glymphatic system to clear metabolic waste and consolidate short-term memories into permanent storage:\n\n` +
-          `1. **Target Sleep Window:** **7.5 to 8.5 hours** of consistent nightly sleep.\n` +
-          `2. **Evening Screen Cutoff:** Turn off bright TV or phone screens **60 minutes before bed** to allow melatonin to release naturally.\n` +
-          `3. **Afternoon Power Naps:** If tired after lunch, keep naps to **20–30 minutes maximum** before 3:00 PM so nighttime sleep remains deep.\n` +
-          `4. **Calming Bedtime Routine:** A warm cup of chamomile tea, mild stretching, or soft instrumental music helps quiet an active mind.`;
-
-        speechText = `Good sleep is essential for memory. Aim for 7 to 8 hours every night. Dim bright screens 60 minutes before bedtime and keep naps under 30 minutes.`;
-        suggestions = [
-          'How was my memory today? 🧠',
-          'Best foods for brain health 🥗',
           'Doctor advice: What should caregivers avoid? ⚠️',
-          'Give me a gentle brain riddle 💡'
+          'Give me a gentle brain riddle 💡',
+          'Best foods for brain health 🥗'
         ];
       }
+      suggestions = getDefaultSuggestions(lang);
 
-      // INTENT 5: Interactive Brain Riddle & Mental Exercise
-      else if (q.includes('riddle') || q.includes('puzzle') || q.includes('exercise') || q.includes('challenge') || q.includes('quiz')) {
+      // ======================================================================
+      // INTENT 1: Latest Game Performance & Scores
+      // ======================================================================
+      const isPerfQuery = q.includes('score') || q.includes('how did i do') || q.includes('how was') ||
+        q.includes('performance') || q.includes('game') || q.includes('result') || q.includes('accuracy') ||
+        q.includes('today') || q.includes('याददाश्त') || q.includes('खेल') || q.includes('परिणाम') ||
+        q.includes('निकाला') || q.includes('स्मरणशक्ती') || q.includes('স্মৃতি') || q.includes('ফলাফল') ||
+        q.includes('गोसोखांनाय') || q.includes('दिन्थिफुल');
+
+      if (isPerfQuery) {
+        category = 'performance';
+
+        if (lang === 'hi') {
+          replyText = `### 🌟 आपके हालिया खेल का परिणाम\n\n` +
+            `नमस्ते **${firstName} जी**! आपने **${latest.gameName || 'स्मृति खेल'}** में बहुत शानदार प्रदर्शन किया है:\n\n` +
+            `- **कुल स्कोर (Score):** **${latest.score || 94}/100**\n` +
+            `- **सटीकता (Accuracy):** **${latest.accuracy || '96%'}** सटीकता\n` +
+            `- **स्मृति क्षमता (Memory):** **${latest.memoryScore || 92}%**\n` +
+            `- **ध्यान एकाग्रता (Attention):** **${latest.attentionScore || 88}%**\n` +
+            `- **रफ्तार व संतुलन (Pacing):** **${latest.speedScore || 90}%** (शांत व आत्मविश्वास)\n\n` +
+            `💡 **डॉक्टर सलाह:** आपका ध्यान और निर्णय लेने की गति वरिष्ठों के स्वस्थ मानक (1.8 से 3.2 सेकंड) में है। रोज़ाना 10 मिनट खेलना याददाश्त को हमेशा सक्रिय रखता है!`;
+          speechText = `नमस्ते ${firstName} जी। आपके हालिया खेल में 100 में से ${latest.score || 94} अंक मिले हैं और सटीकता ${latest.accuracy || '96%'} रही है। आपकी याददाश्त बहुत शांत और स्थिर है।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🌟 तुमच्या नुकत्याच झालेल्या खेळाचा निकाल\n\n` +
+            `नमस्कार **${firstName} जी**! आपण **${latest.gameName || 'स्मरणशक्ती खेळ'}** मध्ये उत्कृष्ट कामगिरी केली आहे:\n\n` +
+            `- **एकूण गुण (Score):** **${latest.score || 94}/100**\n` +
+            `- **अचूकता (Accuracy):** **${latest.accuracy || '96%'}** अचूक\n` +
+            `- **स्मरणशक्ती गुण (Memory):** **${latest.memoryScore || 92}%**\n` +
+            `- **एकाग्रता (Attention):** **${latest.attentionScore || 88}%**\n` +
+            `- **समतोल गती (Speed):** **${latest.speedScore || 90}%** (शांत व स्थिर)\n\n` +
+            `💡 **डॉक्टरांचा सल्ला:** आपली प्रतिक्रिया गती ज्येष्ठ नागरिकांच्या निरोगी मानकात आहे. उद्याही याच शांत गतीने सराव करा!`;
+          speechText = `नमस्कार ${firstName} जी। आपण नुकत्याच झालेल्या खेळात 100 पैकी ${latest.score || 94} गुण मिळवले आहेत. आपली स्मरणशक्ती उत्तम स्थितीत आहे.`;
+        } else if (lang === 'as') {
+          replyText = `### 🌟 আপোনাৰ শেহতীয়া খেলৰ ফলাফল\n\n` +
+            `নমস্কাৰ **${firstName} ডাঙৰীয়া**! আপুনি **${latest.gameName || 'স্মৃতিশক্তি খেল'}** অতি সুন্দৰভাৱে সম্পন্ন কৰিছে:\n\n` +
+            `- **মুঠ নম্বৰ (Score):** **${latest.score || 94}/100**\n` +
+            `- **নিখুঁততা (Accuracy):** **${latest.accuracy || '96%'}**\n` +
+            `- **স্মৃতিশক্তি স্ক’ৰ (Memory):** **${latest.memoryScore || 92}%**\n` +
+            `- **মনোযোগ (Attention):** **${latest.attentionScore || 88}%**\n` +
+            `- **গতি আৰু স্থিৰতা:** **${latest.speedScore || 90}%**\n\n` +
+            `💡 **চিকিৎসকৰ পৰামৰ্শ:** আপোনাৰ মনোযোগ আৰু স্থিৰতা অতি প্ৰশংসনীয়। দৈনিক পুৱা এনেকৈ ১০ মিনিট মগজুৰ অনুশীলন চলাই ৰাখক!`;
+          speechText = `নমস্কাৰ ${firstName} ডাঙৰীয়া। আপোনাৰ শেহতীয়া খেলত নম্বৰ ১০০ ৰ ভিতৰত ${latest.score || 94} হৈছে। আপোনাৰ স্মৃতিশক্তি অতি সতেজ হৈ আছে।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🌟 नोंथांनि दिनैनि गेलेनायनि दिन्थिफुल\n\n` +
+            `खुलुमबाय **${firstName} जी**! नोंथाङा **${latest.gameName || 'गोसोखांनाय गेलेनाय'}** आव जोबोद मोजां गेलेबाय:\n\n` +
+            `- **गासै नम्बर:** **${latest.score || 94}/100**\n` +
+            `- **गेबेंथि (Accuracy):** **${latest.accuracy || '96%'}**\n` +
+            `- **गोसोखांनाय शक्ति:** **${latest.memoryScore || 92}%**\n` +
+            `- **गोसो होनाय (Attention):** **${latest.attentionScore || 88}%**\n\n` +
+            `💡 **डाक्टरनि बोसोन:** नोंथांनि गोसो होनाया जोबोद मोजां। सानफ्रोमबो फुङाव १० मिनिट गेलेनाया मेधिखौ गोख्रों लाखियो!`;
+          speechText = `खुलुमबाय ${firstName} जी। नोंथांनि गेलेनायाव ১০০ आव ${latest.score || 94} नम्बर मोनबाय। नोंथांनि गोसोखांनाय शक्ति जोबोद मोजां।`;
+        } else {
+          replyText = `### 🌟 Your Latest Cognitive Session Summary\n\n` +
+            `Namaste **${firstName} ji**! In your latest session of **${latest.gameName || 'Memory Challenge'}**, you performed wonderfully:\n\n` +
+            `- **Activity Score:** **${latest.score || 94}/100**\n` +
+            `- **Accuracy Rate:** **${latest.accuracy || '95%'}** precision\n` +
+            `- **Session Duration:** **${latest.duration || '3m 15s'}** at a comfortable pace\n` +
+            `- **Visual Memory Score:** **${latest.memoryScore || 92}%**\n` +
+            `- **Selective Attention:** **${latest.attentionScore || 88}%**\n` +
+            `- **Pacing Stability:** **${latest.speedScore || 90}%** (Calm & Deliberate)\n\n` +
+            `💡 **Doctor's Note:** You maintained steady focus with zero signs of rushing. Your reaction timing is well within the healthy geriatric baseline (1.8s - 3.2s). Tomorrow, practice the Attention game at this same relaxed rhythm!`;
+          speechText = `Namaste ${firstName} ji. In your latest session of ${latest.gameName}, you scored ${latest.score || 94} out of 100 with ${latest.accuracy || '95%'} accuracy. Your visual memory was exceptionally sharp today. Keep up this wonderful morning routine!`;
+        }
+      }
+
+      // ======================================================================
+      // INTENT 2: Doctor "What to Do" vs "What NOT to Do" (Caregiver Protocols)
+      // ======================================================================
+      else if (q.includes('what to do') || q.includes('not to do') || q.includes('caregiver') || q.includes('avoid') ||
+               q.includes('protocol') || q.includes('नियम') || q.includes('सलाह') || q.includes('टाळावे') ||
+               q.includes('পৰামৰ্শ') || q.includes('বोसोन') || q.includes('गारनो')) {
+        category = 'caregiver_protocol';
+
+        if (lang === 'hi') {
+          replyText = `### 🩺 देखभालकर्ताओं के लिए डॉक्टर के नियम\n\n` +
+            `वरिष्ठों के आदर और मस्तिष्क स्वास्थ्य के लिए आवश्यक नियम:\n\n` +
+            `#### 🟢 क्या करें (What to Do):\n` +
+            `1. **सुबह का समय:** मानसिक खेल हमेशा सुबह **9:00 से 11:30** के बीच कराएं, जब दिमाग सबसे ताज़ा होता है।\n` +
+            `2. **पानी पिलाएं:** खेल शुरू करने से 10 मिनट पहले **1 गिलास पानी** ज़रूर दें।\n` +
+            `3. **पुरानी मीठी यादें:** खेल के विषयों को पुरानी कहानियों, यात्रा या पसंदीदा व्यंजनों से जोड़ें।\n` +
+            `4. **धैर्य रखें:** सोचने और उत्तर देने के लिए पूरा समय दें।\n\n` +
+            `#### 🔴 क्या न करें (What to Avoid):\n` +
+            `1. **दबाव वाले सवाल न पूछें:** कभी भी 'क्या आपको याद नहीं?' कहकर सवाल न दाग़ें; इससे तनाव बढ़ता है।\n` +
+            `2. **भूलने पर बहस न करें:** यदि कोई बात भूल जाएं तो प्रेम से विषय बदलें।\n` +
+            `3. **शाम को भारी काम न कराएं:** शाम **4:30** के बाद कठिन दिमागी काम न दें।`;
+          speechText = `देखभालकर्ताओं के लिए सलाह: सुबह के समय पानी पिलाकर खेल कराएं। भूलने पर बहस न करें और हमेशा धीरज से बात करें।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🩺 काळजीवाहूंसाठी जेष्ठ आरोग्य नियम\n\n` +
+            `ज्येष्ठांच्या सन्मानासाठी व मेंदूच्या आरोग्यासाठी महत्त्वाचे नियम:\n\n` +
+            `#### 🟢 काय करावे:\n` +
+            `१. **सकाळची वेळ:** सकाळी **९:०० ते ११:३०** दरम्यान मानसिक खेळ खेळावेत.\n` +
+            `२. **पाणी पिणे:** खेळण्यापूर्वी **१ ग्लास पाणी** अवश्य द्यावे; पाण्याचे प्रमाण कमी झाल्यास थकवा येतो.\n` +
+            `३. **संवाद व प्रोत्साहन:** जुन्या चांगल्या आठवणींवर प्रेमाने चर्चा करावी.\n` +
+            `४. **शांतपणे वेळ द्या:** निर्णय घेण्यासाठी ज्येष्ठ नागरिकांना पुरेसा वेळ द्यावा.\n\n` +
+            `#### 🔴 काय टाळावे:\n` +
+            `१. **दडपण आणू नये:** 'तुझ्या लक्षात कसे नाही?' असे विचारून दबाव आणू नये.\n` +
+            `२. **वाद घालू नये:** विसर पडल्यास प्रेमाने विषय बदलावा.\n` +
+            `३. **संध्याकाळी दमवू नये:** दुपारी ४:३० नंतर मेंदूला थकवणारे कठीण काम देऊ नये.`;
+          speechText = `काळजीवाहूंसाठी सल्ला: सकाळी शांत वेळेत खेळ खेळावेत, भरपूर पाणी द्यावे आणि विसर पडल्यास अजिबात वाद घालू नये.`;
+        } else if (lang === 'as') {
+          replyText = `### 🩺 যত্ন লওঁতাসকলৰ বাবে নিয়ম আৰু সাৱধানতা\n\n` +
+            `জেষ্ঠ্য নাগৰিকৰ সন্মান আৰু স্মৃতিশক্তি অটুট ৰাখিবলৈ:\n\n` +
+            `#### 🟢 কি কৰিব:\n` +
+            `১. **পুৱাৰ সময়:** পুৱা **৯:০০ বজাৰ পৰা ১১:৩০ বজাৰ** ভিতৰত মগজুৰ খেল খেলাওক।\n` +
+            `২. **পানী খোৱাওক:** অনুশীলনৰ আগেয়ে এগিলাচ পানী খাবলৈ দিয়ক।\n` +
+            `৩. **ধৈৰ্য্য ধৰক:** চিন্তা কৰিবলৈ পৰ্যাপ্ত সময় দিয়ক।\n\n` +
+            `#### 🔴 কি নকৰিব:\n` +
+            `১. **চাপ নিদিব:** বাৰে বাৰে কিবা পাহৰিলে জোৰকৈ মনত পেলাবলৈ নক’ব।\n` +
+            `২. **তৰ্ক নকৰিব:** পাহৰি যোৱাৰ বাবে খং বা বিৰক্তি প্ৰকাশ নকৰিব।\n` +
+            `৩. **সন্ধিয়া টান কাম নিদিব:** আবেলি ভাগৰুৱা হৈ পৰিলে জিৰণি ল’বলৈ দিয়ক।`;
+          speechText = `যত্ন লওঁতাসকলৰ বাবে পৰামৰ্শ: পুৱাৰ ভাগত এগিলাচ পানী খুৱাই খেল খেলাওক। পাহৰি গ’লে খং নকৰিব আৰু ধৈৰ্য্য ধৰিব।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🩺 नायगिरिफोरनि थाखाय डाक्टरनि नेमफोर\n\n` +
+            `बैसो जानाय मानसिफोरनि थाखाय गोनांथार नेमफोर:\n\n` +
+            `#### 🟢 मा मा खालामनांगौ:\n` +
+            `१. **फुंनि समाव:** फुङाव **९:०० निफ्राय ११:३०** सिम गेलेनायखौ खालामहो।\n` +
+            `२. **दै लोंहो:** गेलेनायनि १० मिनिट सिगां १ ग्लास दै लोंहो।\n` +
+            `३. **गोजोनै रायलाय:** मोजां मोजां बाथ्रा रायलायना गोसोखौ गोजोन लाखि।\n\n` +
+            `#### 🔴 मा मा गारनांगौ:\n` +
+            `१. **गोसोखां बाथ्राजों गोहोम खोख्लैनो नाङा:** बावगारबाबो रागा जोंनाङा।\n` +
+            `२. **बेलासियाव थाखाहोनाङा:** बेलासियाव आराम खालामहोनो नांगौ।`;
+          speechText = `नायगिरिफोरनि थाखाय बोसोन: फुङाव दै लोंहोना गेलेहो। बावगारबाबो रागा जोंनाङा आरो गोसोखौ मोजां लाखि।`;
+        } else {
+          replyText = `### 🩺 Geriatrician Protocol: Caregiver Guidance for ${user.name}\n\n` +
+            `Here is our medical-grade protocol for supporting seniors with dignity and neuro-wellness:\n\n` +
+            `#### 🟢 WHAT TO DO (Essential Daily Interventions):\n` +
+            `1. **Morning Circadian Window:** Practice cognitive games between **9:00 AM – 11:30 AM** when alertness peaks naturally.\n` +
+            `2. **Hydration First:** Provide **1 glass of water** 10 minutes prior to mental activities; mild dehydration can mimic cognitive decline.\n` +
+            `3. **Reminiscence Scaffolding:** Connect game themes to nostalgic family stories, travel, or favorite recipes.\n` +
+            `4. **Gentle Movement:** Pair 15 minutes of flat walking or seated stretching before games to boost cerebral blood flow.\n\n` +
+            `#### 🔴 WHAT NOT TO DO (Harmful Pitfalls to Avoid):\n` +
+            `1. **DO NOT Quiz Aggressively:** Never interrogate ("Do you remember what you ate?") — stress triggers an adrenaline surge that blocks memory retrieval.\n` +
+            `2. **DO NOT Argue Over Memory Lapses:** Use empathetic validation and gentle redirection instead of confrontational correction.\n` +
+            `3. **DO NOT Schedule Tasks During Sundowning:** Avoid introducing challenging tasks after **4:30 PM** when fatigue peaks.\n` +
+            `4. **DO NOT Rush Words or Decisions:** Allow up to 2.5x more processing time without interrupting or finishing their sentences.`;
+          speechText = `Here is key advice for caregivers: Schedule games in the morning between 9 and 11:30 AM with water hydration. Never quiz the senior aggressively or argue over forgotten memories. Always allow relaxed, patient decision times.`;
+        }
+      }
+
+      // ======================================================================
+      // INTENT 3: Nutrition & Brain Diet
+      // ======================================================================
+      else if (q.includes('eat') || q.includes('food') || q.includes('diet') || q.includes('nutrition') ||
+               q.includes('water') || q.includes('drink') || q.includes('भोजन') || q.includes('आहार') ||
+               q.includes('खाद्य') || q.includes('पोषक') || q.includes('आदार') || q.includes('আহাৰ')) {
+        category = 'nutrition';
+
+        if (lang === 'hi') {
+          replyText = `### 🥗 मस्तिष्क स्वास्थ्य के लिए MIND डाइट व पोषण गाइड\n\n` +
+            `वैज्ञानिक अध्ययनों से सिद्ध है कि **MIND डाइट** याददाश्त को लम्बे समय तक तंदुरुस्त रखती है:\n\n` +
+            `- **रोज़ाना जल-सेवन:** दिनभर में **1.5 से 2 लीटर** पानी पिएं। अभ्यास से 10 मिनट पहले 1 गिलास पानी अवश्य लें।\n` +
+            `- **मेवे (Nuts):** रोज़ाना सुबह 4-5 भीगे बादाम और 2 अखरोट खाएं (ओमेगा-3 व विटामिन E के लिए)।\n` +
+            `- **हरी पत्तेदार सब्ज़ियाँ:** पालक, मेथी, बथुआ दिमाग की नसों को सुरक्षित रखते हैं।\n` +
+            `- **फल व जामुन:** आंवला, अनार और मौसमी फल एंटीऑक्सीडेंट्स से भरपूर हैं।\n` +
+            `- **कम करें:** अत्यधिक मीठा और तला-भुना भोजन कम करें।`;
+          speechText = `दिमाग की सेहत के लिए रोज़ाना भीगे बादाम, अखरोट, हरी सब्ज़ियाँ और पर्याप्त पानी लें। तला-भुना भोजन कम खाएं।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🥗 मेंदूच्या आरोग्यासाठी उत्तम MIND आहार\n\n` +
+            `ज्येष्ठ नागरिकांच्या स्मरणशक्तीसाठी पोषक आहार:\n\n` +
+            `- **भरपूर पाणी:** दिवसातून **१.५ ते २ लिटर** पाणी प्या. मेंदूच्या पेशींना पाण्याची गरज असते.\n` +
+            `- **बदाम व अक्रोड:** दररोज सकाळी ४-५ भिजवलेले बदाम आणि २ अक्रोड खा.\n` +
+            `- **हिरव्या पालेभाज्या:** पालक, मेथी आणि शेवगा मेंदूला पोषण देतात.\n` +
+            `- **ताजी फळे:** डाळिंब, आवळा आणि हंगामी फळे अवश्य खा.\n` +
+            `- **पथ्य:** जास्त गोड व तेलकट पदार्थ टाळा.`;
+          speechText = `मेंदूच्या आरोग्यासाठी भिजवलेले बदाम, अक्रोड, हिरव्या भाज्या आणि भरपूर पाणी पिणे खूप फायदेशीर आहे.`;
+        } else if (lang === 'as') {
+          replyText = `### 🥗 মগজুৰ বাবে উপযোগী সুষম আহাৰ\n\n` +
+            `স্মৃতিশক্তি সবল কৰি ৰাখিবলৈ পুষ্টিকৰ খাদ্য:\n\n` +
+            `- **পৰ্যাপ্ত পানী:** দিনটোত অন্ততঃ **১.৫ ৰ পৰা ২ লিটাৰ** পানী খাব লাগে।\n` +
+            `- **বাদাম আৰু আখৰোট:** পুৱা তিয়াই থোৱা বাদাম আৰু আখৰোট মগজুৰ বাবে মহৌষধ।\n` +
+            `- **শাক-পাচলি:** সেউজীয়া শাক-পাচলি আৰু ফল-মূল নিয়মীয়াকৈ খাওক।\n` +
+            `- **আমলখি:** ভিটামিন C আৰু এণ্টিঅক্সিডেণ্টে স্মৃতিশক্তি সতেজ ৰাখে।`;
+          speechText = `মগজুৰ স্বাস্থ্যৰ বাবে প্ৰতিদিনে পৰ্যাপ্ত পানী খাওক, বাদাম-আখৰোট আৰু সেউজীয়া শাক-পাচলি গ্ৰহণ কৰক।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🥗 मेधिनि थाखाय मोजां आदारनि बोसोन\n\n` +
+            `गोसोखांनाय शक्तिखौ मोजां लाखिनो थाखाय:\n\n` +
+            `- **दै लोंनाय:** सानसेआव **१.५ निफ्राय २ लिटर** दै लों।\n` +
+            `- **बादाम आरो आक्रोट:** फुङाव बादाम आरो आक्रोट जानाया मेधिनि थाखाय जोबोद मोजां।\n` +
+            `- **गोथां मैगं-थायगं:** गोथां मैगं जा आरो जामु जा।\n` +
+            `- **तेल गोनां आदार खम जा:** तेल गोनां आरो गोखै आदार खम जानो नांगौ।`;
+          speechText = `मेधिनि थाखाय सानफ्रोमबो दै लों, बादाम जा आरो गोथां मैगं-थायगं जा।`;
+        } else {
+          replyText = `### 🥗 Neuro-Protective MIND Diet & Hydration Guide\n\n` +
+            `Evidence from geriatric nutrition shows the **MIND Diet** (Mediterranean-DASH Diet Intervention for Neurodegenerative Delay) can preserve cognitive stamina by up to 53%:\n\n` +
+            `- **Daily Hydration:** Aim for **1.5 to 2.0 Litres** of water throughout the day. Drink 1 glass before brain exercises.\n` +
+            `- **Berries & Antioxidants:** Blueberries, strawberries, amla, or pomegranate 2–3 times a week protect neural pathways.\n` +
+            `- **Nuts & Seeds:** 4–5 soaked almonds and 2 walnuts every morning provide essential omega-3 fatty acids.\n` +
+            `- **Green Leafy Vegetables:** Spinach, methi, and broccoli provide folate, lutein, and vitamin E.\n` +
+            `- **What to Limit:** Reduce refined sugars and heavily salted fried foods, which cause vascular micro-inflammation.`;
+          speechText = `For brain wellness, drink 1 glass of water before morning exercises. Enjoy soaked almonds, walnuts, berries, and green leafy vegetables daily. Hydration keeps memory processing fast and clear.`;
+        }
+      }
+
+      // ======================================================================
+      // INTENT 4: Sleep & Rest
+      // ======================================================================
+      else if (q.includes('sleep') || q.includes('tired') || q.includes('fatigue') || q.includes('nap') ||
+               q.includes('नींद') || q.includes('झोप') || q.includes('টোপনি') || q.includes('उन्दुनाय')) {
+        category = 'sleep';
+
+        if (lang === 'hi') {
+          replyText = `### 🌙 अच्छी नींद व विश्राम के उपाय\n\n` +
+            `गहरी नींद के दौरान मस्तिष्क दिनभर की यादों को संजोता है और विषाक्त तत्वों को साफ़ करता है:\n\n` +
+            `1. **7 से 8 घंटे की नींद:** हर रात समय पर सोएं और समय पर जागें।\n` +
+            `2. **स्क्रीन बंद करें:** सोने से **1 घंटा पहले** टीवी व मोबाइल की तेज़ रोशनी से दूर रहें।\n` +
+            `3. **दोपहर की झपकी:** यदि दोपहर में नींद आए, तो केवल **20-30 मिनट** की हल्की झपकी लें।\n` +
+            `4. **शांत दिनचर्या:** सोने से पहले हल्का गुनगुना दूध या शांत संगीत मन को विश्राम देता है।`;
+          speechText = `अच्छी नींद याददाश्त के लिए बहुत ज़रूरी है। रोज़ाना 7 से 8 घंटे सोएं और सोने से 1 घंटा पहले टीवी-फोन बंद कर दें।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🌙 शांत झोप व विश्रांतीसाठी सोपे नियम\n\n` +
+            `शांत झोपेत मेंदूची स्मरणशक्ती मजबूत होते:\n\n` +
+            `१. **७ ते ८ तास झोप:** नियमित वेळी झोपा व नियमित वेळी उठा.\n` +
+            `२. **स्क्रीन बंद करा:** झोपण्यापूर्वी **१ तास आधी** टीव्ही किंवा मोबाईल पाहणे थांबवा.\n` +
+            `३. **दुपारची डुलकी:** दुपारची झोप फक्त **२० ते ३० मिनिटांची** असावी.\n` +
+            `४. **शांत वातावरण:** झोपताना कोमट दूध किंवा शांत संगीत ऐकल्यास मन शांत होते.`;
+          speechText = `मेंदूच्या आरोग्यासाठी दररोज ७ ते ८ तास शांत झोप घ्या. रात्री झोपण्यापूर्वी स्क्रीन पाहणे टाळा.`;
+        } else if (lang === 'as') {
+          replyText = `### 🌙 ভাল টোপনি আৰু জিৰণিৰ দিহা\n\n` +
+            `টোপনিয়ে মগজুক নতুন শক্তি দিয়ে আৰু স্মৃতিশক্তি সজীৱ কৰে:\n\n` +
+            `১. **৭-৮ ঘণ্টা টোপনি:** প্ৰতি নিশাই নিয়মীয়াকৈ টোপনি যাব লাগে।\n` +
+            `২. **টিভি-ম’বাইল এৰক:** শোৱাৰ **১ ঘণ্টা আগতে** স্ক্ৰীন বন্ধ কৰক।\n` +
+            `৩. **দুপৰীয়াৰ জিৰণি:** দুপৰীয়া মাত্ৰ **২০-৩০ মিনিট** জিৰণি লওক।`;
+          speechText = `ভাল স্মৃতিশক্তিৰ বাবে ৰাতি ৭ ৰ পৰা ৮ ঘণ্টা শান্তভাৱে টোপনি যাব লাগে। শোৱাৰ আগতে স্ক্ৰীন পৰিহাৰ কৰক।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🌙 मोजां उन्दुनायनि थाखाय बोसोन\n\n` +
+            `मेधिनि गोहोखौ मोजां लाखिनो थाखाय मोजां उन्दुनाया जोबोद गोनां:\n\n` +
+            `१. **७-८ घन्टा उन्दुनाय:** हरफ्रोमबो ७ निफ्राय ८ घन्टा उन्दु।\n` +
+            `२. **मबाइल-टिभि गार:** उन्दुनायनि **१ घन्टा सिगां** मबाइल आरो टिभि नायनाय बन्द खालाम।\n` +
+            `३. **सान्जुफुनि आराम:** सान्जुफुआव २०-३० मिनिटल’ आराम खालाम।`;
+          speechText = `गोसोखांनाय शक्तिनि थाखाय ७ निफ्राय ८ घन्टा मोजाङै उन्दु आरो उन्दुनायनि सिगां मबाइल नायनाङा।`;
+        } else {
+          replyText = `### 🌙 Sleep Hygiene & Rest for Memory Consolidation\n\n` +
+            `During **Slow-Wave Sleep (SWS)**, the brain activates the glymphatic system to clear metabolic waste and consolidate short-term memories into permanent storage:\n\n` +
+            `1. **Target Sleep Window:** **7.5 to 8.5 hours** of consistent nightly sleep.\n` +
+            `2. **Evening Screen Cutoff:** Turn off bright TV or phone screens **60 minutes before bed** to allow melatonin to release naturally.\n` +
+            `3. **Afternoon Power Naps:** If tired after lunch, keep naps to **20–30 minutes maximum** before 3:00 PM so nighttime sleep remains deep.\n` +
+            `4. **Calming Bedtime Routine:** A warm cup of chamomile tea, mild stretching, or soft instrumental music helps quiet an active mind.`;
+          speechText = `Good sleep is essential for memory. Aim for 7 to 8 hours every night. Dim bright screens 60 minutes before bedtime and keep naps under 30 minutes.`;
+        }
+      }
+
+      // ======================================================================
+      // INTENT 5: Interactive Brain Riddle & Mental Exercises
+      // ======================================================================
+      else if (q.includes('riddle') || q.includes('puzzle') || q.includes('exercise') || q.includes('पहेली') ||
+               q.includes('कोडे') || q.includes('सাঁথৰ') || q.includes('सॉथोर')) {
         category = 'brain_game';
-        const riddles = [
-          {
-            q: "I have hands and a face, but I have no arms and cannot speak. What am I?",
-            a: "A Clock ⏰! (It tells you the time without saying a word!)",
-            hint: "Look at the wall in your living room."
-          },
-          {
-            q: "Can you name 3 traditional fruits that start with the letter 'M'?",
-            a: "Mango 🥭, Melon 🍈, and Mulberry 🍇! (A wonderful brain exercise for verbal recall!)",
-            hint: "Think of sweet summer treats."
-          },
-          {
-            q: "What comes once in a minute, twice in a moment, but never in a thousand years?",
-            a: "The letter 'M' 🔤! A fun visual word puzzle!",
-            hint: "Look at the spelling of the words."
-          }
-        ];
-        const selected = riddles[Math.floor(Math.random() * riddles.length)];
 
-        replyText = `### 💡 Quick Senior Brain Workout: Riddle Time!\n\n` +
-          `Let's stretch our mental agility with a pleasant, gentle riddle:\n\n` +
-          `🧩 **Question:** *"${selected.q}"*\n\n` +
-          `💭 *Hint:* ${selected.hint}\n\n` +
-          `✨ **Answer:** ||**${selected.a}**||\n\n` +
-          `*(Tap or hover above to reveal the answer!)*\n\n` +
-          `Would you like another riddle or would you prefer to practice the Memory Card game?`;
-
-        speechText = `Here is a gentle riddle: ${selected.q}. Take your time to think, or tap to reveal the answer!`;
-        suggestions = [
-          'Give me another riddle 💡',
-          'Play Memory Match Game 🧠',
-          'How was my memory today? 🎯',
-          'Doctor advice for today 🩺'
-        ];
+        if (lang === 'hi') {
+          replyText = `### 💡 आपके लिए एक दिमागी पहेली!\n\n` +
+            `दिमाग की ताजगी के लिए यह सरल पहेली सुलझाएं:\n\n` +
+            `🧩 **पहेली:** *"ऐसी कौन सी चीज़ है जिसके पास हाथ और चेहरा तो है, पर वह चल और बोल नहीं सकती?"*\n\n` +
+            `💭 *संकेत:* यह आपके घर की दीवार पर टंगी रहती है।\n\n` +
+            `✨ **उत्तर:** ||**दीवार घड़ी ⏰ (Clock)!**||\n\n` +
+            `*(उत्तर देखने के लिए ऊपर टैप करें!)*\n\n` +
+            `क्या आप एक और पहेली पूछना चाहेंगे?`;
+          speechText = `यहाँ एक दिमागी पहेली है: ऐसी कौन सी चीज़ है जिसके पास हाथ और चेहरा तो है, पर वह बोल नहीं सकती? सोचिए, उत्तर है दीवार घड़ी।`;
+        } else if (lang === 'mr') {
+          replyText = `### 💡 आपल्यासाठी एक छान मेंदूचे कोडे!\n\n` +
+            `मेंदूच्या एकाग्रतेसाठी हे सोपे कोडे सोडवा:\n\n` +
+            `🧩 **कोडे:** *"अशी कोणती गोष्ट आहे जिला हात आणि चेहरा आहे, पण ती बोलू किंवा चालू शकत नाही?"*\n\n` +
+            `💭 *संकेत:* ही आपल्या घरातील भिंतीवर सतत टिक-टिक करत असते.\n\n` +
+            `✨ **उत्तर:** ||**भिंतीवरील घड्याळ ⏰ (Clock)!**||\n\n` +
+            `*(उत्तर पाहण्यासाठी वर टॅप करा!)*\n\n` +
+            `अजून एक कोडे हवे आहे का?`;
+          speechText = `आपल्यासाठी एक कोडे: अशी कोणती गोष्ट आहे जिला हात आणि चेहरा आहे, पण ती बोलू शकत नाही? उत्तर आहे घड्याळ!`;
+        } else if (lang === 'as') {
+          replyText = `### 💡 আপোনাৰ বাবে এটা মগজুৰ সাঁথৰ!\n\n` +
+            `মনৰ সতেজতাৰ বাবে এই সাঁথৰটো ভাঙক:\n\n` +
+            `🧩 **সাঁথৰ:** *"হাত আৰু মুখ আছে, কিন্তু মাতিব বা লৰচৰ কৰিব নোৱাৰে— সেয়া কি?"*\n\n` +
+            `💭 *ইংগিত:* ই সদায় আপোনাৰ কোঠাৰ বেৰত সময় দেখুৱাই থাকে।\n\n` +
+            `✨ **উত্তৰ:** ||**বেৰৰ ঘড়ী ⏰ (Clock)!**||\n\n` +
+            `*(উত্তৰ চাবলৈ ওপৰত স্পৰ্শ কৰক!)*`;
+          speechText = `আপোনাৰ বাবে এটা সাঁথৰ: হাত আৰু মুখ আছে কিন্তু মাতিব নোৱাৰে, সেয়া কি? উত্তৰ হৈছে ঘড়ী!`;
+        } else if (lang === 'brx') {
+          replyText = `### 💡 नोंथांनि थाखाय मोनसे फाग्ला बाथ्रा (सॉथोर)!\n\n` +
+            `मेधिनि गोसो होनायनि थाखाय बेखौ सान:\n\n` +
+            `🧩 **सॉथोर:** *"आखाफोर आरो महर दं, नाथाय रायलायनो हाया— बेयो मा?"*\n\n` +
+            `💭 *संकेत:* बेयो नोंथांनि न’नि बेरायाव थायो आरो सम दिन्थियो।\n\n` +
+            `✨ **फिननाय:** ||**घड़ी ⏰ (Clock)!**||\n\n` +
+            `*(फिननाय नायनो थाखाय गोजौआव थु!)*`;
+          speechText = `नोंथांनि थाखाय मोनसे सॉथोर: आखाफोर आरो महर दं, नाथाय रायलायनो हाया— बेयो मा? फिननाया जाबाय घड़ी!`;
+        } else {
+          replyText = `### 💡 Quick Senior Brain Workout: Riddle Time!\n\n` +
+            `Let's stretch our mental agility with a pleasant, gentle riddle:\n\n` +
+            `🧩 **Question:** *"I have hands and a face, but I have no arms and cannot speak. What am I?"*\n\n` +
+            `💭 *Hint:* Look at the wall in your living room.\n\n` +
+            `✨ **Answer:** ||**A Clock ⏰! (It tells you the time without saying a word!)**||\n\n` +
+            `*(Tap or hover above to reveal the answer!)*\n\n` +
+            `Would you like another riddle or would you prefer to practice the Memory Card game?`;
+          speechText = `Here is a gentle riddle: I have hands and a face, but I have no arms and cannot speak. What am I? The answer is a clock!`;
+        }
       }
 
-      // INTENT 6: Hindi Language / Cultural Greetings
-      else if (q.includes('namaste') || q.includes('kaisa') || q.includes('khel') || q.includes('kaise ho') || q.includes('dhanyawad') || q.includes('shukriya')) {
-        category = 'cultural';
-        replyText = `### 🌸 नमस्ते ${firstName} ji!\n\n` +
-          `**नमस्ते! आपका स्वागत है SahaayaMind में।**\n\n` +
-          `आपका पिछला खेल बहुत अच्छा रहा:\n` +
-          `- **स्कोर (Score):** **${latest.score || 94}/100**\n` +
-          `- **सटीकता (Accuracy):** **${latest.accuracy || '96%'}**\n` +
-          `- **डॉक्टर सलाह:** आपका ध्यान और स्मृति बहुत शांत और स्थिर है। रोज़ाना सुबह 10 मिनट खेलना दिमाग को चुस्त रखता है।\n\n` +
-          `आप मुझसे खेल के परिणाम, आहार (Diet), नींद या डॉक्टर की सलाह के बारे में कुछ भी पूछ सकते हैं!`;
-
-        speechText = `नमस्ते ${firstName} ji! SahaayaMind में आपका स्वागत है। आपका खेल बहुत अच्छा रहा। आप मुझसे कुछ भी पूछ सकते हैं।`;
-        suggestions = [
-          'How was my memory today? 🧠',
-          'Caregiver advice: What should I avoid? ⚠️',
-          'Give me a gentle brain riddle 💡',
-          'Best foods for brain health 🥗'
-        ];
-      }
-
-      // INTENT 7: Emotional Support, Loneliness, Reassurance
-      else if (q.includes('lonely') || q.includes('sad') || q.includes('anxious') || q.includes('worry') || q.includes('afraid') || q.includes('frustrated') || q.includes('hard') || q.includes('scared')) {
+      // ======================================================================
+      // INTENT 6: Emotional Support, Loneliness, Reassurance
+      // ======================================================================
+      else if (q.includes('lonely') || q.includes('sad') || q.includes('anxious') || q.includes('worry') ||
+               q.includes('afraid') || q.includes('उदास') || q.includes('अकेला') || q.includes('काळजी') ||
+               q.includes('ভয়') || q.includes('উদ্বিগ্ন') || q.includes('गिखों')) {
         category = 'emotional_support';
-        replyText = `### 🌸 We Are Right Here With You, ${firstName} ji\n\n` +
-          `It is completely natural to have moments of feeling tired, overwhelmed, or frustrated. Please take a deep, slow breath:\n\n` +
-          `- **You Are Doing Great:** Cognitive exercises on SahaayaMind are **not a pass/fail test**. They are gentle, supportive exercises created to keep your mind stimulated at your own comfortable pace.\n` +
-          `- **No Pressure:** There are no time penalties and no countdowns. If a round feels tricky, simply pause and take a warm sip of tea.\n` +
-          `- **Small Wins Matter:** Just opening the app and finding a few pairs creates healthy neuro-connections.\n\n` +
-          `Would you like to relax with a simple riddle, listen to calming music, or read doctor tips for rest?`;
 
-        speechText = `You are doing wonderfully, ${firstName} ji. These exercises are gentle practices for your wellness, never a test. Take a deep breath and enjoy your day at your own comfortable pace.`;
-        suggestions = [
-          'Give me a gentle brain riddle 💡',
-          'Tips for better sleep & relaxation 🌙',
-          'How was my memory today? 🧠',
-          'Doctor advice for today 🩺'
-        ];
+        if (lang === 'hi') {
+          replyText = `### 🌸 हम हमेशा आपके साथ हैं, ${firstName} जी\n\n` +
+            `कभी-कभी थकान या उदासी महसूस होना पूरी तरह स्वाभाविक है। कृपया एक गहरी, शांत साँस लें:\n\n` +
+            `- **कोई परीक्षा नहीं:** सहायमाइन्ड कोई पास-फेल की परीक्षा नहीं है। यह केवल आपके मन को शांत व सक्रिय रखने का एक साथी है।\n` +
+            `- **अपनी गति से खेलें:** यहाँ कोई जल्दी नहीं है। जब मन करे आराम करें और एक कप गर्म चाय पिएं।\n` +
+            `- **आप बहुत अच्छा कर रहे हैं:** ऐप खोलकर कुछ मिनट अभ्यास करना ही मस्तिष्क के लिए बहुत लाभकारी है।`;
+          speechText = `हम हमेशा आपके साथ हैं, ${firstName} जी। यह कोई परीक्षा नहीं है। अपनी गति से खेलें और आराम से दिन बिताएं।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🌸 आम्ही सदैव आपल्या सोबत आहोत, ${firstName} जी\n\n` +
+            `कधीकधी थकवा किंवा एकटेपणा वाटणे अगदी स्वाभाविक आहे. एक दीर्घ श्वास घ्या:\n\n` +
+            `- **ही परीक्षा नाही:** सहायामाइन्ड ही कोणतीही परीक्षा नसून आपल्या आनंदासाठी व मेंदूच्या व्यायामासाठी असलेला सोबती आहे.\n` +
+            `- **दडपण घेऊ नका:** येथे कोणताही वेळ मर्यादा नाही. शांत चित्ताने खेळा.\n` +
+            `- **आपण उत्तम करत आहात:** रोज थोडा वेळ खेळणेही मेंदूला ताजेतवाने ठेवते.`;
+          speechText = `आम्ही आपल्या सोबत आहोत, ${firstName} जी। कोणतीही काळजी करू नका. आपण खूप छान सराव करत आहात.`;
+        } else if (lang === 'as') {
+          replyText = `### 🌸 আমি সদায় আপোনাৰ সৈতে আছোঁ, ${firstName} ডাঙৰীয়া\n\n` +
+            `কেতিয়াবা ভাগৰ বা অকশৰীয়া অনুভৱ হোৱাটো স্বাভাৱিক। দীঘলকৈ উশাহ লওক:\n\n` +
+            `- **ই কোনো পৰীক্ষা নহয়:** ই কেৱল আপোনাৰ মনটোক সতেজ ৰখাৰ এটা মৰমৰ সংগী।\n` +
+            `- **কোনো খৰখেদা নাই:** নিজৰ ইচ্ছা অনুসৰি লাহে লাহে খেলিব পাৰে।\n` +
+            `- **আপুনি অতি সুন্দৰভাৱে আগবাঢ়িছে:** নিতৌ অলপ সময় অনুশীলন কৰাই মগজুৰ বাবে আশীৰ্বাদ।`;
+          speechText = `আমি আপোনাৰ সৈতে আছোঁ, ডাঙৰীয়া। কোনো চিন্তা নকৰিব। আপুনি অতি সুন্দৰভাৱে খেল খেলিছে।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🌸 जों नोंथांनि लोगोआव दं, ${firstName} जी\n\n` +
+            `गिखोंनाय एबा थाखाहोनाय मोननाया सरासनस्रा। गोजोनै उसास ला:\n\n` +
+            `- **बेयो आनजाद नङा:** बेयो खालि नोंथांनि गोसोखौ गोजोन लाखिनो थाखायल’।\n` +
+            `- **गोख्रै खालामनाङा:** नोंथांनि सुबिदाबायदि লাहे লাहे गेले।\n` +
+            `- **नोंथाङा मोजां खालामदों:** एसेल’ गेलेनायानो मेधिनि थाखाय मोजां।`;
+          speechText = `जों नोंथांनि लोगोआव दं, ${firstName} जी। गिखोंनाङा आरो लाहे लाहे गेले।`;
+        } else {
+          replyText = `### 🌸 We Are Right Here With You, ${firstName} ji\n\n` +
+            `It is completely natural to have moments of feeling tired, overwhelmed, or frustrated. Please take a deep, slow breath:\n\n` +
+            `- **You Are Doing Great:** Cognitive exercises on SahaayaMind are **not a pass/fail test**. They are gentle, supportive exercises created to keep your mind stimulated at your own comfortable pace.\n` +
+            `- **No Pressure:** There are no time penalties and no countdowns. If a round feels tricky, simply pause and take a warm sip of tea.\n` +
+            `- **Small Wins Matter:** Just opening the app and finding a few pairs creates healthy neuro-connections.`;
+          speechText = `You are doing wonderfully, ${firstName} ji. These exercises are gentle practices for your wellness, never a test. Take a deep breath and enjoy your day at your own comfortable pace.`;
+        }
       }
 
-      // INTENT 8: Clinical Red Flags
-      else if (q.includes('red flag') || q.includes('danger') || q.includes('hospital') || q.includes('emergency') || q.includes('warning')) {
+      // ======================================================================
+      // INTENT 7: Clinical Red Flags & Emergency Guidance
+      // ======================================================================
+      else if (q.includes('red flag') || q.includes('danger') || q.includes('hospital') ||
+               q.includes('emergency') || q.includes('खतरा') || q.includes('धोका') || q.includes('বিপদ')) {
         category = 'red_flags';
-        replyText = `### 🚨 Clinical Red Flags: When to Seek Immediate Medical Evaluation\n\n` +
-          `If any of these acute changes occur in ${user.name}, please contact a licensed physician or hospital immediately:\n\n` +
-          `1. **Acute Disorientation (within 24–72 hours):** Inability to recognize familiar family members, home surroundings, or date/time.\n` +
-          `2. **Sudden Behavioral Shifts:** Uncharacteristic paranoia, severe agitation, or profound lethargy.\n` +
-          `3. **Disruption in Everyday Tasks (ADLs):** Forgetting routine medication, unable to self-dress, or wandering away from home.\n` +
-          `4. **Motor Gait & Postural Instability:** Sudden stumbling, muscle rigidity, or new hand tremors.\n\n` +
-          `*Note: Sudden confusion is frequently caused by reversible conditions such as a Urinary Tract Infection (UTI), dehydration, or medication interactions.*`;
 
-        speechText = `Clinical red flags include sudden confusion within 24 to 72 hours, inability to dress or take medicine, or sudden balance issues. Contact a doctor immediately if these occur.`;
-        suggestions = [
-          'Caregiver advice: What should I avoid? ⚠️',
-          'How was my memory today? 🧠',
-          'Doctor advice: What to do 🟢',
-          'Best foods for brain health 🥗'
-        ];
+        if (lang === 'hi') {
+          replyText = `### 🚨 आपातकालीन चेतावनी (Clinical Red Flags)\n\n` +
+            `यदि वरिष्ठ में निम्नलिखित में से कोई भी अचानक लक्षण दिखे तो तुरंत डॉक्टर से संपर्क करें:\n\n` +
+            `1. **अचानक भ्रम (24–72 घंटे में):** अपने घर, समय या परिवार के सदस्यों को पहचानने में असमर्थता।\n` +
+            `2. **अचानक व्यवहार परिवर्तन:** अत्यधिक गुस्सा, भय या असामान्य बेचैनी।\n` +
+            `3. **दैनिक कार्यों में रुकावट:** कपड़े न पहन पाना या रास्ता भटक जाना।\n` +
+            `4. **संतुलन बिगड़ना:** चलते समय लड़खड़ाना या हाथ में कंपन।\n\n` +
+            `*नोट: अचानक भ्रम अक्सर मूत्र संक्रमण (UTI) या पानी की कमी से भी हो सकता है।*`;
+          speechText = `आपातकालीन लक्षण दिखने पर तुरंत डॉक्टर से मिलें। 24 से 72 घंटे में अचानक भ्रम या संतुलन खोना गंभीर हो सकता है।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🚨 तातडीचे वैद्यकीय संकेत (Clinical Red Flags)\n\n` +
+            `ज्येष्ठांमध्ये अचानक हे बदल आढळल्यास त्वरित वैद्यकीय सल्ला घ्यावा:\n\n` +
+            `१. **अचानक विस्मरण (२४–७२ तासांत):** घरातील व्यक्तींना किंवा घराचा पत्ता विसरणे.\n` +
+            `२. **वर्तणुकीत अचानक बदल:** अतिशय भीती किंवा संताप.\n` +
+            `३. **दैनिक कामात अडचण:** औषधे किंवा कपडे घालण्यास विसरणे.\n` +
+            `४. **चालताना तोल जाणे:** चालताना थरथर किंवा अडखळणे.`;
+          speechText = `तातडीचे लक्षण आढळल्यास त्वरित डॉक्टरांशी संपर्क साधा. अचानक विस्मरण होणे गंभीर असू शकते.`;
+        } else if (lang === 'as') {
+          replyText = `### 🚨 জৰুৰী সতৰ্কতা (Clinical Red Flags)\n\n` +
+            `যদি জেষ্ঠ্য ব্যক্তিজনৰ মাজত হঠাৎ এই লক্ষণবোৰ দেখা দিয়ে তেন্তে চিকিৎসকৰ কাষ চাপক:\n\n` +
+            `১. **হঠাৎ বিভ্ৰান্তি (২৪–৭২ ঘণ্টাৰ ভিতৰত):** নিজৰ ঘৰ বা পৰিয়ালৰ সদস্যক চিনি নোপোৱা।\n` +
+            `২. **আচৰণৰ হঠকাৰী পৰিৱৰ্তন:** অস্বাভাৱিক খং বা ভয়।\n` +
+            `৩. **দৈনন্দিন কামত বাধা:** কাপোৰ পিন্ধিব নোৱৰা বা ঔষধ খাব পাহৰা।`;
+          speechText = `হঠাৎ বিভ্ৰান্তি বা পাহৰি যোৱাৰ লক্ষণ দেখা দিলে পলম নকৰি চিকিৎসকৰ পৰামৰ্শ লওক।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🚨 गोनांथार खौरांगिरि (Clinical Red Flags)\n\n` +
+            `बैसो गोनां मानसियाव गोख्रै बेबादि नुजायोब्ला डाक्टरनाव थां:\n\n` +
+            `१. **गोख्रै बावगारनाय:** न’ एबा नखरनि मानसिखौ सिनायै जानाय।\n` +
+            `२. **आखु सोलायनाय:** जोबोद रागा जोंनाय एबा गिखोंनाय।\n` +
+            `३. **थाबायनायाव गोहोम खोख्लैनाय:** थोजासे थाबायनो हायै जानाय।`;
+          speechText = `गोख्रै बावगारनाय नुजायोब्ला डाक्टरनाव थां आरो मोजां फाहामथाय ला।`;
+        } else {
+          replyText = `### 🚨 Clinical Red Flags: When to Seek Immediate Medical Evaluation\n\n` +
+            `If any of these acute changes occur in ${user.name}, please contact a licensed physician or hospital immediately:\n\n` +
+            `1. **Acute Disorientation (within 24–72 hours):** Inability to recognize familiar family members, home surroundings, or date/time.\n` +
+            `2. **Sudden Behavioral Shifts:** Uncharacteristic paranoia, severe agitation, or profound lethargy.\n` +
+            `3. **Disruption in Everyday Tasks (ADLs):** Forgetting routine medication, unable to self-dress, or wandering away from home.\n` +
+            `4. **Motor Gait & Postural Instability:** Sudden stumbling, muscle rigidity, or new hand tremors.\n\n` +
+            `*Note: Sudden confusion is frequently caused by reversible conditions such as a Urinary Tract Infection (UTI), dehydration, or medication interactions.*`;
+          speechText = `Clinical red flags include sudden confusion within 24 to 72 hours, inability to dress or take medicine, or sudden balance issues. Contact a doctor immediately if these occur.`;
+        }
       }
 
+      // ======================================================================
       // DEFAULT / GENERAL ASSISTANT RESPONSE
+      // ======================================================================
       else {
-        replyText = `### 🤖 Hello ${firstName} ji! I am Your Sahaaya Cognitive Companion\n\n` +
-          `I am your dedicated AI wellness assistant, powered by geriatric cognitive science. Here is what I can assist you with today:\n\n` +
-          `- 📊 **Explain your game results:** Tap *"How was my memory today?"* to get a detailed breakdown of your scores.\n` +
-          `- 🩺 **Doctor Do's & Don'ts:** Get evidence-based clinical protocols for seniors and family caregivers.\n` +
-          `- 🥗 **Brain Nutrition & Hydration:** Learn the optimal MIND diet principles for memory longevity.\n` +
-          `- 💡 **Gentle Mental Exercises:** Play interactive riddles and word puzzles directly in our chat!\n\n` +
-          `What would you like to explore right now?`;
-
-        speechText = `Hello ${firstName} ji! I am your Sahaaya AI Companion. I can analyze your game scores, share doctor advice, or play gentle riddles with you. What would you like to do?`;
+        if (lang === 'hi') {
+          replyText = `### 🌸 नमस्ते ${firstName} जी! मैं आपका सहाय साथी हूँ\n\n` +
+            `मैं आपका समर्पित एआई मानसिक स्वास्थ्य साथी हूँ। मैं इन विषयों में आपकी सहायता कर सकता हूँ:\n\n` +
+            `- 📊 **खेल के परिणाम:** *"आज मेरी याददाश्त कैसी रही?"* पूछकर अपना स्कोर देखें।\n` +
+            `- 🩺 **डॉक्टर सलाह:** देखभाल करने वालों के लिए शास्त्रीय नियम जानें।\n` +
+            `- 🥗 **आहार व पोषण:** मस्तिष्क के लिए सर्वोत्तम MIND डाइट के बारे में पूछें।\n` +
+            `- 💡 **दिमागी कसरत:** एक रोचक पहेली पूछें और मन को ताज़ा रखें!\n\n` +
+            `आप आज क्या जानना चाहेंगे?`;
+          speechText = `नमस्ते ${firstName} जी! मैं आपका सहाय साथी हूँ। आप मुझसे खेल के परिणाम, डॉक्टर की सलाह या पहेली के बारे में पूछ सकते हैं।`;
+        } else if (lang === 'mr') {
+          replyText = `### 🌸 नमस्कार ${firstName} जी! मी तुमचा सहाया सोबती आहे\n\n` +
+            `मी ज्येष्ठ नागरिकांसाठी समर्पित एआय मानसिक आरोग्य मार्गदर्शक आहे. मी आपल्याला खालील गोष्टींमध्ये मदत करू शकतो:\n\n` +
+            `- 📊 **खेळाचे निकाल:** *"आज माझी स्मरणशक्ती कशी होती?"* विचारून गुण तपासा.\n` +
+            `- 🩺 **डॉक्टरांचा सल्ला:** काळजीवाहूंसाठी उपयुक्त वैद्यकीय नियम जाणून घ्या.\n` +
+            `- 🥗 **मेंदूचा आहार:** बदाम, अक्रोड व MIND आहाराबद्दल माहिती मिळवा.\n` +
+            `- 💡 **मेंदूचे कोडे:** मन ताजेतवाने करण्यासाठी छान कोडे सोडवा!\n\n` +
+            `आपण आज कशाबद्दल बोलू इच्छिता?`;
+          speechText = `नमस्कार ${firstName} जी! मी तुमचा सहाया सोबती आहे. आपण मला खेळाचा निकाल, आहार किंवा कोडे याबद्दल विचारू शकता.`;
+        } else if (lang === 'as') {
+          replyText = `### 🌸 নমস্কাৰ ${firstName} ডাঙৰীয়া! মই আপোনাৰ সহায় সংগী\n\n` +
+            `জেষ্ঠ্য নাগৰিকৰ মানসিক সুস্থতাৰ বাবে মই আপোনাৰ এআই সহায়ক। মই আপোনাক সহায় কৰিব পাৰোঁ:\n\n` +
+            `- 📊 **খেলৰ ফলাফল:** *"আজি মোৰ স্মৃতিশক্তি কেনে আছিল?"* সুধি নম্বৰ জানক।\n` +
+            `- 🩺 **চিকিৎসকৰ পৰামৰ্শ:** যত্ন লওঁতাসকলৰ বাবে জৰুৰী নিয়মসমূহ জানক।\n` +
+            `- 🥗 **উপযোগী খাদ্য:** মগজুৰ সুস্থতাৰ বাবে আহাৰৰ বিষয়ে সোধক।\n` +
+            `- 💡 **মগজুৰ সাঁথৰ:** আমোদজনক সাঁথৰ ভাঙি মনটো সতেজ কৰক!\n\n` +
+            `আপুনি কি জানিব বিচাৰে?`;
+          speechText = `নমস্কাৰ ${firstName} ডাঙৰীয়া! মই আপোনাৰ সহায় সংগী। আপুনি খেলৰ ফলাফল, চিকিৎসকৰ দিহা বা সাঁথৰৰ বিষয়ে সুধিব পাৰে।`;
+        } else if (lang === 'brx') {
+          replyText = `### 🌸 खुलुमबाय ${firstName} जी! आं नोंथांनि सहाया लोगो\n\n` +
+            `बैसो गोनां मानसिफोरनि थाखाय आं नोंथांनि AI सावस्रि हेफाजाबगिरि। आं नोंथांनो बेफोरबादि हेफाजाब होनो हागोन:\n\n` +
+            `- 📊 **गेलेनायनि दिन्थिफुल:** *"दिनै आंनि गोसोखांनाय शक्ति माबोरैमोन?"* सोंना नम्बर नाय।\n` +
+            `- 🩺 **डाक्टरनि बोसोन:** नायगिरिफोरनि थाखाय मोजां बोसोन मिथि।\n` +
+            `- 🥗 **मेधिनि आदार:** मेधिनि थाखाय मोजां आदारनि बाथ्रा सों।\n` +
+            `- 💡 **फाग्ला बाथ्रा (सॉथोर):** गोसोखौ गोजोन लाखिनो सॉथोर सान!\n\n` +
+            `दिनै नोंथाङा मा मिथिनो लुबैदों?`;
+          speechText = `खुलुमबाय ${firstName} जी! आं नोंथांनि सहाया लोगो। नोंथाङा गेलेनायनि दिन्थिफुल, डाक्टरनि बोसोन एबा सॉथोर सोंनो हागोन।`;
+        } else {
+          replyText = `### 🤖 Hello ${firstName} ji! I am Your Sahaaya Cognitive Companion\n\n` +
+            `I am your dedicated AI wellness assistant, powered by geriatric cognitive science. Here is what I can assist you with today:\n\n` +
+            `- 📊 **Explain your game results:** Tap *"How was my memory today?"* to get a detailed breakdown of your scores.\n` +
+            `- 🩺 **Doctor Do's & Don'ts:** Get evidence-based clinical protocols for seniors and family caregivers.\n` +
+            `- 🥗 **Brain Nutrition & Hydration:** Learn the optimal MIND diet principles for memory longevity.\n` +
+            `- 💡 **Gentle Mental Exercises:** Play interactive riddles and word puzzles directly in our chat!\n\n` +
+            `What would you like to explore right now?`;
+          speechText = `Hello ${firstName} ji! I am your Sahaaya AI Companion. I can analyze your game scores, share doctor advice, or play gentle riddles with you. What would you like to do?`;
+        }
       }
 
       return {
@@ -1298,8 +1580,49 @@
         speechText,
         suggestions,
         category,
+        source: 'sahaaya_local',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
+    },
+
+    /**
+     * Asynchronous chat with live Google Gemini AI first, falling back to local multi-lingual engine.
+     */
+    chatAsync: async function (userMessage, conversationHistory, activeUser, sessionHistory, langCode) {
+      // 1. Try Google Gemini API first if configured
+      if (typeof window !== 'undefined' && window.GeminiService) {
+        try {
+          const geminiResult = await window.GeminiService.generateResponse(
+            userMessage,
+            conversationHistory,
+            activeUser,
+            sessionHistory,
+            langCode
+          );
+          if (geminiResult && geminiResult.replyText) {
+            return geminiResult;
+          }
+        } catch (geminiErr) {
+          console.warn('[SahaayaAI] Gemini call threw, falling back to local engine:', geminiErr);
+        }
+      }
+
+      // 2. Fall back to local verified multi-lingual engine
+      return this.chat(userMessage, conversationHistory, activeUser, sessionHistory, langCode);
+    },
+
+    /**
+     * Plain-language senior briefing for caregiver review
+     */
+    getCaregiverSummary: function (history, user) {
+      const uName = (user && user.name) ? user.name : 'Senior Member';
+      if (!history || history.length === 0) {
+        return `Welcome to SahaayaMind! Start your first memory or attention exercise today to unlock detailed cognitive insights and caregiver tracking.`;
+      }
+      const count = history.length;
+      const sumScore = history.reduce((acc, h) => acc + (Number(h.score) || 0), 0);
+      const avgScore = Math.round(sumScore / count);
+      return `${uName} has completed ${count} session${count > 1 ? 's' : ''} with an average cognitive score of ${avgScore}/100. Pacing and accuracy are being recorded continuously on this device. Recommended to maintain 1 gentle session per day.`;
     },
 
     // Reference Norms exposed for inspection or testing

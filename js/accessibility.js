@@ -80,11 +80,68 @@
     }
   };
 
-  // Web Speech API Voice Guidance Engine for Seniors
+  // Web Speech API Multilingual Voice Guidance Engine for Seniors
   let speechSynth = window.speechSynthesis;
   let isSpeaking = false;
+  let availableVoices = [];
 
-  window.speakText = function (text, onEndCallback) {
+  function loadVoices() {
+    if ('speechSynthesis' in window) {
+      availableVoices = speechSynth.getVoices() || [];
+    }
+  }
+  loadVoices();
+  if ('speechSynthesis' in window && speechSynth.onvoiceschanged !== undefined) {
+    speechSynth.onvoiceschanged = loadVoices;
+  }
+
+  // Find best matching voice for target language
+  function findBestVoice(langCode) {
+    if (!availableVoices || availableVoices.length === 0) {
+      loadVoices();
+    }
+    const voices = availableVoices;
+    const target = langCode || (window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en');
+
+    // 1. Exact language prefix match
+    let match = null;
+    if (target === 'hi') {
+      match = voices.find(v => v.lang.toLowerCase().startsWith('hi') || v.name.toLowerCase().includes('hindi'));
+    } else if (target === 'mr') {
+      match = voices.find(v => v.lang.toLowerCase().startsWith('mr') || v.name.toLowerCase().includes('marathi'));
+      // Fallback to Hindi voice which accurately pronounces Devanagari script of Marathi
+      if (!match) match = voices.find(v => v.lang.toLowerCase().startsWith('hi'));
+    } else if (target === 'as') {
+      match = voices.find(v => v.lang.toLowerCase().startsWith('as') || v.name.toLowerCase().includes('assamese'));
+      // Fallback to Bengali voice (Eastern Nagari script) or Hindi
+      if (!match) match = voices.find(v => v.lang.toLowerCase().startsWith('bn'));
+      if (!match) match = voices.find(v => v.lang.toLowerCase().startsWith('hi'));
+    } else if (target === 'brx') {
+      match = voices.find(v => v.lang.toLowerCase().startsWith('brx') || v.name.toLowerCase().includes('bodo'));
+      // Fallback to Hindi voice for Devanagari phonetics
+      if (!match) match = voices.find(v => v.lang.toLowerCase().startsWith('hi'));
+    } else {
+      // English (prefers Indian English)
+      match = voices.find(v => v.lang.toLowerCase().includes('en-in') || v.name.toLowerCase().includes('india'));
+      if (!match) match = voices.find(v => v.lang.toLowerCase().startsWith('en'));
+    }
+
+    return match || null;
+  }
+
+  // Clean markdown and symbols from text for senior speech
+  function cleanTextForSpeech(rawText) {
+    if (!rawText) return '';
+    return rawText
+      .replace(/\|\|(.*?)\|\|/g, '$1') // Reveal riddle answer in speech smoothly
+      .replace(/[*#_~`>]/g, '')        // Strip markdown decorators
+      .replace(/-\s+/g, '')            // Strip bullet dashes
+      .replace(/\d+\.\s+/g, '')        // Strip numbered list digits
+      .replace(/\n+/g, '. ')           // Convert line breaks to gentle pauses
+      .trim();
+  }
+
+  window.speakText = function (text, onEndCallback, langCode) {
     if (!('speechSynthesis' in window)) {
       alert("Voice assistance is not supported in this browser.");
       return;
@@ -95,25 +152,47 @@
 
     if (!text || text.trim() === "") return;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.88; // Gentle, clear speed for seniors
+    const cleaned = cleanTextForSpeech(text);
+    const activeLang = langCode || (window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en');
+    const utterance = new SpeechSynthesisUtterance(cleaned);
+
+    // Warm, respectful pace for seniors
+    utterance.rate = (activeLang === 'en') ? 0.88 : 0.85;
     utterance.pitch = 1.0;
-    utterance.lang = 'en-IN'; // Gentle Indian English pronunciation if available, fallbacks automatically
+
+    // Set voice & BCP-47 tag
+    const langTags = {
+      en: 'en-IN',
+      hi: 'hi-IN',
+      mr: 'mr-IN',
+      as: 'as-IN',
+      brx: 'hi-IN'
+    };
+    utterance.lang = langTags[activeLang] || 'en-IN';
+
+    const selectedVoice = findBestVoice(activeLang);
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
 
     utterance.onstart = function () {
       isSpeaking = true;
       updateVoiceButtonsUI(true);
+      document.body.classList.add('ai-speaking-active');
     };
 
     utterance.onend = function () {
       isSpeaking = false;
       updateVoiceButtonsUI(false);
+      document.body.classList.remove('ai-speaking-active');
       if (onEndCallback) onEndCallback();
     };
 
     utterance.onerror = function () {
       isSpeaking = false;
       updateVoiceButtonsUI(false);
+      document.body.classList.remove('ai-speaking-active');
+      if (onEndCallback) onEndCallback();
     };
 
     speechSynth.speak(utterance);
@@ -124,6 +203,7 @@
       speechSynth.cancel();
       isSpeaking = false;
       updateVoiceButtonsUI(false);
+      document.body.classList.remove('ai-speaking-active');
     }
   };
 
@@ -140,20 +220,35 @@
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(note);
       u.rate = 1.0;
+      const lang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+      const voice = findBestVoice(lang);
+      if (voice) u.voice = voice;
       speechSynth.speak(u);
     }
   }
 
   function updateVoiceButtonsUI(speaking) {
+    const lang = window.SahaayaI18N ? window.SahaayaI18N.getLanguage() : 'en';
+    const stopText = (window.SahaayaI18N) ? window.SahaayaI18N.t('stopVoice') : 'Stop Voice';
+    const readText = (window.SahaayaI18N) ? window.SahaayaI18N.t('readAloud') : 'Read Aloud';
+
     document.querySelectorAll('.btn-voice-toggle, #page-voice-btn').forEach(btn => {
       if (speaking) {
         btn.classList.add('active');
-        btn.innerHTML = `<span aria-hidden="true">🔊</span> Stop Voice`;
+        btn.innerHTML = `<span aria-hidden="true">🔊</span> ${stopText}`;
       } else {
         btn.classList.remove('active');
-        btn.innerHTML = `<span aria-hidden="true">🔈</span> Read Aloud`;
+        btn.innerHTML = `<span aria-hidden="true">🔈</span> ${readText}`;
       }
     });
+
+    // Update message listen buttons if speaking stopped
+    if (!speaking) {
+      document.querySelectorAll('.btn-msg-listen.speaking').forEach(b => {
+        b.classList.remove('speaking');
+        b.innerHTML = '<span>🔊</span> <span>Listen</span>';
+      });
+    }
   }
 
   function getDefaultPageSpeech() {
@@ -186,6 +281,26 @@
     if (voiceBtn) {
       voiceBtn.addEventListener('click', () => toggleVoiceRead());
     }
+
+    // Attach listener for language switcher buttons if present
+    document.querySelectorAll('.js-lang-btn, .lang-select-btn, .lang-pill-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const lang = e.currentTarget.getAttribute('data-lang');
+        if (lang && window.SahaayaI18N) {
+          window.SahaayaI18N.setLanguage(lang, true);
+        }
+      });
+    });
+
+    // Attach listener for language select dropdowns
+    document.querySelectorAll('.js-language-select').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        const lang = e.target.value;
+        if (lang && window.SahaayaI18N) {
+          window.SahaayaI18N.setLanguage(lang, true);
+        }
+      });
+    });
   });
 
 })();

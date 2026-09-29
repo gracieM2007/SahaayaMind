@@ -60,10 +60,24 @@
     },
 
     // Record a completed game session and redirect to result.html
-    completeGameSession: function (gameType, score, accuracyStr, durationStr, customFeedback, telemetryPayload) {
+    completeGameSession: function (gameType, score, accuracyStr, durationStr, customFeedback, telemetryPayload, levelInfo) {
       const activeUser = this.getActiveUser();
       const isMemory = gameType === 'memory';
-      const gameTitle = isMemory ? "Memory Recall & Match" : "Attention & Pattern Focus";
+
+      // 0. Resolve level progression info
+      let lastLvl = null;
+      try {
+        lastLvl = JSON.parse(localStorage.getItem('sahaaya_last_completed_level') || 'null');
+      } catch (e) {}
+
+      const completedLvlNum = (levelInfo && levelInfo.level) || (telemetryPayload && telemetryPayload.level) || (lastLvl && lastLvl.gameType === gameType ? lastLvl.level : 1);
+      const nextLvlNum = (levelInfo && levelInfo.nextLevel) || (lastLvl && lastLvl.gameType === gameType ? lastLvl.nextLevel : (completedLvlNum < 5 ? completedLvlNum + 1 : null));
+      const isNewlyUnlocked = levelInfo && typeof levelInfo.newlyUnlocked !== 'undefined'
+        ? levelInfo.newlyUnlocked
+        : (lastLvl && lastLvl.gameType === gameType ? !!lastLvl.newlyUnlocked : false);
+
+      const gameBaseTitle = isMemory ? "Memory Recall & Match" : "Attention & Pattern Focus";
+      const gameTitle = `${gameBaseTitle} (Level ${completedLvlNum})`;
 
       // 1. Fetch user history for longitudinal comparison
       let history = [];
@@ -73,16 +87,39 @@
         history = [];
       }
 
-      // 2. Perform intelligent multi-dimensional analysis with self-verification pass
+      // 2. Perform 3-factor cognitive calculation & continuous device streak update
+      let perfReport = null;
+      let streakRecord = null;
+      if (typeof window.MemoryLogistics !== 'undefined') {
+        const timeSec = telemetryPayload && telemetryPayload.timeSeconds ? telemetryPayload.timeSeconds : (parseInt(durationStr, 10) || 45);
+        const attempts = telemetryPayload && telemetryPayload.attempts ? telemetryPayload.attempts : (telemetryPayload && telemetryPayload.moves ? telemetryPayload.moves : 5);
+        const matches = telemetryPayload && telemetryPayload.matches ? telemetryPayload.matches : 4;
+        const pairs = telemetryPayload && telemetryPayload.totalPairs ? telemetryPayload.totalPairs : 4;
+
+        perfReport = window.MemoryLogistics.calculatePerformance(timeSec, attempts, matches, pairs);
+
+        // Record activity continuously on this device forever
+        const rec = window.MemoryLogistics.recordGameActivity({
+          score: perfReport.overallScore,
+          accuracyPct: perfReport.accuracyPct,
+          durationSec: perfReport.timeSeconds,
+          attempts: perfReport.attempts,
+          gameType: gameType,
+          gameName: gameTitle
+        });
+        streakRecord = rec.streak;
+      }
+
+      // 3. Perform AI analysis with fallback
       let aiAnalysis = null;
       if (typeof window.SahaayaAI !== 'undefined' && typeof window.SahaayaAI.analyzeSession === 'function') {
         try {
           aiAnalysis = window.SahaayaAI.analyzeSession({
             gameType: gameType,
             gameName: gameTitle,
-            score: score,
-            accuracy: accuracyStr,
-            duration: durationStr,
+            score: perfReport ? perfReport.overallScore : score,
+            accuracy: perfReport ? perfReport.accuracyStr : accuracyStr,
+            duration: perfReport ? perfReport.durationStr : durationStr,
             customFeedback: customFeedback,
             telemetry: telemetryPayload
           }, history, activeUser);
@@ -91,28 +128,39 @@
         }
       }
 
-      // 3. Construct rich, backward-compatible session result
+      // 4. Construct rich session result
+      const finalScore = perfReport ? perfReport.overallScore : (aiAnalysis ? aiAnalysis.overallScore : (score || (isMemory ? 94 : 88)));
+      const finalAccuracy = perfReport ? perfReport.accuracyStr : (accuracyStr || (aiAnalysis ? aiAnalysis.accuracyStr : "95%"));
+      const finalDuration = perfReport ? perfReport.durationStr : (durationStr || (aiAnalysis ? aiAnalysis.durationStr : "3m 15s"));
+      const finalAttempts = perfReport ? perfReport.attempts : (telemetryPayload && telemetryPayload.moves ? telemetryPayload.moves : 5);
+
       const sessionResult = {
         gameName: gameTitle,
         gameType: gameType,
-        score: aiAnalysis ? aiAnalysis.overallScore : (score || (isMemory ? 94 : 88)),
+        completedLevel: completedLvlNum,
+        nextLevelUnlocked: nextLvlNum,
+        newlyUnlocked: isNewlyUnlocked,
+        score: finalScore,
         maxScore: 100,
-        accuracy: accuracyStr || (aiAnalysis ? aiAnalysis.accuracyStr : "95%"),
-        duration: durationStr || (aiAnalysis ? aiAnalysis.durationStr : "3m 15s"),
-        memoryScore: aiAnalysis && aiAnalysis.domainScores ? aiAnalysis.domainScores.memory.score : (isMemory ? (score || 94) : 84),
+        accuracy: finalAccuracy,
+        duration: finalDuration,
+        attempts: finalAttempts,
+        perfReport: perfReport,
+        deviceStreak: streakRecord || (typeof window.MemoryLogistics !== 'undefined' ? window.MemoryLogistics.getDeviceStreak() : null),
+        memoryScore: aiAnalysis && aiAnalysis.domainScores ? aiAnalysis.domainScores.memory.score : (isMemory ? finalScore : 84),
         attentionScore: aiAnalysis && aiAnalysis.domainScores ? aiAnalysis.domainScores.attention.score : (isMemory ? 88 : (score || 90)),
-        speedScore: aiAnalysis && aiAnalysis.domainScores ? aiAnalysis.domainScores.processingSpeed.score : 89,
+        speedScore: perfReport ? perfReport.timeEfficiencyPct : (aiAnalysis && aiAnalysis.domainScores ? aiAnalysis.domainScores.processingSpeed.score : 89),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-        feedback: (aiAnalysis && aiAnalysis.seniorFeedback) ? aiAnalysis.seniorFeedback : (customFeedback || (isMemory 
-          ? "Exceptional memory recall today! You quickly identified matching patterns with 95% precision." 
-          : "Fantastic concentration and speed! You sustained steady attention across all visual targets.")),
-        recommendation: (aiAnalysis && aiAnalysis.recommendation) ? aiAnalysis.recommendation : (isMemory 
-          ? "Great morning exercise. Next, relax your eyes and practice the Attention Game tomorrow." 
-          : "Superb focus! Rest for 10 minutes and enjoy your daily tea."),
+        feedback: (perfReport && perfReport.seniorFeedback) || ((aiAnalysis && aiAnalysis.seniorFeedback) ? aiAnalysis.seniorFeedback : (customFeedback || (isMemory 
+          ? "Exceptional memory recall today! You quickly identified matching patterns with high precision." 
+          : "Fantastic concentration and speed! You sustained steady attention across all visual targets."))),
+        recommendation: (perfReport && perfReport.recommendation) || ((aiAnalysis && aiAnalysis.recommendation) ? aiAnalysis.recommendation : (isMemory 
+          ? "Great morning exercise. Next, relax your eyes and drink water to consolidate memory." 
+          : "Superb focus! Rest for 10 minutes and enjoy your daily tea.")),
         // Rich AI metadata
         aiReport: aiAnalysis,
-        confidence: aiAnalysis ? aiAnalysis.confidence : 0.85,
+        confidence: aiAnalysis ? aiAnalysis.confidence : 0.88,
         suggestedDifficulty: aiAnalysis ? aiAnalysis.suggestedDifficulty : 2,
         caregiverNote: aiAnalysis ? aiAnalysis.caregiverNote : null
       };
@@ -126,25 +174,29 @@
           id: "sess_" + Date.now(),
           gameName: sessionResult.gameName,
           gameType: sessionResult.gameType,
+          completedLevel: completedLvlNum,
           date: sessionResult.date,
           time: sessionResult.timestamp,
           score: sessionResult.score,
           accuracy: sessionResult.accuracy,
           duration: sessionResult.duration,
-          speedRating: (aiAnalysis && aiAnalysis.pacingSummary) ? aiAnalysis.pacingSummary.style : "Steady & Confident",
+          attempts: sessionResult.attempts,
+          speedRating: (perfReport && perfReport.pacingStyle) || ((aiAnalysis && aiAnalysis.pacingSummary) ? aiAnalysis.pacingSummary.style : "Steady & Confident"),
           status: "Completed",
           memoryScore: sessionResult.memoryScore,
           attentionScore: sessionResult.attentionScore,
           speedScore: sessionResult.speedScore
         });
-        localStorage.setItem('sahaaya_history', JSON.stringify(history.slice(0, 15)));
+        localStorage.setItem('sahaaya_history', JSON.stringify(history.slice(0, 20)));
 
         // Update active user statistics
         activeUser.sessionsCompleted = (activeUser.sessionsCompleted || 0) + 1;
         activeUser.lastSession = "Just now (" + sessionResult.timestamp + ")";
-        activeUser.overallScore = Math.min(99, Math.round(((activeUser.overallScore || 85) * 4 + sessionResult.score) / 5));
-        if (aiAnalysis && aiAnalysis.suggestedDifficulty) {
-          activeUser.cognitiveLevel = `Level ${aiAnalysis.suggestedDifficulty}`;
+        const prevScore = (typeof activeUser.overallScore === 'number' && activeUser.overallScore > 0) ? activeUser.overallScore : null;
+        activeUser.overallScore = prevScore === null ? sessionResult.score : Math.min(99, Math.round((prevScore * 4 + sessionResult.score) / 5));
+        activeUser.cognitiveLevel = `Level ${completedLvlNum}`;
+        if (streakRecord) {
+          activeUser.streakDays = streakRecord.currentStreak;
         }
         localStorage.setItem('sahaaya_active_user', JSON.stringify(activeUser));
       } catch (err) {
@@ -196,6 +248,22 @@
       document.querySelectorAll('.js-user-avatar').forEach(el => {
         el.textContent = user.avatarInitials;
       });
+
+      // Synchronize persistent device streak
+      const streakObj = window.MemoryLogistics ? window.MemoryLogistics.getDeviceStreak() : null;
+      const currentStreak = (streakObj && typeof streakObj.currentStreak === 'number') 
+        ? streakObj.currentStreak 
+        : (user && typeof user.streakDays === 'number' ? user.streakDays : 0);
+      document.querySelectorAll('.js-user-streak, .js-streak-days').forEach(el => {
+        el.textContent = `${currentStreak} Days`;
+      });
+
+      // Update progress bar width
+      document.querySelectorAll('.stat-tile .progress-bar-fill').forEach(el => {
+        if (el.closest('.stat-tile')) {
+          el.style.width = (user.overallScore || 0) + '%';
+        }
+      });
     },
 
     // Hydrate Result Screen
@@ -209,6 +277,14 @@
 
       const user = this.getActiveUser();
 
+      // Retrieve device streak
+      let streakObj = null;
+      let streakPerf = null;
+      if (typeof window.MemoryLogistics !== 'undefined') {
+        streakObj = window.MemoryLogistics.getDeviceStreak();
+        streakPerf = window.MemoryLogistics.getStreakPerformanceSummary();
+      }
+
       const resScore = document.getElementById('res-score');
       if (resScore) resScore.textContent = resultData.score;
 
@@ -220,6 +296,26 @@
 
       const resDuration = document.getElementById('res-duration');
       if (resDuration) resDuration.textContent = resultData.duration;
+
+      // Attempts Stat Tile
+      const resAttempts = document.getElementById('res-attempts-val');
+      if (resAttempts) {
+        resAttempts.textContent = `${resultData.attempts || 5} Moves`;
+      }
+
+      // Continuous Device Streak Stat Tile
+      const resStreak = document.getElementById('res-streak-val');
+      if (resStreak) {
+        const streakDays = (streakObj && typeof streakObj.currentStreak === 'number') 
+          ? streakObj.currentStreak 
+          : (user && typeof user.streakDays === 'number' ? user.streakDays : 0);
+        resStreak.textContent = `🔥 ${streakDays} Days`;
+      }
+      const resStreakCaption = document.getElementById('res-streak-caption');
+      if (resStreakCaption && streakObj) {
+        const avgScoreVal = streakPerf && typeof streakPerf.avgScore === 'number' ? streakPerf.avgScore : 0;
+        resStreakCaption.textContent = `Best: ${streakObj.bestStreak || 0} Days • Streak Avg: ${avgScoreVal}/100`;
+      }
 
       const resFeedback = document.getElementById('res-feedback');
       if (resFeedback) resFeedback.textContent = resultData.feedback;
@@ -251,6 +347,31 @@
         if (spdBar) spdBar.style.width = spdVal + "%";
       }
 
+      // Render 3-Factor Breakdown if element exists
+      const factorsEl = document.getElementById('res-3factor-breakdown');
+      if (factorsEl && resultData.perfReport) {
+        const p = resultData.perfReport;
+        factorsEl.innerHTML = `
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <div style="background: rgba(13, 148, 136, 0.08); padding: 0.9rem; border-radius: 8px; border-left: 4px solid var(--accent-teal);">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-teal-dark);">1. ACCURACY RATE (45%)</div>
+              <div style="font-size: 1.3rem; font-weight: 800; color: var(--primary-navy);">${p.accuracyStr}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">+${p.pointsBreakdown.accuracyPoints} score points</div>
+            </div>
+            <div style="background: rgba(37, 99, 235, 0.08); padding: 0.9rem; border-radius: 8px; border-left: 4px solid var(--accent-blue);">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue);">2. ATTEMPTS TAKEN (30%)</div>
+              <div style="font-size: 1.3rem; font-weight: 800; color: var(--primary-navy);">${p.attempts} moves</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Optimal: ${p.optimalAttempts} • +${p.pointsBreakdown.attemptsPoints} pts</div>
+            </div>
+            <div style="background: rgba(245, 158, 11, 0.08); padding: 0.9rem; border-radius: 8px; border-left: 4px solid var(--warning-amber);">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--warning-amber);">3. TIME PACING (25%)</div>
+              <div style="font-size: 1.3rem; font-weight: 800; color: var(--primary-navy);">${p.durationStr}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${p.pacingStyle} • +${p.pointsBreakdown.timePoints} pts</div>
+            </div>
+          </div>
+        `;
+      }
+
       const resConfidenceVal = document.getElementById('res-confidence-val');
       if (resConfidenceVal) {
         const confPct = Math.round(((resultData.aiReport && resultData.aiReport.confidence) || resultData.confidence || 0.88) * 100);
@@ -261,6 +382,67 @@
       if (resDifficultyReason) {
         resDifficultyReason.textContent = (resultData.aiReport && resultData.aiReport.difficultyReason) ||
           (resultData.suggestedDifficulty ? `Continuing on Level ${resultData.suggestedDifficulty} (Gentle Pace).` : "Continuing comfortably on Level 2 (Gentle Pace).");
+      }
+
+      // 5-Level Progression Banner & Next-Level CTA
+      const currentLvl = resultData.completedLevel || 1;
+      const nextLvl = resultData.nextLevelUnlocked;
+      const gameType = resultData.gameType || 'memory';
+      const gamePage = gameType === 'attention' ? 'attention.html' : 'memory.html';
+      const nextSlot = document.getElementById('result-next-level-slot');
+
+      if (nextSlot) {
+        if (nextLvl && nextLvl <= 5) {
+          const nextConfig = window.SahaayaLevels ? window.SahaayaLevels.getConfig(gameType, nextLvl) : null;
+          const nextName = nextConfig ? nextConfig.name : `Level ${nextLvl}`;
+          nextSlot.innerHTML = `
+            <div class="result-level-unlocked-banner" role="region" aria-label="Next Level Unlocked">
+              <div class="result-level-unlocked-info">
+                <span class="badge badge-teal" style="background: rgba(94, 234, 212, 0.25); color: #5EEAD4; border: 1px solid #5EEAD4;">
+                  🔓 Progression Unlocked!
+                </span>
+                <h3>Level ${nextLvl}: ${nextName} is Ready!</h3>
+                <p>Outstanding job clearing Level ${currentLvl}. Level ${nextLvl} has been unlocked for your cognitive training.</p>
+              </div>
+              <div>
+                <a href="${gamePage}?level=${nextLvl}" class="senior-btn senior-btn-accent" id="btn-next-level-banner" style="font-size: var(--text-lg); padding: 0.95rem 2rem; white-space: nowrap;">
+                  ▶ Play Level ${nextLvl} Now →
+                </a>
+              </div>
+            </div>
+          `;
+        } else if (currentLvl >= 5) {
+          nextSlot.innerHTML = `
+            <div class="result-level-unlocked-banner" style="background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%); border-color: #A5B4FC;">
+              <div class="result-level-unlocked-info">
+                <span class="badge badge-teal" style="background: rgba(165, 180, 252, 0.25); color: #C7D2FE; border: 1px solid #A5B4FC;">
+                  🏆 Cognitive Mastery
+                </span>
+                <h3 style="color: #FFFFFF !important;">All 5 Levels Conquered!</h3>
+                <p style="color: #E0E7FF !important;">Tremendous dedication! You have successfully completed all 5 levels of ${gameType === 'attention' ? 'Attention' : 'Memory'} challenges.</p>
+              </div>
+              <div>
+                <a href="${gamePage}?level=5" class="senior-btn senior-btn-accent" style="font-size: var(--text-lg); padding: 0.95rem 2rem;">
+                  🔄 Replay Master Level 5
+                </a>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Update primary next-level CTA button
+      const playNextBtn = document.getElementById('btn-play-next-level');
+      if (playNextBtn) {
+        if (nextLvl && nextLvl <= 5) {
+          playNextBtn.style.display = 'block';
+          playNextBtn.href = `${gamePage}?level=${nextLvl}`;
+          playNextBtn.innerHTML = `▶ Play Next Level (Level ${nextLvl}) →`;
+        } else {
+          playNextBtn.style.display = 'block';
+          playNextBtn.href = `${gamePage}?level=${currentLvl}`;
+          playNextBtn.innerHTML = `🔄 Replay Level ${currentLvl} →`;
+        }
       }
     },
 
@@ -274,38 +456,72 @@
         history = SAHAAYA_DEFAULT_HISTORY;
       }
 
+      // Device Streak & Streak Performance
+      if (typeof window.MemoryLogistics !== 'undefined') {
+        const streakPerf = window.MemoryLogistics.getStreakPerformanceSummary();
+        const streakCountEl = document.getElementById('progress-streak-count');
+        if (streakCountEl) streakCountEl.textContent = `${streakPerf.currentStreak} Days`;
+
+        const streakBestEl = document.getElementById('progress-streak-best');
+        if (streakBestEl) streakBestEl.textContent = `${streakPerf.bestStreak} Days Best`;
+
+        const streakAvgScoreEl = document.getElementById('progress-streak-avg-score');
+        if (streakAvgScoreEl) streakAvgScoreEl.textContent = `${streakPerf.avgScore}/100`;
+
+        const streakAvgAccEl = document.getElementById('progress-streak-avg-acc');
+        if (streakAvgAccEl) streakAvgAccEl.textContent = `${streakPerf.avgAccuracy}%`;
+
+        const streakMilestoneEl = document.getElementById('progress-streak-milestone');
+        if (streakMilestoneEl) {
+          streakMilestoneEl.innerHTML = `<span style="font-size:1.4rem;">${streakPerf.milestone.icon}</span> <strong>${streakPerf.milestone.title}</strong> — ${streakPerf.milestone.desc}`;
+        }
+      }
+
       // History Table render
       const tbody = document.getElementById('progress-history-tbody');
       if (tbody) {
         tbody.innerHTML = '';
-        history.forEach(item => {
-          const tr = document.createElement('tr');
-          tr.className = 'progress-table-row';
-          tr.innerHTML = `
-            <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--primary-navy);">
-              <div style="font-size: var(--text-base); font-weight: 700;">${item.gameName}</div>
-              <div style="font-size: 0.9rem; color: var(--text-muted);">${item.date} • ${item.time}</div>
-            </td>
-            <td style="padding: 1.1rem 1rem;">
-              <span class="badge ${item.gameType === 'memory' ? 'badge-teal' : 'badge-blue'}">
-                ${item.gameType === 'memory' ? 'Memory' : 'Attention'}
-              </span>
-            </td>
-            <td style="padding: 1.1rem 1rem; font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);">
-              ${item.score}/100
-            </td>
-            <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--text-secondary);">
-              ${item.accuracy}
-            </td>
-            <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--text-secondary);">
-              ${item.duration}
-            </td>
-            <td style="padding: 1.1rem 1rem;">
-              <span class="badge badge-green">✔ ${item.status}</span>
+        if (!history || history.length === 0) {
+          const emptyTr = document.createElement('tr');
+          emptyTr.innerHTML = `
+            <td colspan="7" style="padding: 2.75rem 1rem; text-align: center; color: var(--text-muted); font-size: 1.05rem;">
+              🌱 No activity sessions recorded yet. Play your first Memory or Attention game to begin tracking your progress!
             </td>
           `;
-          tbody.appendChild(tr);
-        });
+          tbody.appendChild(emptyTr);
+        } else {
+          history.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.className = 'progress-table-row';
+            tr.innerHTML = `
+              <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--primary-navy);">
+                <div style="font-size: var(--text-base); font-weight: 700;">${item.gameName}</div>
+                <div style="font-size: 0.9rem; color: var(--text-muted);">${item.date} • ${item.time}</div>
+              </td>
+              <td style="padding: 1.1rem 1rem;">
+                <span class="badge ${item.gameType === 'memory' ? 'badge-teal' : 'badge-blue'}">
+                  ${item.gameType === 'memory' ? 'Memory' : 'Attention'}
+                </span>
+              </td>
+              <td style="padding: 1.1rem 1rem; font-weight: 800; font-size: 1.25rem; color: var(--primary-navy);">
+                ${item.score}/100
+              </td>
+              <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--text-secondary);">
+                ${item.accuracy}
+              </td>
+              <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--text-secondary);">
+                ${item.attempts || 0} moves
+              </td>
+              <td style="padding: 1.1rem 1rem; font-weight: 600; color: var(--text-secondary);">
+                ${item.duration}
+              </td>
+              <td style="padding: 1.1rem 1rem;">
+                <span class="badge badge-green">✔ ${item.status}</span>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
       }
 
       // Real-time AI Caregiver Summary Briefing

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/polish.css">
+  <link rel="stylesheet" href="../css/levels.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -28,6 +29,16 @@
         <button type="button" class="access-btn" id="page-voice-btn">
           <span aria-hidden="true">🔈</span> Read Aloud
         </button>
+        <div class="lang-selector-wrap" style="display:inline-flex; align-items:center; margin-left:8px;">
+          <label for="global-lang-select" style="font-size:0.85rem; font-weight:600; margin-right:4px;">🌐 Language:</label>
+          <select id="global-lang-select" class="access-select" aria-label="Select Application Language">
+            <option value="en">English</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="as">অসমীয়া (Assamese)</option>
+            <option value="brx">बड़ो (Bodo)</option>
+          </select>
+        </div>
       </div>
     </div>
   </aside>
@@ -102,12 +113,21 @@
             </h1>
           </div>
           
-          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-            <div class="game-info-badge">
-              <span aria-hidden="true">⏱️</span> Time: <span id="game-timer" style="margin-left: 0.35rem; color: var(--accent-blue);">01:10</span>
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <div class="game-info-badge" title="Time taken in current game session">
+              <span aria-hidden="true">⏱️</span> Time: <span id="game-timer" style="margin-left: 0.35rem; color: var(--accent-blue); font-weight:800;">00:00</span>
             </div>
-            <div class="game-info-badge">
-              <span aria-hidden="true">🎯</span> Score: <span id="game-score-live" style="margin-left: 0.35rem; color: var(--primary-navy);">88</span>
+            <div class="game-info-badge" title="Number of tile taps taken">
+              <span aria-hidden="true">🔄</span> Taps: <span id="game-attempts" style="margin-left: 0.35rem; color: var(--accent-blue); font-weight:800;">0</span>
+            </div>
+            <div class="game-info-badge" title="Accuracy percentage (Targets / Total Taps)">
+              <span aria-hidden="true">🎯</span> Accuracy: <span id="game-accuracy" style="margin-left: 0.35rem; color: #059669; font-weight:800;">100%</span>
+            </div>
+            <div class="game-info-badge" title="Continuous device streak recorded locally forever">
+              <span aria-hidden="true">🔥</span> Streak: <span id="game-streak-counter" style="margin-left: 0.35rem; color: var(--warning-amber); font-weight:800;">5 Days</span>
+            </div>
+            <div class="game-info-badge" title="Overall performance calculated by Time, Attempts and Accuracy">
+              <span aria-hidden="true">🌟</span> Live Score: <span id="game-score-live" style="margin-left: 0.35rem; color: var(--primary-navy); font-weight:800;">95</span>
             </div>
           </div>
         </div>
@@ -128,38 +148,41 @@
           </button>
         </div>
 
+        <!-- 5-Level Progressive Selector -->
+        <div id="attention-level-selector-mount" style="margin-bottom: 1.5rem;"></div>
+
         <!-- ====================================================================
              JAI'S ATTENTION GAME CONTAINER
              Jai can inject his Attention Game markup, canvas, or game script here.
+             Developer Hook: window.SahaayaAttentionGame
              ==================================================================== -->
         <div id="attention-game-container">
           
-          <!-- Senior-Friendly Starter Demo Attention Grid (Ready to be extended by Jai) -->
-          <div class="game-canvas-container" id="demo-attention-board" style="border-style: solid; border-color: var(--border-subtle); background: var(--bg-surface);">
+          <div class="game-canvas-container" id="demo-attention-board" style="border-style: solid; border-color: var(--border-subtle); background: var(--bg-surface); padding: 1.5rem 1rem;">
             
+            <div style="margin-bottom: 1.25rem; text-align: center;">
+              <span class="badge badge-blue" id="level-indicator-badge">Level 1: Gentle Focus</span>
+              <p style="font-size: var(--text-sm); margin-top: 0.5rem; color: var(--text-secondary);" id="level-sub-desc">
+                Find and tap all target symbols. Filter out distracting shapes at your own pace.
+              </p>
+            </div>
+
             <div style="margin-bottom: 1.5rem; text-align: center;">
               <span style="font-size: var(--text-base); font-weight: 700; color: var(--text-primary);">
-                Current Target to Tap:
+                Target Symbol to Find:
               </span>
-              <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: #DBEAFE; border: 2px solid var(--accent-blue); padding: 0.5rem 1.5rem; border-radius: var(--radius-pill); margin-left: 0.75rem; font-size: 1.8rem; font-weight: 800; color: var(--accent-blue);">
+              <div id="attention-target-display" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #DBEAFE; border: 2px solid var(--accent-blue); padding: 0.5rem 1.5rem; border-radius: var(--radius-pill); margin-left: 0.75rem; font-size: 1.7rem; font-weight: 800; color: var(--accent-blue);">
                 ⭐ Golden Star
               </div>
             </div>
 
-            <!-- 4x2 Senior Attention Grid Demo -->
-            <div class="game-demo-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 440px;">
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '⭐')" aria-label="Tile 1">⭐</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '🔷')" aria-label="Tile 2">🔷</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '🟢')" aria-label="Tile 3">🟢</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '⭐')" aria-label="Tile 4">⭐</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '🔷')" aria-label="Tile 5">🔷</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '⭐')" aria-label="Tile 6">⭐</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '🟢')" aria-label="Tile 7">🟢</button>
-              <button type="button" class="game-demo-tile" onclick="handleAttentionTile(this, '⭐')" aria-label="Tile 8">⭐</button>
+            <!-- Dynamic Senior Attention Grid -->
+            <div class="game-demo-grid" id="attention-tiles-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 460px; gap: 0.85rem;">
+              <!-- Tiles rendered dynamically per level -->
             </div>
 
-            <div id="attention-status-msg" style="min-height: 28px; font-weight: 700; color: var(--accent-blue); font-size: var(--text-base); margin-top: 0.5rem;">
-              Find and tap all 4 Golden Stars (⭐)!
+            <div id="attention-status-msg" style="min-height: 32px; font-weight: 700; color: var(--accent-blue); font-size: var(--text-base); margin-top: 0.75rem;">
+              Find and tap all matching targets!
             </div>
 
           </div>
@@ -191,31 +214,151 @@
   <footer class="main-footer" role="contentinfo">
     <div class="footer-container">
       <div>
-        <strong>SahaayaMind</strong> — Attention Module (Jai's Game Container)
+        <strong>SahaayaMind</strong> — Attention & Pattern Focus Module
       </div>
-      <div class="footer-badges">
-        <span>Smart India Hackathon 2026</span>
+      <div style="display: flex; gap: 1rem; align-items: center; font-size: var(--text-sm);">
+        <a href="dashboard.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Dashboard</a>
+        <span style="color: var(--text-muted);">•</span>
+        <a href="progress.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">Progress</a>
+        <span style="color: var(--text-muted);">•</span>
+        <a href="chat.html" style="color: var(--accent-teal); font-weight: 700; text-decoration: underline;">AI Companion</a>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/geminiService.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/levels.js"></script>
+  <script src="../js/memoryLogistics.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/ui.js"></script>
 
-  <!-- Interactive Starter Script for Attention Demo -->
+  <!-- Interactive 5-Level Engine for Attention Game -->
   <script>
+    let currentLevel = 1;
     let targetSymbol = '⭐';
+    let targetName = 'Golden Star';
     let targetsFound = 0;
     let totalTargets = 4;
     let totalTaps = 0;
     let distractorTaps = 0;
     let attentionStartTime = null;
+    let timerInterval = null;
+    let elapsedSeconds = 0;
     let attentionLatencies = [];
     let lastTapTime = null;
+
+    // Load and build level
+    function loadAttentionLevel(lvlNum) {
+      currentLevel = lvlNum;
+      targetsFound = 0;
+      totalTaps = 0;
+      distractorTaps = 0;
+      attentionStartTime = null;
+      elapsedSeconds = 0;
+      attentionLatencies = [];
+      lastTapTime = null;
+
+      clearInterval(timerInterval);
+      const timerEl = document.getElementById('game-timer');
+      if (timerEl) timerEl.textContent = "00:00";
+
+      const attemptsEl = document.getElementById('game-attempts');
+      if (attemptsEl) attemptsEl.textContent = "0";
+
+      const accuracyEl = document.getElementById('game-accuracy');
+      if (accuracyEl) accuracyEl.textContent = "100%";
+
+      const scoreLive = document.getElementById('game-score-live');
+      if (scoreLive) scoreLive.textContent = "95";
+
+      if (window.MemoryLogistics) {
+        const streak = window.MemoryLogistics.getDeviceStreak();
+        const streakEl = document.getElementById('game-streak-counter');
+        if (streakEl) streakEl.textContent = `${streak.currentStreak} Days`;
+      }
+
+      const config = window.SahaayaLevels ? window.SahaayaLevels.getConfig('attention', currentLevel) : null;
+      if (!config) return;
+      targetSymbol = config.targetSymbol;
+      targetName = config.targetName;
+      totalTargets = config.targetCount;
+
+      // Update titles and badges
+      const titleEl = document.getElementById('attention-game-title');
+      if (titleEl) titleEl.textContent = `Attention Focus — Level ${currentLevel}: ${config.name}`;
+
+      const badgeEl = document.getElementById('level-indicator-badge');
+      if (badgeEl) badgeEl.textContent = `Level ${currentLevel}: ${config.name} (${totalTargets} Targets)`;
+
+      const subDesc = document.getElementById('level-sub-desc');
+      if (subDesc) subDesc.textContent = config.description;
+
+      const targetDisplay = document.getElementById('attention-target-display');
+      if (targetDisplay) targetDisplay.textContent = `${targetSymbol} ${targetName}`;
+
+      const statusMsg = document.getElementById('attention-status-msg');
+      if (statusMsg) statusMsg.textContent = `Find and tap all ${totalTargets} ${targetName}s (${targetSymbol})!`;
+
+      // Update Level Selector bar
+      const selectorMount = document.getElementById('attention-level-selector-mount');
+      if (selectorMount && window.SahaayaLevels) {
+        window.SahaayaLevels.renderLevelSelector(selectorMount, 'attention', currentLevel, (newLevel) => {
+          loadAttentionLevel(newLevel);
+        });
+      }
+
+      // Generate tiles deck: totalTargets of targetSymbol, rest filled with distractors
+      const totalTiles = config.totalTiles || 8;
+      const distractorCount = totalTiles - totalTargets;
+      const tiles = [];
+
+      for (let i = 0; i < totalTargets; i++) {
+        tiles.push(targetSymbol);
+      }
+
+      const distractorList = config.distractors || ['🔷', '🟢'];
+      for (let i = 0; i < distractorCount; i++) {
+        const dSym = distractorList[i % distractorList.length];
+        tiles.push(dSym);
+      }
+
+      // Fisher-Yates shuffle
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+      }
+
+      // Render grid
+      const grid = document.getElementById('attention-tiles-grid') || document.querySelector('.game-demo-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        grid.style.gridTemplateColumns = `repeat(${config.cols || 4}, 1fr)`;
+        grid.style.maxWidth = currentLevel >= 4 ? '580px' : '460px';
+
+        tiles.forEach((sym, index) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'game-demo-tile';
+          btn.setAttribute('aria-label', `Tile ${index + 1}`);
+          btn.textContent = sym;
+          btn.onclick = function () {
+            handleAttentionTile(this, sym);
+          };
+          grid.appendChild(btn);
+        });
+      }
+
+      // Developer Hook for Jay:
+      if (window.SahaayaAttentionGame) {
+        window.SahaayaAttentionGame.currentLevel = currentLevel;
+        window.SahaayaAttentionGame.config = config;
+      }
+    }
 
     function handleAttentionTile(tile, symbol) {
       if (tile.classList.contains('matched')) return;
@@ -223,9 +366,13 @@
       if (!attentionStartTime) {
         attentionStartTime = Date.now();
         lastTapTime = performance.now();
+        startTimer();
       }
 
       totalTaps++;
+
+      const attemptsEl = document.getElementById('game-attempts');
+      if (attemptsEl) attemptsEl.textContent = String(totalTaps);
 
       if (lastTapTime) {
         attentionLatencies.push(Math.round(performance.now() - lastTapTime));
@@ -237,17 +384,34 @@
         tile.style.background = '#DCFCE7';
         tile.style.borderColor = '#15803D';
         targetsFound++;
-        document.getElementById('attention-status-msg').textContent = `✨ Great job! Found target (${targetsFound}/${totalTargets})`;
-        
+
+        const currentAcc = Math.round((targetsFound / totalTaps) * 100);
+        const accuracyEl = document.getElementById('game-accuracy');
+        if (accuracyEl) accuracyEl.textContent = `${currentAcc}%`;
+
+        updateLiveScore();
+
+        const statusMsg = document.getElementById('attention-status-msg');
+        if (statusMsg) statusMsg.textContent = `✨ Great job! Found target (${targetsFound}/${totalTargets})`;
+
         if (targetsFound === totalTargets) {
-          document.getElementById('attention-status-msg').textContent = "🎉 Excellent focus! You found all targets!";
+          clearInterval(timerInterval);
+          if (statusMsg) statusMsg.textContent = `🎉 Excellent focus! Level ${currentLevel} Complete!`;
+
           setTimeout(() => {
-            finishAttentionGameSession();
-          }, 1200);
+            handleLevelComplete();
+          }, 900);
         }
       } else {
         distractorTaps++;
-        document.getElementById('attention-status-msg').textContent = "That's a distractor symbol. Keep looking for the Star ⭐";
+        const currentAcc = Math.round((targetsFound / totalTaps) * 100);
+        const accuracyEl = document.getElementById('game-accuracy');
+        if (accuracyEl) accuracyEl.textContent = `${currentAcc}%`;
+
+        updateLiveScore();
+
+        const statusMsg = document.getElementById('attention-status-msg');
+        if (statusMsg) statusMsg.textContent = `That's a distractor symbol. Keep looking for ${targetSymbol} (${targetName})`;
         tile.style.borderColor = '#EF4444';
         setTimeout(() => {
           tile.style.borderColor = '';
@@ -255,30 +419,128 @@
       }
     }
 
-    // Called when game is finished or user taps Complete
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!attentionStartTime) return;
+        elapsedSeconds = Math.round((Date.now() - attentionStartTime) / 1000);
+        const mins = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+        const secs = String(elapsedSeconds % 60).padStart(2, '0');
+        const timerEl = document.getElementById('game-timer');
+        if (timerEl) {
+          timerEl.textContent = `${mins}:${secs}`;
+        }
+        updateLiveScore();
+      }, 1000);
+    }
+
+    function updateLiveScore() {
+      if (!window.MemoryLogistics) return;
+      const perf = window.MemoryLogistics.calculatePerformance(
+        elapsedSeconds || 5,
+        Math.max(targetsFound, totalTaps || 1),
+        targetsFound,
+        totalTargets
+      );
+      const scoreLive = document.getElementById('game-score-live');
+      if (scoreLive) {
+        scoreLive.textContent = String(perf.overallScore);
+      }
+    }
+
+    // Handle level completion and unlocking next level
+    function handleLevelComplete() {
+      const finalSec = elapsedSeconds > 0 ? elapsedSeconds : (attentionStartTime ? Math.max(15, Math.round((Date.now() - attentionStartTime) / 1000)) : 35);
+      const finalAttempts = Math.max(targetsFound, totalTaps || totalTargets);
+      const accuracy = totalTaps > 0 ? Math.min(100, Math.round((targetsFound / totalTaps) * 100)) : 92;
+
+      let perf = null;
+      if (window.MemoryLogistics) {
+        perf = window.MemoryLogistics.calculatePerformance(finalSec, finalAttempts, targetsFound, totalTargets);
+      }
+      const score = perf ? perf.overallScore : Math.min(99, Math.max(70, Math.round((accuracy * 0.75) + 22)));
+
+      // Unlock next level ONLY when current level is completed
+      const unlockRes = window.SahaayaLevels ? window.SahaayaLevels.completeLevel('attention', currentLevel, accuracy, score) : { newlyUnlocked: false };
+
+      // Re-render level selector tabs
+      const selectorMount = document.getElementById('attention-level-selector-mount');
+      if (selectorMount && window.SahaayaLevels) {
+        window.SahaayaLevels.renderLevelSelector(selectorMount, 'attention', currentLevel, (lvl) => loadAttentionLevel(lvl));
+      }
+
+      // Show in-game unlock celebration modal
+      if (window.SahaayaLevels) {
+        window.SahaayaLevels.showLevelUnlockModal(
+          currentLevel,
+          unlockRes.newlyUnlocked,
+          'attention',
+          function onNextLevel(nextLvl) {
+            loadAttentionLevel(nextLvl);
+          },
+          function onViewResults() {
+            finishAttentionGameSession();
+          }
+        );
+      } else {
+        finishAttentionGameSession();
+      }
+    }
+
     function finishAttentionGameSession() {
-      const elapsedSec = attentionStartTime ? Math.max(30, Math.round((Date.now() - attentionStartTime) / 1000)) : 190;
-      const calculatedAccuracy = totalTaps > 0 
-        ? Math.round((targetsFound / totalTaps) * 100) 
-        : 92;
-      const mins = Math.floor(elapsedSec / 60);
-      const secs = elapsedSec % 60;
-      const durationStr = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+      clearInterval(timerInterval);
+      const finalSec = elapsedSeconds > 0 ? elapsedSeconds : (attentionStartTime ? Math.max(15, Math.round((Date.now() - attentionStartTime) / 1000)) : 45);
+      const finalAttempts = Math.max(targetsFound, totalTaps || totalTargets);
+      const finalMatches = Math.max(1, targetsFound || totalTargets);
+
+      let perf = null;
+      if (window.MemoryLogistics) {
+        perf = window.MemoryLogistics.calculatePerformance(finalSec, finalAttempts, finalMatches, totalTargets);
+      }
+
+      const calculatedScore = perf ? perf.overallScore : 90;
+      const calculatedAccuracy = perf ? perf.accuracyStr : `${Math.round((finalMatches / finalAttempts) * 100)}%`;
+      const calculatedDuration = perf ? perf.durationStr : `${finalSec}s`;
+      const feedback = perf ? perf.seniorFeedback : "Fantastic concentration and speed!";
 
       window.SahaayaApp.completeGameSession(
         'attention',
-        Math.min(99, Math.max(70, Math.round((calculatedAccuracy * 0.75) + 20))),
-        `${calculatedAccuracy}%`,
-        durationStr,
-        null,
+        calculatedScore,
+        calculatedAccuracy,
+        calculatedDuration,
+        feedback,
         {
-          moves: totalTaps || 5,
-          misses: distractorTaps || 1,
-          matches: targetsFound || 4,
-          latencies: attentionLatencies.length ? attentionLatencies : [1850, 2100, 2300, 2150]
+          level: currentLevel,
+          timeSeconds: finalSec,
+          attempts: finalAttempts,
+          moves: totalTaps || finalAttempts,
+          misses: distractorTaps || 0,
+          matches: finalMatches,
+          totalPairs: totalTargets,
+          latencies: attentionLatencies.length ? attentionLatencies : [1750, 1950, 2100]
+        },
+        {
+          level: currentLevel,
+          nextLevel: currentLevel < 5 ? currentLevel + 1 : null
         }
       );
     }
+
+    // Developer hook for Jay:
+    window.SahaayaAttentionGame = {
+      getCurrentLevel: () => currentLevel,
+      loadLevel: (lvl) => loadAttentionLevel(lvl),
+      completeCurrentLevel: (acc, sc) => {
+        return window.SahaayaLevels ? window.SahaayaLevels.completeLevel('attention', currentLevel, acc || 92, sc || 88) : null;
+      },
+      levelConfigs: window.SahaayaLevels ? window.SahaayaLevels.configs.attention : []
+    };
+
+    // Auto-init on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const initialLevel = window.SahaayaLevels ? window.SahaayaLevels.getCurrentLevelFromUrl('attention') : 1;
+      loadAttentionLevel(initialLevel);
+    });
   </script>
 
   <!-- Floating AI Companion Launcher -->

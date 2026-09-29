@@ -16,7 +16,7 @@
 .nav-toggle{display:none;background:#F1F5F9;border:2px solid #CBD5E1;border-radius:12px;min-width:52px;min-height:52px;font-size:1.5rem;cursor:pointer;color:#0F2B48}
 .ai-spotlight{background:linear-gradient(135deg,#0F2B48 0%,#134E4A 55%,#0D9488 100%);color:#fff;border-radius:24px;padding:1.8rem;border:1px solid rgba(94,234,212,.35);box-shadow:0 12px 30px -8px rgba(13,148,136,.45);position:relative;overflow:hidden;margin-bottom:2rem}
 .ai-spotlight::before{content:"";position:absolute;width:340px;height:340px;background:radial-gradient(circle,rgba(94,234,212,.35),transparent 70%);top:-120px;right:-80px;pointer-events:none}
-.ai-spotlight h2,.ai-spotlight p{color:#fff!important}
+.ai-spotlight h2,.ai-spotlight p,.clinical-hero-card h1,.clinical-hero-card h2,.clinical-hero-card p{color:#fff!important}
 .ai-badge{display:inline-flex;align-items:center;gap:.4rem;background:#5EEAD4;color:#042F2E;font-weight:800;font-size:.95rem;padding:.35rem .9rem;border-radius:999px;letter-spacing:.02em}
 .ai-actions{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.2rem}
 .ai-actions .senior-btn{flex:1 1 200px}
@@ -70,3 +70,243 @@ div[style*="grid-template-columns: 2fr 1fr"]{grid-template-columns:1fr!important
 }
 body.high-contrast-mode .ai-spotlight{background:#000;border:2px solid #FFFF00}
 body.high-contrast-mode .ai-spotlight h2,body.high-contrast-mode .ai-spotlight p{color:#FFFF00!important}
+
+/* --- Multilingual & Gemini Polish Pack --- */
+.lang-choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  min-height: 56px;
+  position: relative;
+  font-family: inherit;
+}
+.lang-choice-btn:hover {
+  border-color: #0D9488;
+  background: #F0FDFA;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.12);
+}
+.lang-choice-btn.active {
+  border-color: #0D9488;
+  background: #F0FDFA;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25);
+}
+.lang-flag {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.lang-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.lang-native-name {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #0F2B48;
+}
+.lang-eng-name {
+  font-size: 0.82rem;
+  color: #64748B;
+  font-weight: 600;
+}
+.lang-check {
+  display: none;
+  font-weight: 800;
+  color: #0D9488;
+  font-size: 1.1rem;
+}
+.lang-choice-btn.active .lang-check {
+  display: inline-block;
+}
+
+/* Header & Accessibility Language Select */
+.access-select {
+  background: #1E3A5F;
+  color: #FFFFFF;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.access-select:hover, .access-select:focus {
+  border-color: #5EEAD4;
+  box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.3);
+}
+
+/* Chat Header Language Selector Group */
+.chat-lang-group {
+  display: inline-flex;
+  align-items: center;
+  background: #F1F5F9;
+  padding: 0.25rem;
+  border-radius: 999px;
+  border: 1.5px solid #CBD5E1;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+}
+.chat-lang-btn {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.chat-lang-btn:hover {
+  color: #0F2B48;
+  background: rgba(255, 255, 255, 0.6);
+}
+.chat-lang-btn.active {
+  background: #0D9488;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+}
+
+/* Gemini Badge & Settings Trigger */
+.gemini-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1.5px solid transparent;
+}
+.gemini-status-badge.live {
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  color: #A5B4FC;
+  border-color: #6366F1;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+.gemini-status-badge.builtin {
+  background: #F0FDFA;
+  color: #0F766E;
+  border-color: #CCFBF1;
+}
+.gemini-status-badge:hover {
+  transform: scale(1.03);
+}
+
+/* Speaking Wave & Pulsing Animation */
+.chat-avatar-ai.speaking, .btn-msg-listen.speaking {
+  animation: gentlePulse 1.2s infinite alternate ease-in-out;
+}
+@keyframes gentlePulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  100% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); }
+}
+
+.btn-mic-input.recording {
+  background: #DC2626 !important;
+  color: #FFFFFF !important;
+  animation: micRecordingPulse 1s infinite alternate;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.35) !important;
+}
+@keyframes micRecordingPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+/* Gemini Settings Modal */
+.gemini-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.gemini-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.gemini-modal-dialog {
+  background: #FFFFFF;
+  border-radius: 24px;
+  max-width: 600px;
+  width: 100%;
+  padding: 2.25rem;
+  box-shadow: 0 20px 40px -10px rgba(15, 43, 72, 0.3);
+  border: 2px solid #E2E8F0;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.gemini-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  border-bottom: 1.5px solid #F1F5F9;
+  padding-bottom: 1rem;
+}
+.gemini-modal-close {
+  background: #F1F5F9;
+  border: none;
+  font-size: 1.4rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+.gemini-modal-close:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+/* High Contrast adjustments */
+body.high-contrast-mode .lang-choice-btn {
+  background: #000000;
+  color: #FFFF00;
+  border: 2px solid #FFFF00;
+}
+body.high-contrast-mode .lang-choice-btn.active {
+  background: #FFFF00;
+  color: #000000;
+}
+body.high-contrast-mode .lang-native-name {
+  color: inherit;
+}
+body.high-contrast-mode .chat-lang-btn.active {
+  background: #FFFF00;
+  color: #000000;
+  border: 2px solid #FFFF00;
+}
+body.high-contrast-mode .gemini-modal-dialog {
+  background: #000000;
+  color: #FFFFFF;
+  border: 3px solid #FFFF00;
+}
+
