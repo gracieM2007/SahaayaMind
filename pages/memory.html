@@ -104,6 +104,9 @@
           </div>
           
           <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="sound-toggle-btn js-sound-toggle-btn" onclick="window.SahaayaAudio && window.SahaayaAudio.toggleSound()" aria-label="Toggle sound">
+              <span aria-hidden="true">🔊</span> Sound: ON
+            </button>
             <div class="game-info-badge">
               <span aria-hidden="true">⏱️</span> Time: <span id="game-timer" style="margin-left: 0.35rem; color: var(--accent-teal-dark);">00:45</span>
             </div>
@@ -197,6 +200,8 @@
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/audioEffects.js"></script>
+  <script src="../js/confetti.js"></script>
   <script src="../js/levels.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
@@ -269,19 +274,30 @@
         [deck[i], deck[j]] = [deck[j], deck[i]];
       }
 
-      // Render grid
+      // Render 3D cards grid
       const grid = document.getElementById('memory-cards-grid');
       if (grid) {
         grid.innerHTML = '';
+        grid.className = 'memory-grid-3d';
         grid.style.gridTemplateColumns = `repeat(${config.cols || 4}, 1fr)`;
         grid.style.maxWidth = currentLevel >= 4 ? '580px' : '460px';
 
         deck.forEach((sym, index) => {
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'game-demo-tile';
+          btn.className = 'memory-card-3d';
           btn.setAttribute('aria-label', `Card ${index + 1}`);
-          btn.textContent = '❓';
+          btn.innerHTML = `
+            <div class="memory-card-inner">
+              <div class="memory-card-back">
+                <div class="card-pattern-icon" aria-hidden="true">🧠</div>
+                <div class="card-pattern-sub">Sahaaya</div>
+              </div>
+              <div class="memory-card-front">
+                <span class="card-symbol" aria-hidden="true">${sym}</span>
+              </div>
+            </div>
+          `;
           btn.onclick = function () {
             flipMemoryCard(this, sym);
           };
@@ -296,9 +312,9 @@
       }
     }
 
-    // Card flip logic
+    // 3D Card flip logic with Web Audio
     function flipMemoryCard(card, symbol) {
-      if (lockBoard || card === firstCard || card.classList.contains('matched')) return;
+      if (lockBoard || card === firstCard || card.classList.contains('matched') || card.classList.contains('revealed')) return;
 
       if (!gameStartTime) {
         gameStartTime = Date.now();
@@ -306,7 +322,11 @@
         startTimer();
       }
 
-      card.textContent = symbol;
+      // Play soft tactile wooden flip click
+      if (window.SahaayaAudio) {
+        window.SahaayaAudio.playFlip();
+      }
+
       card.classList.add('revealed');
 
       if (!firstCard) {
@@ -326,9 +346,14 @@
       moveCount++;
 
       if (firstCard.symbol === secondCard.symbol) {
+        // MATCH FOUND: Emerald celebratory pulse & chime
         firstCard.element.classList.add('matched');
         secondCard.element.classList.add('matched');
         matchesFound++;
+
+        if (window.SahaayaAudio) {
+          window.SahaayaAudio.playMatch();
+        }
 
         const scoreLive = document.getElementById('game-score-live');
         if (scoreLive) scoreLive.textContent = `${matchesFound}/${totalPairs} Pairs`;
@@ -347,16 +372,19 @@
           }, 900);
         }
       } else {
+        // MISMATCH: Gentle tone, flip back gracefully
         missCount++;
+        if (window.SahaayaAudio) {
+          window.SahaayaAudio.playMiss();
+        }
+
         const statusMsg = document.getElementById('match-status-msg');
         if (statusMsg) statusMsg.textContent = "Not quite a match. Take your time, try again!";
         setTimeout(() => {
           if (firstCard && firstCard.element) {
-            firstCard.element.textContent = '❓';
             firstCard.element.classList.remove('revealed');
           }
           if (secondCard && secondCard.element) {
-            secondCard.element.textContent = '❓';
             secondCard.element.classList.remove('revealed');
           }
           resetMemoryTurn();

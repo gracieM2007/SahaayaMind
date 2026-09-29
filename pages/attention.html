@@ -104,6 +104,9 @@
           </div>
           
           <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="sound-toggle-btn js-sound-toggle-btn" onclick="window.SahaayaAudio && window.SahaayaAudio.toggleSound()" aria-label="Toggle sound">
+              <span aria-hidden="true">🔊</span> Sound: ON
+            </button>
             <div class="game-info-badge">
               <span aria-hidden="true">⏱️</span> Time: <span id="game-timer" style="margin-left: 0.35rem; color: var(--accent-blue);">01:10</span>
             </div>
@@ -206,6 +209,8 @@
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/audioEffects.js"></script>
+  <script src="../js/confetti.js"></script>
   <script src="../js/levels.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
@@ -341,6 +346,10 @@
         tile.style.borderColor = '#15803D';
         targetsFound++;
 
+        if (window.SahaayaAudio) {
+          window.SahaayaAudio.playMatch();
+        }
+
         const scoreLive = document.getElementById('game-score-live');
         if (scoreLive) scoreLive.textContent = `${targetsFound}/${totalTargets} Found`;
 
@@ -357,6 +366,10 @@
         }
       } else {
         distractorTaps++;
+        if (window.SahaayaAudio) {
+          window.SahaayaAudio.playMiss();
+        }
+
         const statusMsg = document.getElementById('attention-status-msg');
         if (statusMsg) statusMsg.textContent = `That's a distractor symbol. Keep looking for ${targetSymbol} (${targetName})`;
         tile.style.borderColor = '#EF4444';
