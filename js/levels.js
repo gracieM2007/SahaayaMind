@@ -541,10 +541,7 @@
 
       overlay.classList.add('active');
 
-      // Trigger multi-sensory celebration: Web Audio fanfare & confetti burst
-      if (window.SahaayaAudio && typeof window.SahaayaAudio.playLevelClear === 'function') {
-        window.SahaayaAudio.playLevelClear();
-      }
+      // Trigger celebration: confetti burst
       if (window.SahaayaConfetti && typeof window.SahaayaConfetti.burst === 'function') {
         window.SahaayaConfetti.burst();
       }
