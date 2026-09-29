@@ -16,7 +16,7 @@
 .nav-toggle{display:none;background:#F1F5F9;border:2px solid #CBD5E1;border-radius:12px;min-width:52px;min-height:52px;font-size:1.5rem;cursor:pointer;color:#0F2B48}
 .ai-spotlight{background:linear-gradient(135deg,#0F2B48 0%,#134E4A 55%,#0D9488 100%);color:#fff;border-radius:24px;padding:1.8rem;border:1px solid rgba(94,234,212,.35);box-shadow:0 12px 30px -8px rgba(13,148,136,.45);position:relative;overflow:hidden;margin-bottom:2rem}
 .ai-spotlight::before{content:"";position:absolute;width:340px;height:340px;background:radial-gradient(circle,rgba(94,234,212,.35),transparent 70%);top:-120px;right:-80px;pointer-events:none}
-.ai-spotlight h2,.ai-spotlight p{color:#fff!important}
+.ai-spotlight h2,.ai-spotlight p,.clinical-hero-card h1,.clinical-hero-card h2,.clinical-hero-card p{color:#fff!important}
 .ai-badge{display:inline-flex;align-items:center;gap:.4rem;background:#5EEAD4;color:#042F2E;font-weight:800;font-size:.95rem;padding:.35rem .9rem;border-radius:999px;letter-spacing:.02em}
 .ai-actions{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.2rem}
 .ai-actions .senior-btn{flex:1 1 200px}

@@ -60,10 +60,22 @@
     },
 
     // Record a completed game session and redirect to result.html
-    completeGameSession: function (gameType, score, accuracyStr, durationStr, customFeedback, telemetryPayload) {
+    completeGameSession: function (gameType, score, accuracyStr, durationStr, customFeedback, telemetryPayload, levelInfo) {
       const activeUser = this.getActiveUser();
       const isMemory = gameType === 'memory';
       const gameTitle = isMemory ? "Memory Recall & Match" : "Attention & Pattern Focus";
+
+      // 0. Resolve level progression info
+      let lastLvl = null;
+      try {
+        lastLvl = JSON.parse(localStorage.getItem('sahaaya_last_completed_level') || 'null');
+      } catch (e) {}
+
+      const completedLvlNum = (levelInfo && levelInfo.level) || (lastLvl && lastLvl.gameType === gameType ? lastLvl.level : 1);
+      const nextLvlNum = (levelInfo && levelInfo.nextLevel) || (lastLvl && lastLvl.gameType === gameType ? lastLvl.nextLevel : (completedLvlNum < 5 ? completedLvlNum + 1 : null));
+      const isNewlyUnlocked = levelInfo && typeof levelInfo.newlyUnlocked !== 'undefined'
+        ? levelInfo.newlyUnlocked
+        : (lastLvl && lastLvl.gameType === gameType ? !!lastLvl.newlyUnlocked : false);
 
       // 1. Fetch user history for longitudinal comparison
       let history = [];
@@ -79,7 +91,7 @@
         try {
           aiAnalysis = window.SahaayaAI.analyzeSession({
             gameType: gameType,
-            gameName: gameTitle,
+            gameName: `${gameTitle} (Level ${completedLvlNum})`,
             score: score,
             accuracy: accuracyStr,
             duration: durationStr,
@@ -93,8 +105,11 @@
 
       // 3. Construct rich, backward-compatible session result
       const sessionResult = {
-        gameName: gameTitle,
+        gameName: `${gameTitle} (Level ${completedLvlNum})`,
         gameType: gameType,
+        completedLevel: completedLvlNum,
+        nextLevelUnlocked: nextLvlNum,
+        newlyUnlocked: isNewlyUnlocked,
         score: aiAnalysis ? aiAnalysis.overallScore : (score || (isMemory ? 94 : 88)),
         maxScore: 100,
         accuracy: accuracyStr || (aiAnalysis ? aiAnalysis.accuracyStr : "95%"),
@@ -126,6 +141,7 @@
           id: "sess_" + Date.now(),
           gameName: sessionResult.gameName,
           gameType: sessionResult.gameType,
+          completedLevel: completedLvlNum,
           date: sessionResult.date,
           time: sessionResult.timestamp,
           score: sessionResult.score,
@@ -143,9 +159,7 @@
         activeUser.sessionsCompleted = (activeUser.sessionsCompleted || 0) + 1;
         activeUser.lastSession = "Just now (" + sessionResult.timestamp + ")";
         activeUser.overallScore = Math.min(99, Math.round(((activeUser.overallScore || 85) * 4 + sessionResult.score) / 5));
-        if (aiAnalysis && aiAnalysis.suggestedDifficulty) {
-          activeUser.cognitiveLevel = `Level ${aiAnalysis.suggestedDifficulty}`;
-        }
+        activeUser.cognitiveLevel = `Level ${completedLvlNum}`;
         localStorage.setItem('sahaaya_active_user', JSON.stringify(activeUser));
       } catch (err) {
         console.error("Error updating history", err);
@@ -261,6 +275,67 @@
       if (resDifficultyReason) {
         resDifficultyReason.textContent = (resultData.aiReport && resultData.aiReport.difficultyReason) ||
           (resultData.suggestedDifficulty ? `Continuing on Level ${resultData.suggestedDifficulty} (Gentle Pace).` : "Continuing comfortably on Level 2 (Gentle Pace).");
+      }
+
+      // 5-Level Progression Banner & Next-Level CTA
+      const currentLvl = resultData.completedLevel || 1;
+      const nextLvl = resultData.nextLevelUnlocked;
+      const gameType = resultData.gameType || 'memory';
+      const gamePage = gameType === 'attention' ? 'attention.html' : 'memory.html';
+      const nextSlot = document.getElementById('result-next-level-slot');
+
+      if (nextSlot) {
+        if (nextLvl && nextLvl <= 5) {
+          const nextConfig = window.SahaayaLevels ? window.SahaayaLevels.getConfig(gameType, nextLvl) : null;
+          const nextName = nextConfig ? nextConfig.name : `Level ${nextLvl}`;
+          nextSlot.innerHTML = `
+            <div class="result-level-unlocked-banner" role="region" aria-label="Next Level Unlocked">
+              <div class="result-level-unlocked-info">
+                <span class="badge badge-teal" style="background: rgba(94, 234, 212, 0.25); color: #5EEAD4; border: 1px solid #5EEAD4;">
+                  🔓 Progression Unlocked!
+                </span>
+                <h3>Level ${nextLvl}: ${nextName} is Ready!</h3>
+                <p>Outstanding job clearing Level ${currentLvl}. Level ${nextLvl} has been unlocked for your cognitive training.</p>
+              </div>
+              <div>
+                <a href="${gamePage}?level=${nextLvl}" class="senior-btn senior-btn-accent" id="btn-next-level-banner" style="font-size: var(--text-lg); padding: 0.95rem 2rem; white-space: nowrap;">
+                  ▶ Play Level ${nextLvl} Now →
+                </a>
+              </div>
+            </div>
+          `;
+        } else if (currentLvl >= 5) {
+          nextSlot.innerHTML = `
+            <div class="result-level-unlocked-banner" style="background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%); border-color: #A5B4FC;">
+              <div class="result-level-unlocked-info">
+                <span class="badge badge-teal" style="background: rgba(165, 180, 252, 0.25); color: #C7D2FE; border: 1px solid #A5B4FC;">
+                  🏆 Cognitive Mastery
+                </span>
+                <h3 style="color: #FFFFFF !important;">All 5 Levels Conquered!</h3>
+                <p style="color: #E0E7FF !important;">Tremendous dedication! You have successfully completed all 5 levels of ${gameType === 'attention' ? 'Attention' : 'Memory'} challenges.</p>
+              </div>
+              <div>
+                <a href="${gamePage}?level=5" class="senior-btn senior-btn-accent" style="font-size: var(--text-lg); padding: 0.95rem 2rem;">
+                  🔄 Replay Master Level 5
+                </a>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Update primary next-level CTA button
+      const playNextBtn = document.getElementById('btn-play-next-level');
+      if (playNextBtn) {
+        if (nextLvl && nextLvl <= 5) {
+          playNextBtn.style.display = 'block';
+          playNextBtn.href = `${gamePage}?level=${nextLvl}`;
+          playNextBtn.innerHTML = `▶ Play Next Level (Level ${nextLvl}) →`;
+        } else {
+          playNextBtn.style.display = 'block';
+          playNextBtn.href = `${gamePage}?level=${currentLvl}`;
+          playNextBtn.innerHTML = `🔄 Replay Level ${currentLvl} →`;
+        }
       }
     },
 

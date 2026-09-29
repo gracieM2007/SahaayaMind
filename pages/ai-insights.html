@@ -11,13 +11,33 @@
     /* Dedicated Clinical Advisory Enhancements */
     .clinical-hero-card {
       background: linear-gradient(135deg, #0F2B48 0%, #1E3A5F 100%);
-      color: #FFFFFF;
+      color: #FFFFFF !important;
       border-radius: var(--radius-xl);
       padding: 2.25rem 2.5rem;
       margin-bottom: 2rem;
       box-shadow: var(--shadow-lg);
       position: relative;
       overflow: hidden;
+    }
+
+    .clinical-hero-card h1,
+    .clinical-hero-card h2,
+    .clinical-hero-card h3 {
+      color: #FFFFFF !important;
+      letter-spacing: -0.01em;
+    }
+
+    .clinical-hero-card p {
+      color: #E2E8F0 !important;
+    }
+
+    .clinical-hero-card strong,
+    .clinical-hero-card span {
+      color: inherit;
+    }
+
+    .clinical-hero-card .report-meta-text {
+      color: #CBD5E1 !important;
     }
 
     .clinical-hero-card::after {
@@ -283,22 +303,22 @@
         <div class="doctor-badge-seal">
           <span>🩺</span> Geriatric Neuro-Wellness & Doctor Advisory System
         </div>
-        <h1 style="font-size: var(--text-2xl); margin-bottom: 0.5rem; font-weight: 800;">
+        <h1 style="font-size: var(--text-2xl); margin-bottom: 0.5rem; font-weight: 800; color: #FFFFFF !important;">
           Comprehensive Clinical Cognitive Assessment
         </h1>
-        <p style="font-size: var(--text-base); opacity: 0.9; max-width: 720px; line-height: 1.6; margin-bottom: 1.5rem;">
-          Patient: <strong id="doc-patient-name" style="color: #5EEAD4;">Ramesh Sharma</strong> · Age: <strong id="doc-patient-age">72</strong> Years · Location: <span id="doc-patient-loc">Home Care (Guwahati)</span> · Assessment Date: <span id="doc-report-date">Today</span>
+        <p style="font-size: var(--text-base); color: #E2E8F0 !important; max-width: 720px; line-height: 1.6; margin-bottom: 1.5rem;">
+          Patient: <strong id="doc-patient-name" style="color: #5EEAD4;">Ramesh Sharma</strong> · Age: <strong id="doc-patient-age" style="color: #FFFFFF;">72</strong> Years · Location: <span id="doc-patient-loc" style="color: #FFFFFF;">Home Care (Guwahati)</span> · Assessment Date: <span id="doc-report-date" style="color: #FFFFFF;">Today</span>
         </p>
 
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
-          <span class="badge" id="doc-status-badge" style="background: rgba(255, 255, 255, 0.15); color: #FFFFFF; font-size: var(--text-sm); padding: 0.5rem 1.25rem;">
+          <span class="badge" id="doc-status-badge" style="background: rgba(255, 255, 255, 0.15); color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.25); font-size: var(--text-sm); padding: 0.5rem 1.25rem;">
             Cognitive State: Stable
           </span>
           <span class="badge" id="doc-confidence-badge" style="background: rgba(94, 234, 212, 0.2); color: #5EEAD4; border: 1px solid rgba(94, 234, 212, 0.4); font-size: var(--text-sm); padding: 0.5rem 1.25rem;">
             AI Longitudinal Confidence: 92%
           </span>
-          <span style="font-size: var(--text-xs); opacity: 0.8;">
-            Report ID: <code id="doc-report-id" style="color: #93C5FD;">SM-AI-8291</code>
+          <span style="font-size: var(--text-xs); color: #CBD5E1;">
+            Report ID: <code id="doc-report-id" style="color: #93C5FD; background: rgba(255, 255, 255, 0.1); padding: 0.15rem 0.45rem; border-radius: 4px;">SM-AI-8291</code>
           </span>
         </div>
       </section>

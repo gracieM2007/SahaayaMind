@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/polish.css">
+  <link rel="stylesheet" href="../css/levels.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -128,35 +129,31 @@
           </button>
         </div>
 
+        <!-- 5-Level Progressive Selector -->
+        <div id="memory-level-selector-mount" style="margin-bottom: 1.5rem;"></div>
+
         <!-- ====================================================================
              FAIZAN'S MEMORY GAME CONTAINER
              Faizan can inject his Memory Game markup, canvas, or game script here.
+             Developer Hook: window.SahaayaMemoryGame
              ==================================================================== -->
         <div id="memory-game-container">
           
-          <!-- Senior-Friendly Starter Demo Matching Grid (Ready to be extended by Faizan) -->
-          <div class="game-canvas-container" id="demo-memory-board" style="border-style: solid; border-color: var(--border-subtle); background: var(--bg-surface);">
+          <div class="game-canvas-container" id="demo-memory-board" style="border-style: solid; border-color: var(--border-subtle); background: var(--bg-surface); padding: 1.5rem 1rem;">
             
-            <div style="margin-bottom: 1rem; text-align: center;">
-              <span class="badge badge-teal">Live Demo Grid</span>
-              <p style="font-size: var(--text-sm); margin-top: 0.5rem; color: var(--text-secondary);">
-                Tap two matching cards below, or complete the session to view your analytics.
+            <div style="margin-bottom: 1.25rem; text-align: center;">
+              <span class="badge badge-teal" id="level-indicator-badge">Level 1: Gentle Starter</span>
+              <p style="font-size: var(--text-sm); margin-top: 0.5rem; color: var(--text-secondary);" id="level-sub-desc">
+                Find all 4 matching pairs at your own relaxed pace.
               </p>
             </div>
 
-            <!-- 4x2 Senior Matching Cards Demo -->
-            <div class="game-demo-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 440px;">
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🍎')" aria-label="Card 1">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🌻')" aria-label="Card 2">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🐘')" aria-label="Card 3">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🍎')" aria-label="Card 4">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🌻')" aria-label="Card 5">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🦚')" aria-label="Card 6">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🐘')" aria-label="Card 7">❓</button>
-              <button type="button" class="game-demo-tile" onclick="flipDemoCard(this, '🦚')" aria-label="Card 8">❓</button>
+            <!-- Dynamic Senior Matching Cards Grid -->
+            <div class="game-demo-grid" id="memory-cards-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 460px; gap: 0.85rem;">
+              <!-- Cards rendered dynamically per level -->
             </div>
 
-            <div id="match-status-msg" style="min-height: 28px; font-weight: 700; color: var(--accent-teal-dark); font-size: var(--text-base); margin-top: 0.5rem;">
+            <div id="match-status-msg" style="min-height: 32px; font-weight: 700; color: var(--accent-teal-dark); font-size: var(--text-base); margin-top: 0.75rem;">
               Tap any card to begin!
             </div>
 
@@ -167,7 +164,7 @@
              END OF FAIZAN'S CONTAINER
              ==================================================================== -->
 
-        <div class="ai-spotlight" style="padding:1.25rem;margin-top:1.5rem"><span class="ai-badge">✨ AI TIP</span><p style="margin:.5rem 0 0">Take your time — accuracy matters more than speed. Your AI coach will score memory, attention and pace on the results screen.</p></div>
+        <div class="ai-spotlight" style="padding:1.25rem;margin-top:1.5rem"><span class="ai-badge">✨ AI TIP</span><p style="margin:.5rem 0 0">Take your time — accuracy matters more than speed. Each level unlocks after completing the previous one.</p></div>
         <!-- Game Controls & Finish Session Flow -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border-subtle); flex-wrap: wrap; gap: 1rem;">
           <a href="dashboard.html" class="senior-btn senior-btn-secondary">
@@ -189,7 +186,7 @@
   <footer class="main-footer" role="contentinfo">
     <div class="footer-container">
       <div>
-        <strong>SahaayaMind</strong> — Memory Module (Faizan's Game Container)
+        <strong>SahaayaMind</strong> — Memory Module (Faizan's Game Container • 5 Levels)
       </div>
       <div class="footer-badges">
         <span>Smart India Hackathon 2026</span>
@@ -200,12 +197,14 @@
   <!-- Scripts -->
   <script src="../js/mockData.js"></script>
   <script src="../js/accessibility.js"></script>
+  <script src="../js/levels.js"></script>
   <script src="../js/sahaayaAI.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/ui.js"></script>
 
-  <!-- Interactive Starter Script for Memory Demo -->
+  <!-- Interactive 5-Level Engine for Memory Game -->
   <script>
+    let currentLevel = 1;
     let firstCard = null;
     let secondCard = null;
     let lockBoard = false;
@@ -214,15 +213,97 @@
     let moveCount = 0;
     let missCount = 0;
     let gameStartTime = null;
+    let timerInterval = null;
     let decisionLatencies = [];
     let lastDecisionTime = null;
 
-    function flipDemoCard(card, symbol) {
+    // Load and build level
+    function loadMemoryLevel(lvlNum) {
+      currentLevel = lvlNum;
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+      matchesFound = 0;
+      moveCount = 0;
+      missCount = 0;
+      gameStartTime = null;
+      decisionLatencies = [];
+      lastDecisionTime = null;
+
+      clearInterval(timerInterval);
+      const timerEl = document.getElementById('game-timer');
+      if (timerEl) timerEl.textContent = "00:00";
+
+      const config = window.SahaayaLevels.getConfig('memory', currentLevel);
+      totalPairs = config.pairs;
+
+      // Update titles and badges
+      const titleEl = document.getElementById('memory-game-title');
+      if (titleEl) titleEl.textContent = `Memory Match — Level ${currentLevel}: ${config.name}`;
+
+      const badgeEl = document.getElementById('level-indicator-badge');
+      if (badgeEl) badgeEl.textContent = `Level ${currentLevel}: ${config.name} (${config.pairs} Pairs)`;
+
+      const subDesc = document.getElementById('level-sub-desc');
+      if (subDesc) subDesc.textContent = config.description;
+
+      const scoreLive = document.getElementById('game-score-live');
+      if (scoreLive) scoreLive.textContent = `0/${totalPairs} Pairs`;
+
+      const statusMsg = document.getElementById('match-status-msg');
+      if (statusMsg) statusMsg.textContent = `Tap any card to begin Level ${currentLevel}!`;
+
+      // Update Level Selector bar
+      const selectorMount = document.getElementById('memory-level-selector-mount');
+      if (selectorMount && window.SahaayaLevels) {
+        window.SahaayaLevels.renderLevelSelector(selectorMount, 'memory', currentLevel, (newLevel) => {
+          loadMemoryLevel(newLevel);
+        });
+      }
+
+      // Generate card pairs and shuffle
+      const symbols = config.symbols.slice(0, totalPairs);
+      const deck = [...symbols, ...symbols];
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+
+      // Render grid
+      const grid = document.getElementById('memory-cards-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        grid.style.gridTemplateColumns = `repeat(${config.cols || 4}, 1fr)`;
+        grid.style.maxWidth = currentLevel >= 4 ? '580px' : '460px';
+
+        deck.forEach((sym, index) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'game-demo-tile';
+          btn.setAttribute('aria-label', `Card ${index + 1}`);
+          btn.textContent = '❓';
+          btn.onclick = function () {
+            flipMemoryCard(this, sym);
+          };
+          grid.appendChild(btn);
+        });
+      }
+
+      // Hook for Faizan to inspect or replace
+      if (window.SahaayaMemoryGame) {
+        window.SahaayaMemoryGame.currentLevel = currentLevel;
+        window.SahaayaMemoryGame.config = config;
+      }
+    }
+
+    // Card flip logic
+    function flipMemoryCard(card, symbol) {
       if (lockBoard || card === firstCard || card.classList.contains('matched')) return;
 
       if (!gameStartTime) {
         gameStartTime = Date.now();
         lastDecisionTime = performance.now();
+        startTimer();
       }
 
       card.textContent = symbol;
@@ -230,14 +311,13 @@
 
       if (!firstCard) {
         firstCard = { element: card, symbol: symbol };
-        document.getElementById('match-status-msg').textContent = "Now tap a second card to find its match...";
+        const statusMsg = document.getElementById('match-status-msg');
+        if (statusMsg) statusMsg.textContent = "Now tap a second card to find its match...";
         return;
       }
 
-      // Record decision latency
       if (lastDecisionTime) {
-        const delta = Math.round(performance.now() - lastDecisionTime);
-        decisionLatencies.push(delta);
+        decisionLatencies.push(Math.round(performance.now() - lastDecisionTime));
         lastDecisionTime = performance.now();
       }
 
@@ -245,64 +325,137 @@
       lockBoard = true;
       moveCount++;
 
-      // Check match
       if (firstCard.symbol === secondCard.symbol) {
         firstCard.element.classList.add('matched');
         secondCard.element.classList.add('matched');
         matchesFound++;
-        document.getElementById('match-status-msg').textContent = `🎉 Great job! Found match: ${symbol}`;
-        
-        resetDemoTurn();
+
+        const scoreLive = document.getElementById('game-score-live');
+        if (scoreLive) scoreLive.textContent = `${matchesFound}/${totalPairs} Pairs`;
+
+        const statusMsg = document.getElementById('match-status-msg');
+        if (statusMsg) statusMsg.textContent = `🎉 Great job! Found match: ${symbol}`;
+
+        resetMemoryTurn();
 
         if (matchesFound === totalPairs) {
-          document.getElementById('match-status-msg').textContent = "🌟 Fantastic! You completed all pairs!";
+          clearInterval(timerInterval);
+          if (statusMsg) statusMsg.textContent = `🌟 Fantastic! Level ${currentLevel} Complete!`;
+
           setTimeout(() => {
-            finishMemoryGameSession();
-          }, 1200);
+            handleLevelComplete();
+          }, 900);
         }
       } else {
         missCount++;
-        document.getElementById('match-status-msg').textContent = "Not quite a match. Try again!";
+        const statusMsg = document.getElementById('match-status-msg');
+        if (statusMsg) statusMsg.textContent = "Not quite a match. Take your time, try again!";
         setTimeout(() => {
-          firstCard.element.textContent = '❓';
-          secondCard.element.textContent = '❓';
-          firstCard.element.classList.remove('revealed');
-          secondCard.element.classList.remove('revealed');
-          resetDemoTurn();
+          if (firstCard && firstCard.element) {
+            firstCard.element.textContent = '❓';
+            firstCard.element.classList.remove('revealed');
+          }
+          if (secondCard && secondCard.element) {
+            secondCard.element.textContent = '❓';
+            secondCard.element.classList.remove('revealed');
+          }
+          resetMemoryTurn();
         }, 1100);
       }
     }
 
-    function resetDemoTurn() {
+    function resetMemoryTurn() {
       firstCard = null;
       secondCard = null;
       lockBoard = false;
     }
 
-    // Called when game is finished or user taps Complete
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!gameStartTime) return;
+        const totalSec = Math.floor((Date.now() - gameStartTime) / 1000);
+        const mins = Math.floor(totalSec / 60);
+        const secs = totalSec % 60;
+        const timerEl = document.getElementById('game-timer');
+        if (timerEl) {
+          timerEl.textContent = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+      }, 1000);
+    }
+
+    // Handle level completion and unlocking next level
+    function handleLevelComplete() {
+      const elapsedSec = gameStartTime ? Math.max(25, Math.round((Date.now() - gameStartTime) / 1000)) : 60;
+      const accuracy = moveCount > 0 ? Math.min(100, Math.round((matchesFound / moveCount) * 100)) : 95;
+      const score = Math.min(99, Math.max(70, Math.round((accuracy * 0.7) + 28)));
+
+      // Unlock next level ONLY when current level is completed
+      const unlockRes = window.SahaayaLevels.completeLevel('memory', currentLevel, accuracy, score);
+
+      // Re-render level selector tabs
+      const selectorMount = document.getElementById('memory-level-selector-mount');
+      if (selectorMount) {
+        window.SahaayaLevels.renderLevelSelector(selectorMount, 'memory', currentLevel, (lvl) => loadMemoryLevel(lvl));
+      }
+
+      // Show in-game unlock celebration modal
+      window.SahaayaLevels.showLevelUnlockModal(
+        currentLevel,
+        unlockRes.newlyUnlocked,
+        'memory',
+        function onNextLevel(nextLvl) {
+          loadMemoryLevel(nextLvl);
+        },
+        function onViewResults() {
+          finishMemoryGameSession();
+        }
+      );
+    }
+
     function finishMemoryGameSession() {
-      const elapsedSec = gameStartTime ? Math.max(30, Math.round((Date.now() - gameStartTime) / 1000)) : 165;
-      const calculatedAccuracy = moveCount > 0 
-        ? Math.round((matchesFound / moveCount) * 100) 
-        : 96;
+      clearInterval(timerInterval);
+      const elapsedSec = gameStartTime ? Math.max(25, Math.round((Date.now() - gameStartTime) / 1000)) : 75;
+      const accuracy = moveCount > 0 ? Math.min(100, Math.round((matchesFound / moveCount) * 100)) : 95;
       const mins = Math.floor(elapsedSec / 60);
       const secs = elapsedSec % 60;
       const durationStr = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
 
       window.SahaayaApp.completeGameSession(
         'memory',
-        Math.min(99, Math.max(75, Math.round((calculatedAccuracy * 0.7) + 26))),
-        `${calculatedAccuracy}%`,
+        Math.min(99, Math.max(75, Math.round((accuracy * 0.7) + 26))),
+        `${accuracy}%`,
         durationStr,
         null,
         {
-          moves: moveCount || 6,
-          misses: missCount || 1,
-          matches: matchesFound || 4,
-          latencies: decisionLatencies.length ? decisionLatencies : [1950, 2100, 2200, 2050]
+          level: currentLevel,
+          moves: moveCount || totalPairs * 2,
+          misses: missCount || 0,
+          matches: matchesFound || totalPairs,
+          latencies: decisionLatencies.length ? decisionLatencies : [1800, 2000, 1900]
+        },
+        {
+          level: currentLevel,
+          nextLevel: currentLevel < 5 ? currentLevel + 1 : null
         }
       );
     }
+
+    // Developer hook for Faizan:
+    window.SahaayaMemoryGame = {
+      getCurrentLevel: () => currentLevel,
+      loadLevel: (lvl) => loadMemoryLevel(lvl),
+      completeCurrentLevel: (acc, sc) => {
+        return window.SahaayaLevels.completeLevel('memory', currentLevel, acc || 95, sc || 92);
+      },
+      levelConfigs: window.SahaayaLevels ? window.SahaayaLevels.configs.memory : []
+    };
+
+    // Auto-init on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const initialLevel = window.SahaayaLevels ? window.SahaayaLevels.getCurrentLevelFromUrl('memory') : 1;
+      loadMemoryLevel(initialLevel);
+    });
   </script>
 
   <!-- Floating AI Companion Launcher -->
