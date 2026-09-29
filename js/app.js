@@ -321,6 +321,26 @@
               </div>
             </div>
           `;
+        } else {
+          const targetNext = currentLvl < 5 ? currentLvl + 1 : currentLvl;
+          const nextConfig = window.SahaayaLevels ? window.SahaayaLevels.getConfig(gameType, targetNext) : null;
+          const nextName = nextConfig ? nextConfig.name : `Level ${targetNext}`;
+          nextSlot.innerHTML = `
+            <div class="result-level-unlocked-banner" role="region" aria-label="Level Completed">
+              <div class="result-level-unlocked-info">
+                <span class="badge badge-teal" style="background: rgba(94, 234, 212, 0.25); color: #5EEAD4; border: 1px solid #5EEAD4;">
+                  ⭐ Level ${currentLvl} Completed
+                </span>
+                <h3>Level ${currentLvl} Cleared Successfully!</h3>
+                <p>Great job completing Level ${currentLvl}. Continue your cognitive journey with Level ${targetNext} (${nextName}) or replay Level ${currentLvl}.</p>
+              </div>
+              <div>
+                <a href="${gamePage}?level=${targetNext}" class="senior-btn senior-btn-accent" id="btn-next-level-banner" style="font-size: var(--text-lg); padding: 0.95rem 2rem; white-space: nowrap;">
+                  ▶ Continue to Level ${targetNext} →
+                </a>
+              </div>
+            </div>
+          `;
         }
       }
 

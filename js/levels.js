@@ -457,8 +457,59 @@
         document.body.appendChild(overlay);
       }
 
-      const nextConfig = newlyUnlockedLevel ? this.getConfig(gameType, newlyUnlockedLevel) : null;
-      const gameLabel = gameType === 'memory' ? 'Memory Match' : 'Attention Focus';
+      const isFinalLevel = completedLevel >= 5;
+      const nextLevelNum = !isFinalLevel ? (newlyUnlockedLevel || completedLevel + 1) : null;
+      const nextConfig = nextLevelNum && nextLevelNum <= 5 ? this.getConfig(gameType, nextLevelNum) : null;
+      const isNewlyUnlocked = !!newlyUnlockedLevel && newlyUnlockedLevel <= 5;
+
+      let badgeHtml = '';
+      let spokenMessage = '';
+      let nextBtnHtml = '';
+
+      if (isFinalLevel) {
+        // Only Level 5 completes all levels!
+        badgeHtml = `
+          <div class="level-completed-unlock-badge" style="background: #FEF3C7; border-color: #F59E0B; color: #92400E;">
+            <span aria-hidden="true">🏆</span>
+            <span>Mastered All 5 Levels!</span>
+          </div>
+        `;
+        spokenMessage = `Congratulations! You have completed Level 5 and mastered all levels!`;
+        nextBtnHtml = `
+          <button type="button" class="senior-btn senior-btn-accent senior-btn-block" id="btn-modal-next-level" style="font-size: var(--text-lg); padding: 1rem 2rem;">
+            🔄 Replay Master Level 5
+          </button>
+        `;
+      } else if (isNewlyUnlocked) {
+        badgeHtml = `
+          <div class="level-completed-unlock-badge">
+            <span aria-hidden="true">🔓</span>
+            <span>Level ${newlyUnlockedLevel} (${nextConfig ? nextConfig.name : ''}) Unlocked!</span>
+          </div>
+        `;
+        spokenMessage = `Congratulations! You have completed Level ${completedLevel}! Level ${newlyUnlockedLevel} is now unlocked!`;
+        nextBtnHtml = `
+          <button type="button" class="senior-btn senior-btn-accent senior-btn-block" id="btn-modal-next-level" style="font-size: var(--text-lg); padding: 1rem 2rem;">
+            ▶ Play Level ${newlyUnlockedLevel} Now →
+          </button>
+        `;
+      } else {
+        // Replaying or level already unlocked
+        badgeHtml = `
+          <div class="level-completed-unlock-badge" style="background: #ECFDF5; border-color: #10B981; color: #047857;">
+            <span aria-hidden="true">⭐</span>
+            <span>Level ${completedLevel} Completed Successfully!</span>
+          </div>
+        `;
+        spokenMessage = `Congratulations! You have completed Level ${completedLevel}!`;
+        if (nextLevelNum && nextLevelNum <= 5) {
+          nextBtnHtml = `
+            <button type="button" class="senior-btn senior-btn-accent senior-btn-block" id="btn-modal-next-level" style="font-size: var(--text-lg); padding: 1rem 2rem;">
+              ▶ Continue to Level ${nextLevelNum} (${nextConfig ? nextConfig.name : ''}) →
+            </button>
+          `;
+        }
+      }
 
       overlay.innerHTML = `
         <div class="level-completed-card" role="dialog" aria-modal="true" aria-labelledby="lvl-comp-title">
@@ -472,24 +523,10 @@
             Outstanding mental focus! You successfully cleared all challenges in Level ${completedLevel}.
           </p>
 
-          ${newlyUnlockedLevel && newlyUnlockedLevel <= 5 ? `
-            <div class="level-completed-unlock-badge">
-              <span aria-hidden="true">🔓</span>
-              <span>Level ${newlyUnlockedLevel} (${nextConfig ? nextConfig.name : ''}) Unlocked!</span>
-            </div>
-          ` : `
-            <div class="level-completed-unlock-badge" style="background: #FEF3C7; border-color: #F59E0B; color: #92400E;">
-              <span aria-hidden="true">🏆</span>
-              <span>You Have Mastered All 5 Levels!</span>
-            </div>
-          `}
+          ${badgeHtml}
 
           <div class="level-completed-actions">
-            ${newlyUnlockedLevel && newlyUnlockedLevel <= 5 ? `
-              <button type="button" class="senior-btn senior-btn-accent senior-btn-block" id="btn-modal-next-level" style="font-size: var(--text-lg); padding: 1rem 2rem;">
-                ▶ Play Level ${newlyUnlockedLevel} Now →
-              </button>
-            ` : ''}
+            ${nextBtnHtml}
 
             <button type="button" class="senior-btn senior-btn-primary senior-btn-block" id="btn-modal-view-results" style="font-size: var(--text-base); padding: 0.85rem 1.5rem;">
               📊 View Full Cognitive Results →
@@ -513,11 +550,7 @@
       }
 
       if (window.speakText) {
-        if (newlyUnlockedLevel) {
-          window.speakText(`Congratulations! You completed Level ${completedLevel}. Level ${newlyUnlockedLevel} is now unlocked!`);
-        } else {
-          window.speakText(`Congratulations! You have completed all levels!`);
-        }
+        window.speakText(spokenMessage);
       }
 
       // Attach button clicks
@@ -525,7 +558,8 @@
       if (nextBtn) {
         nextBtn.onclick = () => {
           overlay.classList.remove('active');
-          if (typeof onNextLevelClick === 'function') onNextLevelClick(newlyUnlockedLevel);
+          const targetLevel = isFinalLevel ? completedLevel : (nextLevelNum || completedLevel);
+          if (typeof onNextLevelClick === 'function') onNextLevelClick(targetLevel);
         };
       }
 
